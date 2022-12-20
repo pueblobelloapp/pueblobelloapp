@@ -72,7 +72,7 @@ class _MenuState extends State<Menu> {
                   ),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsMapa.png'),
+                  image: AssetImage('assets/Icons/iconsMapa.png'),
                   height: 40,
                   width: 40,
                 ),
@@ -97,7 +97,7 @@ class _MenuState extends State<Menu> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsAfrican.png'),
+                  image: AssetImage('assets/Icons/iconsAfrican.png'),
                   height: 40,
                   width: 40,
                 ),
@@ -120,7 +120,7 @@ class _MenuState extends State<Menu> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsEnsalada.png'),
+                  image: AssetImage('assets/Icons/iconsEnsalada.png'),
                   height: 40,
                   width: 40,
                 ),
@@ -143,7 +143,7 @@ class _MenuState extends State<Menu> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsFiesta.png'),
+                  image: AssetImage('assets/Icons/iconsFiesta.png'),
                   height: 40,
                   width: 40,
                 ),
@@ -166,7 +166,7 @@ class _MenuState extends State<Menu> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsAdmin.png'),
+                  image: AssetImage('assets/Icons/iconsAdmin.png'),
                   height: 40,
                   width: 40,
                 ),
@@ -189,7 +189,7 @@ class _MenuState extends State<Menu> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Image(
-                  image: AssetImage('assets/icons/iconsReligion.png'),
+                  image: AssetImage('assets/Icons/iconsReligion.png'),
                   height: 40,
                   width: 40,
                 ),

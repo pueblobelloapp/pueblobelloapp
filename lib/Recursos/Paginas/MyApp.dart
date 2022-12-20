@@ -1,15 +1,8 @@
 import 'package:app_turismo/Recursos/Paginas/SplashScreen.dart';
 import 'package:app_turismo/Recursos/Paginas/login.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mCultura.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mFestividad.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mGastronom%C3%ADa.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mPropietario.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mReligion.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mSitiosTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/menu.dart';
-import 'package:app_turismo/Recursos/Paginas/registrar.dart';
+import 'package:get/get.dart';
 
-//import 'package:app_turismo/Recursos/Paginas/welcomePages.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -17,8 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: MaterialApp(
+    return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Turismo App Administrador',
         theme: ThemeData(fontFamily: 'Ubuntu'),
@@ -26,8 +18,8 @@ class MyApp extends StatelessWidget {
         routes: {
           'SplashScreen': (BuildContext context) => SplashScreen(),
           'LoginF': (BuildContext context) => LoginF(),
+          'Menu' : (BuildContext context) => Menu()
         },
-      ),
     );
   }
 }

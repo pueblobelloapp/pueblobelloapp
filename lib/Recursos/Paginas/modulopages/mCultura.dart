@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:app_turismo/Recursos/Paginas/menu.dart';
+import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

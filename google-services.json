@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "134305885557",
+    "project_id": "pueblobello-turismo",
+    "storage_bucket": "pueblobello-turismo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134305885557:android:ff26b637829d6ae336773c",
+        "android_client_info": {
+          "package_name": "com.example.app_turismo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "134305885557-1744l6i5mf3husvfjvv1tiqlre88ou01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl_iCRLXgOD44bcCAQAI0YNzVfsKN9Cuo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "134305885557-1744l6i5mf3husvfjvv1tiqlre88ou01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

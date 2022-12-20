@@ -1,7 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, deprecated_member_use, unused_local_variable, unused_import, unnecessary_import
 
 import 'dart:io';
-import 'package:app_turismo/Recursos/Paginas/menu.dart';
+import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
