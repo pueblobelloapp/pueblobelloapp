@@ -1,12 +1,12 @@
 // ignore_for_file: unnecessary_import
 
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
+import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 
-import 'Menu.dart';
 
 class LoginF extends StatefulWidget {
   LoginF({Key? key}) : super(key: key);
@@ -110,11 +110,14 @@ class _LoginFState extends State<LoginF> {
                           controllerLogin
                               .getLogin(_userL.text, _passwordL.text)
                               .then((value) => {
-                                    if (controllerLogin.password !=
+                                    if (controllerLogin.email !=
                                         "Sin Registro")
-                                      {print("Exitoso."), Get.to(Menu())}
+                                      {
+                                        Get.to(() => MenuModuls())
+                                      }
                                     else
                                       {
+                                        print("Acceso NEGADO"),
                                         Get.showSnackbar(const GetSnackBar(
                                           title: 'Validacion de Usuarios',
                                           message: 'Error desde la validacion',

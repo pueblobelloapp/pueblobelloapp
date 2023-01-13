@@ -1,4 +1,6 @@
-class MyUsers {
+import 'package:equatable/equatable.dart';
+
+class MyUsers extends Equatable {
   final String id;
   final String nombre;
   final String apellido;
@@ -13,27 +15,41 @@ class MyUsers {
       this.edad, this.telefono, this.estadoPropietario, this.typeUser);
 
   Map<String, Object> toFirebaseMap() {
-    return <String, Object> {
-      'id' : id,
-      'nombre' : nombre,
-      'apellido' : apellido,
-      'correo' : correo,
-      'password' : password,
-      'edad' : edad,
-      'telefono' : telefono,
-      'estadoPropietario' : estadoPropietario,
-      'typeUser' : typeUser
+    return <String, Object>{
+      'id': id,
+      'nombre': nombre,
+      'apellido': apellido,
+      'correo': correo,
+      'password': password,
+      'edad': edad,
+      'telefono': telefono,
+      'estadoPropietario': estadoPropietario,
+      'typeUser': typeUser
     };
   }
 
   MyUsers.fromFirebaseMap(Map<String, Object?> data)
-    : id = data['id'] as String,
-      nombre = data['nombre']  as String,
-      apellido = data['apellido'] as String,
-      correo = data['correo'] as String,
-      password = data['password'] as String,
-      edad = data['edad'] as String,
-      telefono = data['telefono'] as String,
-      estadoPropietario = data['estadoPropietario'] as String,
-      typeUser = data['typeUser'] as String;
+      : id = data['id'] as String,
+        nombre = data['nombre'] as String,
+        apellido = data['apellido'] as String,
+        correo = data['correo'] as String,
+        password = data['password'] as String,
+        edad = data['edad'] as String,
+        telefono = data['telefono'] as String,
+        estadoPropietario = data['estadoPropietario'] as String,
+        typeUser = data['typeUser'] as String;
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        id,
+        nombre,
+        apellido,
+        correo,
+        password,
+        edad,
+        telefono,
+        estadoPropietario,
+        typeUser
+      ];
 }

@@ -19,11 +19,18 @@ class ControllerLogin extends GetxController {
       _email.value = user.user!.email;
 
     } on FirebaseException catch (e) {
+      print("code" + e.code.toString() );
       if (e.code == 'user-not-found') {
+        print("user-not-found" + e.code );
         return Future.error('Usuario no Existe');
       } else if (e.code == 'wrong-password') {
+        print("Contraseña incorrecta" + e.code );
         return Future.error('Contraseña incorrecta');
       }
     }
+  }
+
+  Future<void> signOut() async {
+
   }
 }
