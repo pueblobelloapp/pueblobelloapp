@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GestionController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
@@ -11,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
 
 class ModuleGestion extends StatefulWidget {
   const ModuleGestion({Key? key}) : super(key: key);
@@ -20,319 +22,170 @@ class ModuleGestion extends StatefulWidget {
 }
 
 class _ModuleGestionState extends State<ModuleGestion> {
-  Position? _position;
-  final _nombreInformacion = TextEditingController();
-  final _posicionInformacion = TextEditingController();
-  String _ubicacionC = "";
-  final _descripcionInformacion = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
+
+  final GetxGestionInformacionController controllerGestion =
+  Get.put(GetxGestionInformacionController());
 
   final GextControllerTurismo controllerTurismo =
   Get.put(GextControllerTurismo());
 
+  final gestionModel = Get.arguments as GestionModel?;
+
+  final _nombreInformacion = TextEditingController();
+  final _posicionInformacion = TextEditingController();
+  final _descripcionInformacion = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  String idGestion = "";
+  Position? _position;
+  String _ubicacionC = "";
+
+
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-
-    return Center(
-        child: SingleChildScrollView(
-            child: Formulario()));
+    return Container(
+      child: Padding(
+          padding: EdgeInsets.all(25.0),
+          child: SingleChildScrollView(
+            child: FormGestion(),
+          )),
+    );
   }
 
   //Fomulario
-  Widget Formulario() {
+  Widget FormGestion() {
+    final editController = Get.put(EditGestionController(gestionModel));
+    final editControlGestion = Get.find<GetxGestionInformacionController>();
 
-    final culturaToEdit = Get.arguments as GestionModel?;
-    final editController = Get.put(EditGestionController(culturaToEdit));
-    String titulo = "Nombre de la " + controllerTurismo.typeInformation;
     PickedFile? _pickedFile = null;
 
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Form(
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: [
-                Text(
-                  'Nombre',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 4.0,
-            ),
-            //textformfield nombre
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
-                      ),
-                    ),
-                    child: TextFormField(
-                      controller: _nombreInformacion,
-                      keyboardType: TextInputType.name,
-                      textCapitalization: TextCapitalization.sentences,
-                      cursorColor: Colors.green.shade300,
-                      decoration: InputDecoration(
-                          focusedBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(16.0),
-                          fillColor: Colors.white,
-                          hintText: titulo,
-                          hintStyle: TextStyle(color: Colors.grey.shade300),
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: FaIcon(
-                              FontAwesomeIcons.houseUser,
-                              color: Colors.green.shade300,
-                            ),
-                          )),
-                      validator: (Value) {
-                        if (Value!.isEmpty) {
-                          return "Digite informacion requerida";
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            //button imagen
-            Row(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.all(5.0),
-                  height: 34.0,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
-                        primary: Color(0xFFFFFFFF),
-                        onPrimary: Colors.black,
-                        elevation: 5.0,
-                      ),
-                      child: Row(
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.image,
-                            color: Colors.green.shade300,
-                          ),
-                          SizedBox(width: 3),
-                          Text('Imagen')
-                        ],
-                      ),
-                      onPressed: () async {
-                        //Carge de imagenes funcionalidad.
-                        final editController =
-                            Get.find<EditGestionController>();
-                        _pickedFile =
-                            await _picker.getImage(source: ImageSource.gallery);
+    idGestion = controllerGestion.id;
+    _nombreInformacion.text = controllerGestion.nombre ?? '';
+    _ubicacionC = controllerGestion.ubicacion ?? '';
+    _descripcionInformacion.text = controllerGestion.descripcion ?? '';
 
-                        if (_pickedFile != null) {
-                          editController.setImage(File(_pickedFile!.path));
-                        }
-                      }),
-                ),
-                //textformfield imagen
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                  ),
-                  child: TextFormField(
-                    cursorColor: Colors.green.shade300,
-                    decoration: InputDecoration(
-                      focusedBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16.0),
-                      fillColor: Colors.white,
-                      hintText: 'Seleccione una imagen...',
-                      hintStyle: TextStyle(color: Colors.grey.shade300),
-                    ),
-                  ),
-                ))
-              ],
-            ),
-            const SizedBox(
-              height: 4.0,
-            ),
-            //button ubicacion
+    return Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text("Nombre"),
+            TextFieldWidget(
+                _nombreInformacion,
+                Icon(Icons.abc, color: Colors.green),
+                "Nombre de la " + controllerTurismo.typeInformation,
+                1,
+                "Error, falta nombre",
+                TextInputType.text),
+            SizedBox(height: 20),
+            Text("Descripcion"),
+            TextFieldWidget(
+                _descripcionInformacion,
+                Icon(Icons.description, color: Colors.green),
+                "Descripcion de la " + controllerTurismo.typeInformation,
+                3,
+                "Error, complete la descripcion",
+                TextInputType.text),
+            SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.all(5.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _getCurrentLocation();
-                      print("Ubicacion: " + _ubicacionC);
-                      setState(() {
-                        _posicionInformacion.text = _ubicacionC;
-                      });
-                      //Logica para buscar ubicacion GPS
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      primary: const Color(0xFFFFFFFF),
-                      onPrimary: Colors.black,
-                      elevation: 5.0,
-                    ),
-                    child: Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.locationDot,
-                          color: Colors.green.shade300,
-                        ),
-                        SizedBox(width: 3),
-                        Text('Ubicación')
-                      ],
-                    ),
-                  ),
+                Column(
+                  children: [
+                    Text("Fotografias"),
+                    ElevatedButton(
+                        style: Constants.buttonPrimary,
+                        onPressed: () async {
+                          //Carge de imagenes funcionalidad.
+                          final editController =
+                              Get.find<EditGestionController>();
+                          _pickedFile = await _picker.getImage(
+                              source: ImageSource.gallery);
+
+                          if (_pickedFile != null) {
+                            editController.setImage(File(_pickedFile!.path));
+                          }
+                        },
+                        child: const Text('Cargar fotos'))
+                  ],
                 ),
-                // textformfield ubicacion
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
-                      ),
-                    ),
-                    child: TextFormField(
-                      controller: _posicionInformacion,
-                      cursorColor: Colors.green.shade300,
-                      decoration: InputDecoration(
-                        focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(16.0),
-                        fillColor: Colors.white,
-                        hintText: 'Ubicación no encontrada',
-                        hintStyle: TextStyle(color: Colors.grey.shade300),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            //descripcion
-            Row(
-              children: const [
-                Text(
-                  'Descripción',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    Text("Ubicacion Gps"),
+                    ElevatedButton(
+                        style: Constants.buttonPrimary,
+                        onPressed: () {
+                          _getCurrentLocation();
+                          print("Ubicacion: " + _ubicacionC);
+                          setState(() {
+                            _posicionInformacion.text = _ubicacionC;
+                          });
+                        },
+                        child: const Text('Seleccionar Ubicacion'))
+                  ],
                 )
               ],
             ),
-            const SizedBox(
-              height: 4.0,
-            ),
-            //textformfield descripcion
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-              ),
-              child: TextFormField(
-                maxLines: 5,
-                controller: _descripcionInformacion,
-                cursorColor: Colors.green.shade300,
-                keyboardType: TextInputType.name,
-                decoration: InputDecoration(
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.all(16.0),
-                  fillColor: Colors.white,
-                  hintText: 'Descripcion formal.',
-                  hintStyle: TextStyle(color: Colors.grey.shade300),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) return "Digite una descripcion ";
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('100 caracteres',
-                    style: TextStyle(color: Colors.grey.shade400))
-              ],
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            //button guardar
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      primary: Colors.green.shade300,
-                      onPrimary: Colors.black,
-                      elevation: 5.0,
-                    ),
-                    onPressed: () {
-                      //Logica para guardar el registro.
-                      print("Nombre: " +  _nombreInformacion.text);
-                      print("Ubicacion: " +  _ubicacionC.toString());
-                      print("Descripcion: " +  _descripcionInformacion.toString());
+            SizedBox(height: 35),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              ElevatedButton(
+                  style: Constants.buttonPrimary,
+                  onPressed: () {
+                    String mensaje = "";
+                    String errorMensaje = _pickedFile == null
+                        ? 'Error falta Fotografia'
+                        : 'Error falta Ubicacion';
 
-                      if (_nombreInformacion.text.isEmpty || _ubicacionC.toString().isEmpty
-                      || _descripcionInformacion.toString().isEmpty || _pickedFile == null) {
-
-                        print("Error campos vacios");
-                        Get.showSnackbar(const GetSnackBar(
+                    if (_formKey.currentState!.validate()) {
+                      if (_pickedFile == null || _ubicacionC.isEmpty) {
+                        Get.showSnackbar(GetSnackBar(
                           title: 'Validacion de datos',
-                          message: 'Error datos faltantes',
+                          message: errorMensaje,
                           icon: Icon(Icons.app_registration),
                           duration: Duration(seconds: 4),
                           backgroundColor: Colors.red,
                         ));
                       } else {
-                        editController.saveGestion(
-                            _nombreInformacion.text,
-                            _descripcionInformacion.text,
-                            _ubicacionC.toString());
+                        if (idGestion.isEmpty) {
+                          editController.saveGestion(
+                              _nombreInformacion.text,
+                              _descripcionInformacion.text,
+                              _ubicacionC.toString());
+
+                        } else {
+                          mensaje = "Se actualizaron los datos";
+                          editController.editGestion(
+                            idGestion,
+                              _nombreInformacion.text,
+                              _descripcionInformacion.text,
+                              _ubicacionC.toString());
+                        }
+                        Get.showSnackbar(GetSnackBar(
+                          title: 'Registro de informacion',
+                          message: mensaje,
+                          icon: Icon(Icons.app_registration),
+                          duration: Duration(seconds: 4),
+                          backgroundColor: Colors.orange.shade400,
+                        ));
                       }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 12.0),
-                      child: const Text(
-                        'Guardar',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ))
-              ],
-            )
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0, vertical: 12.0),
+                    child: const Text(
+                      'Guardar',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ))
+            ]),
           ],
-        ),
-      ),
-    );
+        ));
   }
 
   //Funciones para localizacion
@@ -356,5 +209,38 @@ class _ModuleGestionState extends State<ModuleGestion> {
       }
     }
     return await Geolocator.getCurrentPosition();
+  }
+
+  Widget TextFieldWidget(
+      TextEditingController controlador,
+      icon,
+      String textGuide,
+      int maxLine,
+      String msgError,
+      TextInputType textInputType) {
+    return TextFormField(
+        controller: controlador,
+        keyboardType: textInputType,
+        maxLines: maxLine,
+        decoration: InputDecoration(
+          prefixIcon: icon,
+          fillColor: Colors.grey.shade300,
+          filled: true,
+          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              borderSide: BorderSide(color: Colors.green)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          hintText: textGuide,
+          labelStyle: TextStyle(color: Colors.green),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return msgError;
+          }
+        },
+        cursorColor: Colors.green);
   }
 }

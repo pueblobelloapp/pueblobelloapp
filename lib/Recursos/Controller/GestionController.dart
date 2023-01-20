@@ -59,8 +59,6 @@ class EditGestionController extends GetxController {
   Future<void> editGestion(
       String uid,
       String nombre,
-      String capacidad,
-      String tipoTurismo,
       String descripcion,
       String ubicacion
       ) async {

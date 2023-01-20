@@ -13,6 +13,7 @@ class MenuModuls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.green.shade400,
         automaticallyImplyLeading: false,
         title: const Text("Gestion de modulos"),
@@ -28,27 +29,27 @@ class MenuModuls extends StatelessWidget {
           _title(
               "Culturas",
               FaIcon(FontAwesomeIcons.award, color: Colors.green),
-              "ModulePrueba",
+              "MenuGestion",
               "cultura"),
           _title(
               "Gastronomias",
               FaIcon(FontAwesomeIcons.bowlFood, color: Colors.green),
-              "ModulePrueba",
+              "MenuGestion",
               "gastronomia"),
           _title(
               "Festividades",
               FaIcon(FontAwesomeIcons.calendar, color: Colors.green),
-              "ModulePrueba",
+              "MenuGestion",
               "festividad"),
           _title(
               "Religiones",
               FaIcon(FontAwesomeIcons.church, color: Colors.green),
-              "ModulePrueba",
+              "MenuGestion",
               "religion"),
           _title(
               "Propietarios",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-              "ModulePropietario",
+              "MenuPropietario",
               "")
         ]).toList(),
       ),
