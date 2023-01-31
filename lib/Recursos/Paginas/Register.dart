@@ -1,8 +1,10 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class Registrar extends StatefulWidget {
@@ -13,7 +15,6 @@ class Registrar extends StatefulWidget {
 }
 
 class _RegistrarState extends State<Registrar> {
-
   TextEditingController _email = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
   TextEditingController _passwordConfirmada = TextEditingController();
@@ -26,9 +27,9 @@ class _RegistrarState extends State<Registrar> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child: Column(
-                children: [ImagenLogo(), FormRegister()])));
+            child: Column(children: [ImagenLogo(), FormRegister()])));
   }
+
   Widget ImagenLogo() {
     return Image.asset(
       'assets/img/Logo.png',
@@ -64,7 +65,10 @@ class _RegistrarState extends State<Registrar> {
                       SizedBox(height: 10),
                       TextFieldWidget(
                           _email,
-                          Icon(Icons.email, color: Colors.green),
+                          FaIcon(
+                            FontAwesomeIcons.envelope,
+                            color: Colors.green,
+                          ),
                           "Digite correo electronico",
                           false,
                           "Error, compruebe correo.",
@@ -72,8 +76,8 @@ class _RegistrarState extends State<Registrar> {
                       SizedBox(height: 20),
                       TextFieldWidget(
                           _passwordL,
-                          Icon(
-                            Icons.password,
+                          FaIcon(
+                            FontAwesomeIcons.lock,
                             color: Colors.green,
                           ),
                           "Digite contraseña",
@@ -83,8 +87,8 @@ class _RegistrarState extends State<Registrar> {
                       SizedBox(height: 20),
                       TextFieldWidget(
                           _passwordConfirmada,
-                          Icon(
-                            Icons.password,
+                          FaIcon(
+                            FontAwesomeIcons.lock,
                             color: Colors.green,
                           ),
                           "Confirmar contraseña",
@@ -99,7 +103,6 @@ class _RegistrarState extends State<Registrar> {
                             if (_passwordL.text == _passwordConfirmada.text) {
                               signUp(_email.text, _passwordL.text);
                             }
-
                           }
                         },
                         child: const Text('Registrar'),
@@ -111,7 +114,7 @@ class _RegistrarState extends State<Registrar> {
 
   Widget TextFieldWidget(
       TextEditingController controlador,
-      icon,
+      FaIcon icono,
       String textGuide,
       bool estate,
       String msgError,
@@ -121,7 +124,10 @@ class _RegistrarState extends State<Registrar> {
         keyboardType: textInputType,
         obscureText: estate,
         decoration: InputDecoration(
-          prefixIcon: icon,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: icono,
+          ),
           fillColor: Colors.grey.shade300,
           filled: true,
           enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
@@ -155,10 +161,11 @@ class _RegistrarState extends State<Registrar> {
   Future<void> postDetailsToFirestore() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
-    final ref = firebaseFirestore.doc(
-        'propietario/${user!.uid}');
+    final ref = firebaseFirestore.doc('propietario/${user!.uid}');
 
-    await ref.set(({'rool': 'Propietario', 'correo' : user.email, 'uid' : user.uid}), SetOptions(merge: false));
+    await ref.set(
+        ({'rool': 'Propietario', 'correo': user.email, 'uid': user.uid}),
+        SetOptions(merge: false));
 
     //print("Datos del usuario: " + user.toString());
     //CollectionReference ref = FirebaseFirestore.instance.collection('propietario');
