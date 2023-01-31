@@ -34,10 +34,12 @@ class _LoginFState extends State<LoginF> {
   }
 
   Widget ImagenLogo() {
-    return Image.asset(
-      'assets/img/Logo.png',
-      width: 300,
-      height: 300,
+    return SafeArea(
+      child: Image.asset(
+        'assets/img/Logo.png',
+        width: 300,
+        height: 300,
+      ),
     );
   }
 
