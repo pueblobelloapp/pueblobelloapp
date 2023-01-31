@@ -26,6 +26,8 @@ class SiteTuristicoDataSource {
   // it will create or update the image in Firebase Storage
   Future<void> saveMySite(SitioTuristico sitioTuristico, File? image) async {
     final ref = firestore.doc('sites/${sitioTuristico.id}');
+
+
     if (image != null) {
       // Delete current image if exists
       if (sitioTuristico.foto != null) {

@@ -36,7 +36,8 @@ class EditSitesController extends GetxController {
       String capacidad,
       String tipoTurismo,
       String descripcion,
-      String ubicacion
+      String ubicacion,
+      String uidUser
       ) async {
     isLoading.value = true;
 
@@ -49,6 +50,7 @@ class EditSitesController extends GetxController {
         tipoTurismo: tipoTurismo,
         descripcion: descripcion,
         ubicacion: ubicacion,
+        userId: uidUser,
         foto : _toEdit?.foto);
 
     await _mySitesRepository.saveMySite(_toEdit!, pickedImage.value);
@@ -69,7 +71,8 @@ class EditSitesController extends GetxController {
       String capacidad,
       String tipoTurismo,
       String descripcion,
-      String ubicacion
+      String ubicacion,
+      String uidUser
       ) async {
     isLoading.value = true;
 
@@ -80,6 +83,7 @@ class EditSitesController extends GetxController {
         tipoTurismo: tipoTurismo,
         descripcion: descripcion,
         ubicacion: ubicacion,
+        userId: uidUser,
         foto : _toEdit?.foto);
 
     await _mySitesRepository.saveMySite(_toEdit!, pickedImage.value);

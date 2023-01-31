@@ -2,17 +2,13 @@
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
-import 'package:app_turismo/Recursos/Controller/GestionController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'package:app_turismo/Recursos/Controller/PropietarioController.dart';
-import 'package:app_turismo/Recursos/Controller/SitesController.dart';
-import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const List<String> list = <String>['Masculino', 'Femenino'];

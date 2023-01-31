@@ -1,12 +1,12 @@
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/SplashScreen.dart';
-import 'package:app_turismo/Recursos/Paginas/login.dart';
+import 'package:app_turismo/Recursos/Paginas/Login.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ListaInformacion.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleGestion.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/NavegacionGestion.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/NavegacionPropietario.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ModulePropietario.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/mSitiosTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleSitiosTuristico.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         'SplashScreen' : (BuildContext context) => SplashScreen(),
         'LoginF' : (BuildContext context) => LoginF(),
         'Menu' : (BuildContext context) => MenuModuls(),
-        'ModuleSitios' : (BuildContext context) => MsitiosTuristico(),
+        'ModuleSitios' : (BuildContext context) => ModuleSitiosTuristico(),
         'Lista' : (BuildContext context) => ListInformationGestion(),
         'MenuGestion' : (BuildContext context) => NavegacionGestion(),
         'MenuPropietario' : (BuildContext context) => NavegacionPropietario()

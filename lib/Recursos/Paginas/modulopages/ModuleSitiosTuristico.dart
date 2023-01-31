@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Controller/SitesController.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/GoogleLocation.dart';
@@ -13,27 +14,34 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 
-class MsitiosTuristico extends StatefulWidget {
-  const MsitiosTuristico({Key? key}) : super(key: key);
+class ModuleSitiosTuristico extends StatefulWidget {
+  const ModuleSitiosTuristico({Key? key}) : super(key: key);
 
   @override
-  State<MsitiosTuristico> createState() => _MsitiosTuristicoState();
+  State<ModuleSitiosTuristico> createState() => _ModuleSitiosTuristicoState();
 }
 
-class _MsitiosTuristicoState extends State<MsitiosTuristico> {
+class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
   Position? _position;
   final _nombreST = TextEditingController();
   final _tipoTurismo = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   final _capacidadST = TextEditingController();
-  String _ubicacionST = "";
   final _descripcionST = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String _ubicacionST = "";
+  String _uidUser = "";
 
   @override
   Widget build(BuildContext context) {
+    ControllerLogin controllerLogin = Get.find();
     final siteToEdit = Get.arguments as SitioTuristico?;
     final editController = Get.put(EditSitesController(siteToEdit));
+
+    final GextControllerTurismo _controllerTurismo =
+    Get.put(GextControllerTurismo());
+    final editControlTurismo = Get.find<GextControllerTurismo>();
+    _uidUser = editControlTurismo.uidUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -164,12 +172,15 @@ class _MsitiosTuristicoState extends State<MsitiosTuristico> {
                             backgroundColor: Colors.red,
                           ));
                         } else {
+                          print("Turismo registrado con : " + _uidUser);
                           editController.saveSite(
                               _nombreST.text,
                               _capacidadST.text,
                               _tipoTurismo.text,
                               _descripcionST.text,
-                              _position.toString());
+                              _position.toString(),
+                              _uidUser
+                          );
                         }
                       },
                       style: TextButton.styleFrom(

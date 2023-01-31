@@ -1,12 +1,12 @@
-// ignore_for_file: unnecessary_import
-
+import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
+import 'package:app_turismo/Recursos/Paginas/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 
 class LoginF extends StatefulWidget {
   LoginF({Key? key}) : super(key: key);
@@ -19,6 +19,9 @@ class _LoginFState extends State<LoginF> {
   TextEditingController _userL = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
   ControllerLogin controllerLogin = Get.find();
+
+  final GextControllerTurismo _controllerTurismo =
+      Get.put(GextControllerTurismo());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -89,53 +92,60 @@ class _LoginFState extends State<LoginF> {
                           children: [
                             TextButton(
                               onPressed: () {
-                                //Move to page Register
+                                Get.to(() => Registrar());
                               },
                               child: Text("Registrarme",
                                   style: TextStyle(color: Colors.green)),
                             ),
                             TextButton(
-                              onPressed: () {
-                                //Move to page Recovery password
-                              },
-                              child: Text("Recuperar contraseña",
-                                  style: TextStyle(color: Colors.green)),
-                            )
+                                onPressed: () {
+                                  //Move to page Recovery password
+                                },
+                                child: AutoSizeText(
+                                  "Recuperar contraseña",
+                                  style: TextStyle(fontSize: 30),
+                                  maxLines: 2,
+                                ))
                           ],
                         ),
                       ),
                       ElevatedButton(
                         style: Constants.buttonPrimary,
                         onPressed: () {
-                          controllerLogin
-                              .getLogin(_userL.text, _passwordL.text)
-                              .then((value) => {
-                                    if (controllerLogin.email !=
-                                        "Sin Registro")
-                                      {
-                                        Get.to(() => MenuModuls())
-                                      }
-                                    else
-                                      {
-                                        print("Acceso NEGADO"),
-                                        Get.showSnackbar(const GetSnackBar(
-                                          title: 'Validacion de Usuarios',
-                                          message: 'Error desde la validacion',
-                                          icon: Icon(Icons.person_add),
-                                          duration: Duration(seconds: 4),
-                                          backgroundColor: Colors.red,
-                                        ))
-                                      }
-                                  })
-                              .catchError((onerror) {
-                            Get.showSnackbar(const GetSnackBar(
-                              title: 'Validacion de Usuarios',
-                              message: 'Error desde la Excepcion',
-                              icon: Icon(Icons.person_add),
-                              duration: Duration(seconds: 4),
-                              backgroundColor: Colors.red,
-                            ));
-                          });
+                          if (_formKey.currentState!.validate()) {
+                            controllerLogin
+                                .getLogin(_userL.text, _passwordL.text)
+                                .then((value) => {
+                                      if (controllerLogin.email !=
+                                              "Sin Registro" &&
+                                          controllerLogin.userRole != "")
+                                        {
+                                          print("Rol accedido: " +
+                                              controllerLogin.userRole),
+                                          Get.to(() => MenuModuls())
+                                        }
+                                      else
+                                        {
+                                          Get.showSnackbar(const GetSnackBar(
+                                            title: 'Validacion de Usuarios',
+                                            message:
+                                                'Error desde la validacion',
+                                            icon: Icon(Icons.person_add),
+                                            duration: Duration(seconds: 4),
+                                            backgroundColor: Colors.red,
+                                          ))
+                                        }
+                                    })
+                                .catchError((onerror) {
+                              Get.showSnackbar(const GetSnackBar(
+                                title: 'Validacion de Usuarios',
+                                message: 'Error desde la Excepcion',
+                                icon: Icon(Icons.person_add),
+                                duration: Duration(seconds: 4),
+                                backgroundColor: Colors.red,
+                              ));
+                            });
+                          }
                         },
                         child: const Text('Acceder'),
                       ),

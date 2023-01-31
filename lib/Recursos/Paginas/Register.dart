@@ -1,4 +1,9 @@
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
+import 'package:app_turismo/Recursos/Controller/LoginController.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Registrar extends StatefulWidget {
   Registrar({Key? key}) : super(key: key);
@@ -8,367 +13,155 @@ class Registrar extends StatefulWidget {
 }
 
 class _RegistrarState extends State<Registrar> {
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _passwordL = TextEditingController();
+  TextEditingController _passwordConfirmada = TextEditingController();
+  ControllerLogin controllerLogin = Get.find();
+
+  final _auth = FirebaseAuth.instance;
+  final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Color(0xFF7DA453),
-      appBar: AppBar(
-        backgroundColor: Color(0xFF7DA453),
-        leading: IconButton(
-            onPressed: () {
-              /*  Navigator.push(
-                 context, MaterialPageRoute(builder: (context) => LoginF()));*/
-            },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
-            )),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.output_sharp,
-                color: Colors.black,
-              )),
-        ],
-        title: Align(
-            child: Text(
-          'Registrar',
-          style: TextStyle(
-              fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
-        )),
-      ),
-      body: Container(
-          width: double.infinity,
-          //height: 500.0,
-          padding: EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-            Color.fromRGBO(125, 164, 83, 9.0),
-            Color.fromRGBO(242, 238, 237, 0.0)
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
-                Center(
-                  child: Container(
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage('assets/img/perfil.png'),
-                      radius: 90.0,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Column(
-                  children: [
-                    Form(
-                        child: Container(
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.green, width: 1.0),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
-                        child: Column(
-                          children: <Widget>[
-                            //nombre
-                            Row(
-                              children: [
-                                Text('Nombre',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  // border:Border.all(color: Colors.green, width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0))),
-                              child: TextFormField(
-                                //controller: _nombreF,
-                                keyboardType: TextInputType.name,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: Colors.green.shade300,
-                                decoration: InputDecoration(
-                                    focusedBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    fillColor: Colors.white,
-                                    hintText: 'Nombre',
-                                    hintStyle: TextStyle(color: Colors.black26),
-                                    prefixIcon: Image(
-                                      image: AssetImage(
-                                          'assets/icons/iconsAfrican2.png'),
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            //correo
-                            Row(
-                              children: [
-                                Text('Correo',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  //border: Border.all(color: Colors.green, width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0))),
-                              child: TextFormField(
-                                //controller: _nombreF,
-                                keyboardType: TextInputType.emailAddress,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: Colors.green.shade300,
-                                decoration: InputDecoration(
-                                    focusedBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    fillColor: Colors.white,
-                                    hintText: 'Correo',
-                                    hintStyle: TextStyle(color: Colors.black26),
-                                    prefixIcon: Image(
-                                      image: AssetImage(
-                                          'assets/icons/iconsEmail.png'),
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            //contraseña
-                            Row(
-                              children: [
-                                Text('Contraseña',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                 /* border:
-                                      Border.all(color: Colors.green, width: 2),*/
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0))),
-                              child: TextFormField(
-                                //controller: _nombreF,
-                                obscureText: true,
-                                //keyboardType: TextInputType.,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: Colors.green.shade300,
-                                decoration: InputDecoration(
-                                    focusedBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    fillColor: Colors.white,
-                                    hintText: 'Contraseña',
-                                    hintStyle: TextStyle(color: Colors.black26),
-                                    prefixIcon: Image(
-                                        image: AssetImage(
-                                            'assets/icons/iconsContrasena.png'))),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            //sexo y edad
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Text('Sexo',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold)),
-                                Text('Edad',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold))
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            // textFormfield sexo y edad
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                        /*  border: Border.all(
-                                              color: Colors.green, width: 2),*/
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      child: TextFormField(
-                                        //controller: _sexoR,
-                                        keyboardType: TextInputType.name,
-                                        cursorColor: Colors.green.shade300,
-                                        decoration: InputDecoration(
-                                            focusedBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                EdgeInsets.all(16.0),
-                                            fillColor: Colors.white,
-                                            hintText: 'Sexo',
-                                            hintStyle: TextStyle(
-                                                color: Colors.black26),
-                                            prefixIcon: Image(
-                                              image: AssetImage(
-                                                  'assets/icons/iconsSexo.png'),
-                                            )),
-                                      )
-                                      //_inputSexo(),
-                                      ),
-                                ),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey.shade200,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                         /* border: Border.all(
-                                              color: Colors.green, width: 2)*/
-                                              ),
-                                      child: TextFormField(
-                                        //controller: _edadR,
-                                        keyboardType: TextInputType.number,
-                                        cursorColor: Colors.green.shade300,
-                                        decoration: InputDecoration(
-                                            focusedBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                EdgeInsets.all(16.0),
-                                            fillColor: Colors.white,
-                                            hintText: 'Edad',
-                                            hintStyle: TextStyle(
-                                                color: Colors.black26),
-                                            prefixIcon: Image(
-                                                image: AssetImage(
-                                                    'assets/icons/iconsAge.png'))
-                                            //hintStyle: TextStyle(color: Colors.grey.shade300),
-                                            ),
-                                      )),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            //Telefono
-                            Row(
-                              children: [
-                                Text(
-                                  'Telefono',
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                /*  border:
-                                      Border.all(color: Colors.green, width: 2),*/
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10.0))),
-                              child: TextFormField(
-                                //controller: _nombreF,
-                                keyboardType: TextInputType.number,
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                cursorColor: Colors.green.shade300,
-                                decoration: InputDecoration(
-                                    focusedBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.all(16.0),
-                                    fillColor: Colors.white,
-                                    hintText: 'Telefono',
-                                    hintStyle: TextStyle(color: Colors.black26),
-                                    prefixIcon: Image(
-                                      image: AssetImage(
-                                          'assets/icons/iconsWhatsapp.png'),
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            //boton guardar
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      primary: Color(0xFFAED581),
-                                      onPrimary: Colors.black,
-                                    //  side: BorderSide(color: Color(0xFF7DA453), width: 2),
-                                      elevation: 5.0,
-                                    ),
-                                    onPressed: () {},
-                                    child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 30.0, vertical: 12.0),
-                                        child: Text(
-                                          'Guardar',
-                                          style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.bold),
-                                        )))
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ))
-                  ],
-                )
-              ],
-            ),
-          )),
+                children: [ImagenLogo(), FormRegister()])));
+  }
+  Widget ImagenLogo() {
+    return Image.asset(
+      'assets/img/Logo.png',
+      width: 250,
+      height: 250,
     );
+  }
+
+  Widget FormRegister() {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(25, 5, 25, 5),
+        child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 8,
+            shadowColor: Colors.black,
+            child: Form(
+                key: _formkey,
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Registro",
+                          style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      Text("Digite datos para registrarse",
+                          style: TextStyle(color: Colors.grey.shade500)),
+                      SizedBox(height: 10),
+                      TextFieldWidget(
+                          _email,
+                          Icon(Icons.email, color: Colors.green),
+                          "Digite correo electronico",
+                          false,
+                          "Error, compruebe correo.",
+                          TextInputType.emailAddress),
+                      SizedBox(height: 20),
+                      TextFieldWidget(
+                          _passwordL,
+                          Icon(
+                            Icons.password,
+                            color: Colors.green,
+                          ),
+                          "Digite contraseña",
+                          true,
+                          "Error, digite una contraseña",
+                          TextInputType.text),
+                      SizedBox(height: 20),
+                      TextFieldWidget(
+                          _passwordConfirmada,
+                          Icon(
+                            Icons.password,
+                            color: Colors.green,
+                          ),
+                          "Confirmar contraseña",
+                          true,
+                          "Error, digite una contraseña",
+                          TextInputType.text),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        style: Constants.buttonPrimary,
+                        onPressed: () {
+                          if (_formkey.currentState!.validate()) {
+                            if (_passwordL.text == _passwordConfirmada.text) {
+                              signUp(_email.text, _passwordL.text);
+                            }
+
+                          }
+                        },
+                        child: const Text('Registrar'),
+                      ),
+                    ],
+                  ),
+                ))));
+  }
+
+  Widget TextFieldWidget(
+      TextEditingController controlador,
+      icon,
+      String textGuide,
+      bool estate,
+      String msgError,
+      TextInputType textInputType) {
+    return TextFormField(
+        controller: controlador,
+        keyboardType: textInputType,
+        obscureText: estate,
+        decoration: InputDecoration(
+          prefixIcon: icon,
+          fillColor: Colors.grey.shade300,
+          filled: true,
+          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              borderSide: BorderSide(color: Colors.green)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          hintText: textGuide,
+          labelStyle: TextStyle(color: Colors.green),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return msgError;
+          }
+        },
+        cursorColor: Colors.green);
+  }
+
+  void signUp(String email, String password) async {
+    CircularProgressIndicator();
+    if (_formkey.currentState!.validate()) {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore()})
+          .catchError((e) {});
+    }
+  }
+
+  Future<void> postDetailsToFirestore() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    var user = _auth.currentUser;
+    final ref = firebaseFirestore.doc(
+        'propietario/${user!.uid}');
+
+    await ref.set(({'rool': 'Propietario', 'correo' : user.email, 'uid' : user.uid}), SetOptions(merge: false));
+
+    //print("Datos del usuario: " + user.toString());
+    //CollectionReference ref = FirebaseFirestore.instance.collection('propietario');
+    //ref.doc(user!.uid).set({'rool': 'Propietario'});
   }
 }

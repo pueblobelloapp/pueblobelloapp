@@ -28,6 +28,7 @@ dependencies:
   geolocator_web: ^2.1.6
   font_awesome_flutter: ^10.3.0
   google_maps_flutter: ^2.2.3
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

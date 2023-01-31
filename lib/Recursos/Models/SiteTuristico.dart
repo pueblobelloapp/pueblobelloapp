@@ -8,6 +8,7 @@ class SitioTuristico extends Equatable{
   final String descripcion;
   final String ubicacion;
   final String? foto;
+  final String? userId;
 
   const SitioTuristico({
     required this.id,
@@ -16,12 +17,13 @@ class SitioTuristico extends Equatable{
     required this.tipoTurismo,
     required this.descripcion,
     required this.ubicacion,
+    required this.userId,
     this.foto
 });
 
   @override
   // TODO: implement props
-  List<Object?> get props => [id, nombre, capacidad, tipoTurismo, descripcion, ubicacion, foto];
+  List<Object?> get props => [id, nombre, capacidad, tipoTurismo, descripcion, ubicacion, userId, foto];
 
 
 
@@ -33,6 +35,7 @@ class SitioTuristico extends Equatable{
       'tipoTurismo': tipoTurismo,
       'descripcion': descripcion,
       'ubicacion': ubicacion,
+      'userId' : userId,
       'foto' : foto
     };
   }
@@ -44,6 +47,7 @@ class SitioTuristico extends Equatable{
         tipoTurismo = data['tipoTurismo'] as String,
         descripcion = data['descripcion'] as String,
         ubicacion = data['ubicacion'] as String,
+        userId = data['userId'] as String?,
         foto = data['foto'] as String?;
 
 
@@ -55,14 +59,17 @@ class SitioTuristico extends Equatable{
      String? tipoTurismo,
      String? descripcion,
      String? ubicacion,
+     String? userId,
      String? foto,
 }) {
-    return SitioTuristico(id : id ?? this.id,
+    return SitioTuristico(
+        id : id ?? this.id,
         nombre: nombre ?? this.nombre,
         capacidad : capacidad ?? this.capacidad,
         tipoTurismo : tipoTurismo ?? this.tipoTurismo,
         descripcion : descripcion ?? this.descripcion,
         ubicacion : ubicacion ?? this.ubicacion,
+        userId : userId ?? this.userId,
         foto : foto ?? this.foto);
   }
 }
