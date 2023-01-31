@@ -109,7 +109,8 @@ class _LoginFState extends State<LoginF> {
                                 },
                                 child: AutoSizeText(
                                   "Recuperar contraseña",
-                                  style: TextStyle(fontSize: 30),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.green),
                                   maxLines: 2,
                                 ))
                           ],
