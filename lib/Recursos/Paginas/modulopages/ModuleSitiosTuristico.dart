@@ -39,13 +39,14 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
     final editController = Get.put(EditSitesController(siteToEdit));
 
     final GextControllerTurismo _controllerTurismo =
-    Get.put(GextControllerTurismo());
+        Get.put(GextControllerTurismo());
     final editControlTurismo = Get.find<GextControllerTurismo>();
     _uidUser = editControlTurismo.uidUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.green.shade400,
         leading: IconButton(
             onPressed: () {
@@ -64,16 +65,13 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                 color: Colors.black,
               )),
         ],
-        title: Align(
-          child: Text(
-            'Módulo sitios turístico',
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+        title: Text(
+          'Módulo sitios turístico',
+          style: TextStyle(
+            fontSize: 20.0,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
-          alignment: Alignment.center,
         ),
       ),
       body: SingleChildScrollView(
@@ -139,7 +137,6 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                 TextButton.icon(
                     onPressed: () {
                       _getCurrentLocation();
-
                     },
                     icon: Icon(
                       Icons.location_on,
@@ -179,8 +176,7 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                               _tipoTurismo.text,
                               _descripcionST.text,
                               _position.toString(),
-                              _uidUser
-                          );
+                              _uidUser);
                         }
                       },
                       style: TextButton.styleFrom(
