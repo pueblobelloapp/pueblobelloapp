@@ -1,18 +1,19 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ListaPropietario.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/ListaSitiosTuristicos.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleSitiosTuristico.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'ModulePropietario.dart';
 
-class NavegacionPropietario extends StatelessWidget {
-  NavegacionPropietario({Key? key}) : super(key: key);
-
-  final GextControllerTurismo controllerTurismo =
-      Get.put(GextControllerTurismo());
+class NavegacionSitioTuristico extends StatelessWidget {
+  const NavegacionSitioTuristico({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    final GextControllerTurismo controllerTurismo =
+    Get.put(GextControllerTurismo());
+
     return GetBuilder<GextControllerTurismo>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
@@ -25,8 +26,8 @@ class NavegacionPropietario extends StatelessWidget {
           child: IndexedStack(
             index: controller.countTapItem,
             children: [
-              ListaPropietario(),
-              ModulePropietario()
+              ListaSitiosTuristicos(),
+              ModuleSitiosTuristico()
             ],
           ),
         ),

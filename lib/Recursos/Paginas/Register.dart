@@ -167,8 +167,14 @@ class _RegistrarState extends State<Registrar> {
         ({'rool': 'Propietario', 'correo': user.email, 'uid': user.uid}),
         SetOptions(merge: false));
 
-    //print("Datos del usuario: " + user.toString());
-    //CollectionReference ref = FirebaseFirestore.instance.collection('propietario');
-    //ref.doc(user!.uid).set({'rool': 'Propietario'});
+    Get.showSnackbar(const GetSnackBar(
+      title: 'Validacion de Usuarios',
+      message:
+      'Registro exitoso.',
+      icon: Icon(Icons.person_add),
+      duration: Duration(seconds: 4),
+      backgroundColor: Colors.green,
+    ));
+
   }
 }
