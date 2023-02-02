@@ -1,6 +1,7 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
+import 'package:app_turismo/Recursos/Paginas/RecuperarContrase%C3%B1a.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,7 @@ class _LoginFState extends State<LoginF> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  //Move to page Recovery password
+                                  Get.to(() => RecuperarContrasena());
                                 },
                                 child: AutoSizeText(
                                   "Recuperar contraseña",
