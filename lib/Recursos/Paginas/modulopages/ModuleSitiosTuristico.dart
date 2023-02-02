@@ -45,37 +45,6 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.green.shade400,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MenuModuls()));
-            },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
-            )),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.output_sharp,
-                color: Colors.black,
-              )),
-        ],
-        title: Align(
-          child: Text(
-            'Módulo sitios turístico',
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          alignment: Alignment.center,
-        ),
-      ),
       body: SingleChildScrollView(
         reverse: true,
         child: Formulario(),
@@ -87,36 +56,40 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
     final listTypeTravel = ["Cultural", "Rural", "Ecoturismo", "Bienestar"];
 
     return Container(
-        padding: EdgeInsets.all(40.0),
+        padding: EdgeInsets.all(20.0),
         child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text("Nombre", textDirection: TextDirection.rtl),
+                Text(
+                  "Nombre",
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 textForm(
                     _nombreST, "Nombre sitio turistico", 1, TextInputType.name),
                 SizedBox(height: 15),
-                Text("Tipo de turismo"),
+                Text("Tipo de turismo",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 ListTravel(_tipoTurismo, listTypeTravel),
                 SizedBox(height: 15),
-                Text("Capacidad personas"),
+                Text("Capacidad personas",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 //textForm(_capacidadST, "tEXTO", 1)
                 textForm(
                     _capacidadST, "Cantidad personas", 1, TextInputType.number),
                 SizedBox(height: 15),
-                Text(
-                  "Descripcion",
-                  textDirection: TextDirection.rtl,
-                ),
+                Text("Descripcion",
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 textForm(_descripcionST, "Descripcion del sitio", 5,
                     TextInputType.name),
                 SizedBox(height: 15),
-                Text(
-                  "Carga de fotografias",
-                  textDirection: TextDirection.rtl,
-                ),
+                Text("Carga de fotografias",
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 TextButton.icon(
                     onPressed: () async {
                       final editController = Get.find<EditSitesController>();
@@ -134,7 +107,8 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                       "Seleccionar",
                       style: TextStyle(color: Colors.green),
                     )),
-                Text("Ubicacion geografica"),
+                Text("Ubicacion geografica",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_ubicacionST),
                 TextButton.icon(
                     onPressed: () {
@@ -197,52 +171,59 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
   Widget textForm(TextEditingController _controller, String HintText,
       int LinesMax, TextInputType textInputType) {
-    return TextFormField(
-        controller: _controller,
-        maxLines: LinesMax,
-        keyboardType: textInputType,
-        textCapitalization: TextCapitalization.sentences,
-        cursorColor: Colors.black,
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.green.shade300,
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      child: TextFormField(
+          controller: _controller,
+          maxLines: LinesMax,
+          keyboardType: textInputType,
+          textCapitalization: TextCapitalization.sentences,
+          cursorColor: Colors.black,
+          decoration: InputDecoration(
+            focusedBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.all(16.0),
+            hintText: HintText,
+            hintStyle: TextStyle(color: Colors.white),
+          )),
+    );
+  }
+
+  Widget ListTravel(
+      TextEditingController _tipoTurismo, List<String> listTypeCulture) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.green.shade300,
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           focusedBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
           border: InputBorder.none,
           contentPadding: EdgeInsets.all(16.0),
-          filled: true,
-          fillColor: Colors.green.shade300,
-          hintText: HintText,
-          hintStyle: TextStyle(color: Colors.white),
-        ));
-  }
-
-  Widget ListTravel(
-      TextEditingController _tipoTurismo, List<String> listTypeCulture) {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.green.shade300,
-        focusedBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        contentPadding: EdgeInsets.all(16.0),
-      ),
-      isExpanded: true,
-      dropdownColor: Colors.green.shade300,
-      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
-      items: listTypeCulture.map((listTypeCulture) {
-        return DropdownMenuItem(
-            value: listTypeCulture,
-            child: Text(
-              'Turismo $listTypeCulture',
-              style: TextStyle(color: Colors.white),
-            ));
-      }).toList(),
-      onChanged: ((value) => setState(() {
-            _tipoTurismo.text = "Turismo";
-            _tipoTurismo.text += value!;
-          })),
-      hint: Text(
-        'Seleccione un tipo de turismo',
-        style: TextStyle(color: Colors.white),
+        ),
+        isExpanded: true,
+        dropdownColor: Colors.green.shade300,
+        icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
+        items: listTypeCulture.map((listTypeCulture) {
+          return DropdownMenuItem(
+              value: listTypeCulture,
+              child: Text(
+                'Turismo $listTypeCulture',
+                style: TextStyle(color: Colors.white),
+              ));
+        }).toList(),
+        onChanged: ((value) => setState(() {
+              _tipoTurismo.text = "Turismo";
+              _tipoTurismo.text += value!;
+            })),
+        hint: Text(
+          'Seleccione un tipo de turismo',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

@@ -24,21 +24,22 @@ class MenuModuls extends StatelessWidget {
       body: controladorLogin.userRole == "true" ? _listPropietario(context) : _listAdmin(context)
     );
   }
-  Widget _listPropietario( BuildContext context ) {
+
+  Widget _listPropietario(BuildContext context) {
     return ListView(
         padding: const EdgeInsets.all(8),
-    children: ListTile.divideTiles(context: context, tiles: [
-    _title(
-    "Mis sitios turisticos",
-    FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green),
-    "ModuleSitios",
-    ""),
-    _title(
-    "Mi perfil",
-    FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-    "MenuPropietario",
-    "")
-    ]).toList());
+        children: ListTile.divideTiles(context: context, tiles: [
+          _title(
+              "Mis sitios turisticos",
+              FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green),
+              "MenuSitioTuristico",
+              ""),
+          _title(
+              "Mi perfil",
+              FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
+              "Propietario",
+              "")
+        ]).toList());
   }
 
   Widget _listAdmin( BuildContext context ) {

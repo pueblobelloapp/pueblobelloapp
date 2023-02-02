@@ -4,6 +4,7 @@ import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -68,7 +69,10 @@ class _LoginFState extends State<LoginF> {
                       SizedBox(height: 10),
                       TextFieldWidget(
                           _userL,
-                          Icon(Icons.email, color: Colors.green),
+                          FaIcon(
+                            FontAwesomeIcons.envelope,
+                            color: Colors.green,
+                          ),
                           "Digite correo electronico",
                           false,
                           "Error, compruebe correo.",
@@ -76,8 +80,8 @@ class _LoginFState extends State<LoginF> {
                       SizedBox(height: 20),
                       TextFieldWidget(
                           _passwordL,
-                          Icon(
-                            Icons.password,
+                          FaIcon(
+                            FontAwesomeIcons.lock,
                             color: Colors.green,
                           ),
                           "Digite contraseña",
@@ -103,7 +107,8 @@ class _LoginFState extends State<LoginF> {
                                 },
                                 child: AutoSizeText(
                                   "Recuperar contraseña",
-                                  style: TextStyle(fontSize: 30),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.green),
                                   maxLines: 2,
                                 ))
                           ],
@@ -156,7 +161,7 @@ class _LoginFState extends State<LoginF> {
 
   Widget TextFieldWidget(
       TextEditingController controlador,
-      icon,
+      FaIcon icono,
       String textGuide,
       bool estate,
       String msgError,
@@ -166,7 +171,10 @@ class _LoginFState extends State<LoginF> {
         keyboardType: textInputType,
         obscureText: estate,
         decoration: InputDecoration(
-          prefixIcon: icon,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: icono,
+          ),
           fillColor: Colors.grey.shade300,
           filled: true,
           enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),

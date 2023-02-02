@@ -158,10 +158,11 @@ class _RegistrarState extends State<Registrar> {
     final ref = firebaseFirestore.doc(
         'propietario/${user!.uid}');
 
-    await ref.set(({'rool': 'Propietario', 'correo' : user.email, 'uid' : user.uid}), SetOptions(merge: false));
 
-    //print("Datos del usuario: " + user.toString());
-    //CollectionReference ref = FirebaseFirestore.instance.collection('propietario');
-    //ref.doc(user!.uid).set({'rool': 'Propietario'});
+    await ref.set(({'rool': 'Propietario', 'correo' : user.email, 'uid' : user.uid}), SetOptions(merge: false));
+    await ref.set(
+        ({'rool': 'Propietario', 'correo': user.email, 'uid': user.uid}),
+        SetOptions(merge: false));
+
   }
 }
