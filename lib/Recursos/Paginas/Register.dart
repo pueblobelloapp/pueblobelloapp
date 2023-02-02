@@ -1,7 +1,8 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +14,6 @@ class Registrar extends StatefulWidget {
 }
 
 class _RegistrarState extends State<Registrar> {
-
   TextEditingController _email = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
   TextEditingController _passwordConfirmada = TextEditingController();
@@ -26,9 +26,9 @@ class _RegistrarState extends State<Registrar> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child: Column(
-                children: [ImagenLogo(), FormRegister()])));
+            child: Column(children: [ImagenLogo(), FormRegister()])));
   }
+
   Widget ImagenLogo() {
     return Image.asset(
       'assets/img/Logo.png',
@@ -99,7 +99,6 @@ class _RegistrarState extends State<Registrar> {
                             if (_passwordL.text == _passwordConfirmada.text) {
                               signUp(_email.text, _passwordL.text);
                             }
-
                           }
                         },
                         child: const Text('Registrar'),
@@ -155,14 +154,13 @@ class _RegistrarState extends State<Registrar> {
   Future<void> postDetailsToFirestore() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
-    final ref = firebaseFirestore.doc(
-        'propietario/${user!.uid}');
+    final ref = firebaseFirestore.doc('propietario/${user!.uid}');
 
-
-    await ref.set(({'rool': 'Propietario', 'correo' : user.email, 'uid' : user.uid}), SetOptions(merge: false));
     await ref.set(
         ({'rool': 'Propietario', 'correo': user.email, 'uid': user.uid}),
         SetOptions(merge: false));
-
+    await ref.set(
+        ({'rool': 'Propietario', 'correo': user.email, 'uid': user.uid}),
+        SetOptions(merge: false));
   }
 }
