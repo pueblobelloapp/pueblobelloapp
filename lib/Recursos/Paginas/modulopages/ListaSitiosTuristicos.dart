@@ -9,49 +9,51 @@ class ListaSitiosTuristicos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GextControllerTurismo controllerTurismo =
-    Get.put(GextControllerTurismo());
 
-    final Stream<QuerySnapshot> _propietarioStreams = FirebaseFirestore.instance
-        .collection('sites')
-        .where("userId", isEqualTo: controllerTurismo.uidUser)
-        .snapshots();
+
+    //final editController = Get.find<EditSitesController>();
+    final EditSitesController editController = Get.find();
 
     return Container(
       color: Colors.grey.shade100,
       child: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
-            stream: _propietarioStreams,
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return const Center(
-                    child: Text('Lo sentimos se ha producido un error.'));
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text('Cargando datos.'));
-              }
+        stream: editController.getSitesUser(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            print("Lo sentimos se ha producido un error.");
+            return const Center(
+                child: Text('Lo sentimos se ha producido un error.'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            print("Conexion con los datos");
+            return const Center(child: Text('Cargando datos.'));
+          }
 
-              if (snapshot.data!.docs.isEmpty) {
-                return const Center(child: Text('Registra sitios turisticos.'));
-              }
+          if (snapshot.data!.docs.isEmpty) {
+            print("Registra datos");
+            return const Center(child: Text('Registra sitios turisticos.'));
+          }
 
-              return ListView(
-                children: snapshot.data!.docs
-                    .map((DocumentSnapshot document) {
+          print(snapshot.data!.toString());
+
+          return ListView(
+            children: snapshot.data!.docs
+                .map((DocumentSnapshot document) {
                   Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
-
-                  return listaSitios(data);
+                      document.data()! as Map<String, dynamic>;
+                    return listaSitios(data);
                 })
-                    .toList()
-                    .cast(),
-              );
-            },
-          )),
+                .toList()
+                .cast(),
+          );
+        },
+      )),
     );
   }
 
   Widget listaSitios(Map<String, dynamic> data) {
+    print("Los datos:" + data.toString() );
     return ListTile(
       leading: Image.network(data['foto']),
       title: Text(data['nombre']),
@@ -59,9 +61,9 @@ class ListaSitiosTuristicos extends StatelessWidget {
       trailing: Icon(Icons.arrow_forward_ios_outlined),
       onTap: () {
         final GextControllerTurismo controllerTurismo =
-        Get.put(GextControllerTurismo());
+            Get.put(GextControllerTurismo());
 
-        final editController = Get.find<EditSitesController>();
+        /* final editController = Get.find<EditSitesController>();
 
         editController.editSite(
             data['id'],
@@ -70,7 +72,7 @@ class ListaSitiosTuristicos extends StatelessWidget {
             data['tipoTurismo'],
             data['descripcion'],
             data['ubicacion'],
-            data['userId']);
+            data['userId']);*/
 
         controllerTurismo.updateTapItem(1);
       },

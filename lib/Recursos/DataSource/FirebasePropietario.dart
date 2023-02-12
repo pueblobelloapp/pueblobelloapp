@@ -43,7 +43,7 @@ class PropietarioDataBase {
     await ref.set(propietario.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  Stream<Iterable<Propietario>> getAllSites() {
+  Stream<Iterable<Propietario>> getAllPropietario() {
     return firestore
         .collection('propietario/')
         .snapshots()

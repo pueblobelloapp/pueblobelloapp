@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:app_turismo/Recursos/Controller/SitesController.dart';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
 import 'package:app_turismo/main.dart';
@@ -30,7 +29,6 @@ class PropietarioController extends GetxController {
       String genero,
       String correo,
       String contacto,
-      String clave
       ) async {
     isLoading.value = true;
 
@@ -39,12 +37,10 @@ class PropietarioController extends GetxController {
     _toEdit = Propietario(
         id: uid,
         nombre: nombre,
-        sitioturistico: sitioturistico,
         edad: edad,
         genero: genero,
         correo: correo,
         contacto : contacto,
-        clave: clave,
         foto : _toEdit?.foto);
 
     await _myPropietarioRepository.saveMyPropietario(_toEdit!, pickedImage.value);
@@ -62,24 +58,20 @@ class PropietarioController extends GetxController {
   Future<void> editSite(
       String uid,
       String nombre,
-      String sitioturistico,
       String edad,
       String genero,
       String correo,
       String contacto,
-      String clave
       ) async {
     isLoading.value = true;
 
     _toEdit = Propietario(
         id: uid,
         nombre: nombre,
-        sitioturistico: sitioturistico,
         edad: edad,
         genero: genero,
         correo: correo,
         contacto : contacto,
-        clave : clave,
         foto : _toEdit?.foto);
 
     await _myPropietarioRepository.saveMyPropietario(_toEdit!, pickedImage.value);

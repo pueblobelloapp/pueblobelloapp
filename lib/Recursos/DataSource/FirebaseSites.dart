@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
+import 'package:get/get.dart';
+
 
 
 class SiteTuristicoDataSource {
@@ -13,6 +16,10 @@ class SiteTuristicoDataSource {
     if (myUsers == null) throw Exception('Not authenticated exception');
     return myUsers;
   }
+
+  final GextControllerTurismo controllerTurismo =
+  Get.put(GextControllerTurismo());
+
 
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
   FirebaseStorage get storage => FirebaseStorage.instance;
@@ -50,6 +57,14 @@ class SiteTuristicoDataSource {
         .collection('sites/')
         .snapshots()
         .map((it) => it.docs.map((e) => SitioTuristico.fromFirebaseMap(e.data())));
+  }
+
+  Stream<QuerySnapshot> getSitesUid() {
+    print("Uid: " + controllerTurismo.uidUser);
+    return firestore
+        .collection('sites')
+        .where("userId", isEqualTo: controllerTurismo.uidUser)
+        .snapshots();
   }
 
 }

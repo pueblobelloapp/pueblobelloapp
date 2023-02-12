@@ -48,17 +48,17 @@ class _ModulePropietarioState extends State<ModulePropietario> {
   }
 
   Widget Formulario() {
-    final editController = Get.put(PropietarioController((propietarioToEdit)));
-    final editControlPropietario = Get.find<GextPropietarioController>();
+    /*final editController = Get.put(PropietarioController((propietarioToEdit)));
+    final editControlPropietario = Get.find<GextPropietarioController>();*/
 
-    _uiPropietario = controllerPropietario.id ?? '';
-    _nombrePropietario.text = controllerPropietario.nombre ?? '';
+    _uiPropietario = controllerPropietario.id;
+    _nombrePropietario.text = controllerPropietario.nombre;
     _sitioTuristicoPropietario.text =
-        controllerPropietario.sitioTuristico ?? '';
-    _correoPropietario.text = controllerPropietario.correo ?? '';
-    _edadPropietario.text = controllerPropietario.edad ?? '';
-    _contactoPropietario.text = controllerPropietario.contacto ?? '';
-    _passwordPropietario.text = controllerPropietario.clave ?? '';
+        controllerPropietario.sitioTuristico;
+    _correoPropietario.text = controllerPropietario.correo;
+    _edadPropietario.text = controllerPropietario.edad;
+    _contactoPropietario.text = controllerPropietario.contacto;
+
     XFile? image = null;
 
     return Form(
@@ -72,14 +72,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                 _nombrePropietario,
                 FaIcon(FontAwesomeIcons.user, color: Colors.green),
                 "Nombre del propietario",
-                "Error, digite nombre del propietario.",
-                TextInputType.text),
-            SizedBox(height: 10),
-            Text("Sitio turistico"),
-            TextFieldWidget(
-                _sitioTuristicoPropietario,
-                FaIcon(FontAwesomeIcons.houseCrack, color: Colors.green),
-                "Nombre del sitio turistico.",
                 "Error, digite nombre del propietario.",
                 TextInputType.text),
             SizedBox(height: 10),
@@ -186,7 +178,7 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                         editController.setImage(File(image!.path));
                       }
                     },
-                    label: const Text('Cargar\nImagenes',
+                    label: const Text('Subir Imagenes',
                         textAlign: TextAlign.center)),
                 ElevatedButton.icon(
                     icon: FaIcon(FontAwesomeIcons.floppyDisk),
@@ -202,8 +194,7 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                               _edadPropietario.text,
                               _tipoGenero.toString(),
                               _correoPropietario.text,
-                              _contactoPropietario.text,
-                              _passwordPropietario.text);
+                              _contactoPropietario.text);
                         } else {
                           //Actualizamos
                           editController.editSite(
@@ -213,21 +204,9 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                               _edadPropietario.text,
                               _tipoGenero.toString(),
                               _correoPropietario.text,
-                              _contactoPropietario.text,
-                              _passwordPropietario.text
                           );
                         }
 
-                        _uiPropietario = "";
-                        _nombrePropietario.text = "";
-                        _sitioTuristicoPropietario.text = "";
-                        _correoPropietario.text = "";
-                        _edadPropietario.text = "";
-                        _contactoPropietario.text = "";
-                        _passwordPropietario.text = "";
-
-                        editControlPropietario.updatePropietario(
-                            "", "", "", "", "", "", "", "", "", "Agregar");
                         setState(() {});
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -238,16 +217,12 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                         print("Datos Incorrectos");
                       }
                     },
-                    label: Text(controllerPropietario.buttonText,
+                    label: Text("Actualizar",
                         textAlign: TextAlign.center))
               ],
             ),
           ],
         ));
-  }
-
-  void updateButton() {
-    controllerPropietario.updateButtonText("Agregar");
   }
 
   Widget TextFieldWidget(TextEditingController controlador, FaIcon icono,
@@ -276,4 +251,13 @@ class _ModulePropietarioState extends State<ModulePropietario> {
         },
         cursorColor: Colors.green);
   }
+
+  void formClean() {
+    _nombrePropietario.clear();
+    _contactoPropietario.clear();
+    _correoPropietario.clear();
+    _edadPropietario.clear();
+    _sitioTuristicoPropietario.clear();
+  }
+
 }

@@ -6,10 +6,10 @@ class GextPropietarioController extends GetxController {
   String _sitioTuristico = "";
   String _edad = "";
   String _correo = "";
-  String _clave = "";
+  String _clave = "La clave";
   String _foto = "";
   String _contacto = "";
-  String _genero = "Masculino";
+  String _genero = "";
   String _buttonText = "";
   String _dropdownValue = "";
 

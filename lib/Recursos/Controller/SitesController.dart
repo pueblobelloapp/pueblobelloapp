@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -89,5 +90,9 @@ class EditSitesController extends GetxController {
     await _mySitesRepository.saveMySite(_toEdit!, pickedImage.value);
     isLoading.value = false;
 
+  }
+
+  Stream<QuerySnapshot> getSitesUser() {
+    return _mySitesRepository.getSitesUid();
   }
 }

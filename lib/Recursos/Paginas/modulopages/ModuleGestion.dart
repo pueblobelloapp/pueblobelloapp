@@ -243,4 +243,14 @@ class _ModuleGestionState extends State<ModuleGestion> {
         },
         cursorColor: Colors.green);
   }
+
+  void cleanForm() {
+    _descripcionInformacion.clear();
+    _nombreInformacion.clear();
+    _posicionInformacion.clear();
+    setState(() {
+      _ubicacionC = "";
+    });
+
+  }
 }

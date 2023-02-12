@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../main.dart';
 import '../../DataSource/FirebaseSites.dart';
 
@@ -36,6 +37,12 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   Future<void> editMySite(SitioTuristico mySite, File? image) {
     // TODO: implement editMySite
     throw UnimplementedError();
+  }
+
+  @override
+  Stream<QuerySnapshot> getSitesUid() {
+    // TODO: implement getSitesUid
+    return _siteTuristicoDataSource.getSitesUid();
   }
 
 }

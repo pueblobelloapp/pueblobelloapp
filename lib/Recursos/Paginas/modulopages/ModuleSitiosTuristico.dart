@@ -35,11 +35,13 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
   @override
   Widget build(BuildContext context) {
     ControllerLogin controllerLogin = Get.find();
+
     final siteToEdit = Get.arguments as SitioTuristico?;
-    final editController = Get.put(EditSitesController(siteToEdit));
+    final editControllerSites = Get.put(EditSitesController(siteToEdit));
 
     final GextControllerTurismo _controllerTurismo =
     Get.put(GextControllerTurismo());
+
     final editControlTurismo = Get.find<GextControllerTurismo>();
     _uidUser = editControlTurismo.uidUser;
 
@@ -54,6 +56,7 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
   Widget Formulario() {
     final listTypeTravel = ["Cultural", "Rural", "Ecoturismo", "Bienestar"];
+    PickedFile? _pickedFile;
 
     return Container(
         padding: EdgeInsets.all(20.0),
@@ -93,10 +96,10 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                 TextButton.icon(
                     onPressed: () async {
                       final editController = Get.find<EditSitesController>();
-                      PickedFile? _pickedFile =
+                      _pickedFile =
                           await _picker.getImage(source: ImageSource.gallery);
                       if (_pickedFile != null) {
-                        editController.setImage(File(_pickedFile.path));
+                        editController.setImage(File(_pickedFile!.path));
                       }
                     },
                     icon: Icon(
@@ -131,16 +134,12 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                       onPressed: () {
                         final editController = Get.find<EditSitesController>();
 
-                        if (_nombreST.text.isEmpty ||
-                            _capacidadST.text.isEmpty ||
-                            _tipoTurismo.text.isEmpty ||
-                            _tipoTurismo.text.isEmpty ||
-                            _descripcionST.text.isEmpty ||
-                            _ubicacionST.isEmpty) {
-                          print("Error campos vacios");
+                        if (_formKey.currentState!.validate() &&
+                            _ubicacionST.isEmpty
+                            ) {
                           Get.showSnackbar(const GetSnackBar(
                             title: 'Validacion de datos',
-                            message: 'Error datos faltantes',
+                            message: 'Complete todos los campos.',
                             icon: Icon(Icons.app_registration),
                             duration: Duration(seconds: 4),
                             backgroundColor: Colors.red,
@@ -155,6 +154,7 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                               _position.toString(),
                               _uidUser
                           );
+                          cleanForm();
                         }
                       },
                       style: TextButton.styleFrom(
@@ -250,5 +250,14 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
     }
 
     return await Geolocator.getCurrentPosition();
+  }
+
+  void cleanForm() {
+    _nombreST.clear();
+    _capacidadST.clear();
+    _descripcionST.clear();
+    setState(() {
+      _ubicacionST = "";
+    });
   }
 }

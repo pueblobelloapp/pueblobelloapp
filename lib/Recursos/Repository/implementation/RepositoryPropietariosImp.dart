@@ -19,7 +19,7 @@ class MyPropietarioImp extends MyPropietarioRepository {
   @override
   Stream<Iterable<Propietario>> getMyPropietario() {
     // TODO: implement getMySite
-    return _propietarioDataBase.getAllSites();
+    return _propietarioDataBase.getAllPropietario();
   }
 
   @override

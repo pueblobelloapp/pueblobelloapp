@@ -1,4 +1,6 @@
+import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
+import 'package:app_turismo/Recursos/Controller/SitesController.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
@@ -27,6 +29,9 @@ void main() async {
 
   await injectDependencies();
   Get.put(ControllerLogin());
+  Get.put(EditSitesController(null));
+//  Get.find<GextControllerTurismo>();
+  Get.put(GextControllerTurismo());
 
   runApp(const MyApp());
 }
