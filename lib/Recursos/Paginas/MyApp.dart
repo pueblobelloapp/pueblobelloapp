@@ -9,6 +9,7 @@ import 'package:app_turismo/Recursos/Paginas/modulopages/ModulePropietario.dart'
 import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleSitiosTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/NavegacionSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/PerfilPropietario.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         'MenuPropietario' : (BuildContext context) => NavegacionPropietario(),
         'MenuSitioTuristico' : (BuildContext context) => NavegacionSitioTuristico(),
         'Propietario' : (BuildContext context) => PerfilPropietario(),
+        'RecoveryPass' : (BuildContext context) => RecuperarPassword()
       },
     );
   }

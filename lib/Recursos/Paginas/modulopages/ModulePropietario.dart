@@ -188,17 +188,10 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                       if (_formKey.currentState!.validate()) {
 
                         if (_uiPropietario.isEmpty) {
-                          editController.savePropietario(
-                              _nombrePropietario.text,
-                              _sitioTuristicoPropietario.text,
-                              _edadPropietario.text,
-                              _tipoGenero.toString(),
-                              _correoPropietario.text,
-                              _contactoPropietario.text);
-                        } else {
                           //Actualizamos
                           editController.editSite(
                             _uiPropietario,
+                              "Propietario",
                               _nombrePropietario.text,
                               _sitioTuristicoPropietario.text,
                               _edadPropietario.text,

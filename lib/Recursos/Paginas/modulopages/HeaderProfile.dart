@@ -4,21 +4,17 @@ import 'package:flutter/material.dart';
 
 class HeaderProfile extends StatefulWidget {
   final double _height;
-  final bool _showIcon;
-  final IconData _icon;
 
-  const HeaderProfile(this._height, this._showIcon, this._icon, {Key? key}) : super(key: key);
+  const HeaderProfile(this._height, {Key? key}) : super(key: key);
 
   @override
-  _HeaderProfileState createState() => _HeaderProfileState(_height, _showIcon, _icon);
+  _HeaderProfileState createState() => _HeaderProfileState(_height);
 }
 
 class _HeaderProfileState extends State<HeaderProfile> {
   double _height;
-  bool _showIcon;
-  IconData _icon;
 
-  _HeaderProfileState(this._height, this._showIcon, this._icon);
+  _HeaderProfileState(this._height);
 
   @override
   Widget build(BuildContext context) {

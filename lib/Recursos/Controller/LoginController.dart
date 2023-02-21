@@ -42,17 +42,34 @@ class ControllerLogin extends GetxController {
       update();
 
     } on FirebaseException catch (e) {
+      print("Inicio de sesion: " + e.code);
       if (e.code == 'user-not-found') {
-        print("user-not-found" + e.code);
-        return Future.error('Usuario no Existe');
+        return Future.error('user-not-found');
       } else if (e.code == 'wrong-password') {
         print("Contraseña incorrecta" + e.code);
-        return Future.error('Contraseña incorrecta');
+        return Future.error('wrong-password');
       }
     }
   }
 
-  Future<void> signOut() async {}
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  Future recuperarPassword(String correo) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: correo);
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      if (e.code == 'user-not-found') {
+        return Future.error('user-not-found');
+      } else if (e.code == "invalid-email") {
+        return Future.error('invalid-email');
+      } else {
+        return Future.error(e.code.toString());
+      }
+    }
+  }
 
   static Future<User?> singUpUsingEmailAndPass({
     required String name,

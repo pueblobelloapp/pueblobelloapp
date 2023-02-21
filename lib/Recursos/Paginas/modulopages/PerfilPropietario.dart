@@ -28,7 +28,10 @@ class PerfilPropietario extends StatelessWidget {
           ),
           actions: [
             Container(
-              margin: EdgeInsets.only( top: 16, right: 16,),
+              margin: EdgeInsets.only(
+                top: 16,
+                right: 16,
+              ),
               child: Stack(
                 children: <Widget>[
                   FaIcon(
@@ -44,8 +47,8 @@ class PerfilPropietario extends StatelessWidget {
         body: SingleChildScrollView(
             child: Stack(children: [
           Container(
-              height: 100,
-              child: HeaderProfile(100, false, Icons.house_rounded)),
+              height: 50,
+              child: HeaderProfile(100)),
           Container(
             alignment: Alignment.center,
             margin: EdgeInsets.fromLTRB(20, 30, 20, 10),
@@ -111,8 +114,7 @@ class PerfilPropietario extends StatelessWidget {
                                       ListTile(
                                           leading: Icon(Icons.person),
                                           title: Text("Genero"),
-                                          subtitle: Text("Masculino")
-                                      ),
+                                          subtitle: Text("Masculino")),
                                       ListTile(
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 4),

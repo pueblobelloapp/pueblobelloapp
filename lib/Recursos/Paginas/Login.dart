@@ -2,6 +2,7 @@ import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart'
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,7 +21,7 @@ class _LoginFState extends State<LoginF> {
   TextEditingController _userL = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
   ControllerLogin controllerLogin = Get.find();
-
+  String mensajeNotification = "Error";
   final GextControllerTurismo _controllerTurismo =
       Get.put(GextControllerTurismo());
 
@@ -30,21 +31,21 @@ class _LoginFState extends State<LoginF> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child: Column(
-                children: [ImagenLogo(), FormLogin(), SocialNetworks()])));
+            child:
+                Column(children: [ImagenLogo(), FormLogin(), OptionSesion()])));
   }
 
   Widget ImagenLogo() {
     return Image.asset(
       'assets/img/Logo.png',
-      width: 300,
-      height: 300,
+      width: 250,
+      height: 250,
     );
   }
 
   Widget FormLogin() {
     return Padding(
-        padding: EdgeInsets.fromLTRB(25, 5, 25, 5),
+        padding: EdgeInsets.fromLTRB(25, 0, 25, 5),
         child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -54,7 +55,7 @@ class _LoginFState extends State<LoginF> {
             child: Form(
                 key: _formKey,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+                  margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -91,22 +92,16 @@ class _LoginFState extends State<LoginF> {
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextButton(
-                              onPressed: () {
-                                Get.to(() => Registrar());
-                              },
-                              child: Text("Registrarme",
-                                  style: TextStyle(color: Colors.green)),
-                            ),
-                            TextButton(
                                 onPressed: () {
                                   //Move to page Recovery password
+                                  Get.to(() => RecuperarPassword());
                                 },
                                 child: AutoSizeText(
-                                  "Recuperar contraseña",
+                                  "Olvidaste contraseña?",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.green),
                                   maxLines: 2,
@@ -124,31 +119,28 @@ class _LoginFState extends State<LoginF> {
                                       if (controllerLogin.email !=
                                               "Sin Registro" &&
                                           controllerLogin.userRole != "")
-                                        {
-                                          print("Rol accedido: " +
-                                              controllerLogin.userRole),
-                                          Get.to(() => MenuModuls())
-                                        }
+                                        {Get.to(() => MenuModuls())}
                                       else
                                         {
-                                          Get.showSnackbar(const GetSnackBar(
-                                            title: 'Validacion de Usuarios',
-                                            message:
-                                                'Error desde la validacion',
-                                            icon: Icon(Icons.person_add),
-                                            duration: Duration(seconds: 4),
-                                            backgroundColor: Colors.red,
-                                          ))
+                                          messageInfromation(
+                                              "Validacion de usuario",
+                                              "No se encuentra registrado.",
+                                              Icon(Icons.person),
+                                              Colors.red)
                                         }
                                     })
                                 .catchError((onerror) {
-                              Get.showSnackbar(const GetSnackBar(
-                                title: 'Validacion de Usuarios',
-                                message: 'Error desde la Excepcion',
-                                icon: Icon(Icons.person_add),
-                                duration: Duration(seconds: 4),
-                                backgroundColor: Colors.red,
-                              ));
+                                  print("Recibio: " + onerror);
+                                  if (onerror == "wrong-password") {
+                                    mensajeNotification = "Contraseña incorrecta";
+                                  } else if( onerror == "user-not-found") {
+                                    mensajeNotification = "Email no existe.";
+                                  }
+                              messageInfromation(
+                                  "Ups!",
+                                  mensajeNotification,
+                                  Icon(Icons.error),
+                                  Colors.red);
                             });
                           }
                         },
@@ -195,19 +187,52 @@ class _LoginFState extends State<LoginF> {
         cursorColor: Colors.green);
   }
 
-  Widget SocialNetworks() {
+  Widget OptionSesion() {
     return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "No tienes una cuenta?",
+              style: TextStyle(
+                color: Colors.grey.shade500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            TextButton(
+                onPressed: () {
+                  Get.to(() => Registrar());
+                },
+                child: Text(
+                  "Crear cuenta",
+                  style: TextStyle(color: Colors.green),
+                ))
+          ],
+        ),
+        SizedBox(height: 10),
         Text(
-          "- O - \n\n Inicia sesion con",
+          "Inicia sesion con",
           style: TextStyle(
             color: Colors.grey.shade500,
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 5),
         Image.asset('assets/Icons/google.png', width: 30, height: 30)
       ],
     );
+  }
+
+  void messageInfromation(
+      String titulo, String mensaje, Icon icono, Color color) {
+    Get.showSnackbar(GetSnackBar(
+      title: titulo,
+      message: mensaje,
+      icon: icono,
+      duration: Duration(seconds: 4),
+      backgroundColor: color,
+    ));
   }
 }

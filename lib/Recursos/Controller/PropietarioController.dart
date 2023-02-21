@@ -24,6 +24,7 @@ class PropietarioController extends GetxController {
 
   Future<void> savePropietario(
       String nombre,
+      String rool,
       String sitioturistico,
       String edad,
       String genero,
@@ -36,6 +37,7 @@ class PropietarioController extends GetxController {
     final uid = _myPropietarioRepository.newId();
     _toEdit = Propietario(
         id: uid,
+        rool: rool,
         nombre: nombre,
         edad: edad,
         genero: genero,
@@ -57,6 +59,7 @@ class PropietarioController extends GetxController {
 
   Future<void> editSite(
       String uid,
+      String rool,
       String nombre,
       String edad,
       String genero,
@@ -67,6 +70,7 @@ class PropietarioController extends GetxController {
 
     _toEdit = Propietario(
         id: uid,
+        rool: rool ,
         nombre: nombre,
         edad: edad,
         genero: genero,

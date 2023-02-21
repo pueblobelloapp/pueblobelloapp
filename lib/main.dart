@@ -30,7 +30,6 @@ void main() async {
   await injectDependencies();
   Get.put(ControllerLogin());
   Get.put(EditSitesController(null));
-//  Get.find<GextControllerTurismo>();
   Get.put(GextControllerTurismo());
 
   runApp(const MyApp());
