@@ -15,6 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
+import 'Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'Recursos/DataSource/FirebaseSites.dart';
 import 'Recursos/Paginas/MyApp.dart';
 import 'package:get_it/get_it.dart';
@@ -29,7 +32,7 @@ void main() async {
 
   await injectDependencies();
   Get.put(ControllerLogin());
-  Get.put(EditSitesController(null));
+  Get.put(EditSitesController());
   Get.put(GextControllerTurismo());
 
   runApp(const MyApp());
@@ -40,6 +43,10 @@ Future<void> injectDependencies() async {
   getIt.registerLazySingleton(() => SiteTuristicoDataSource());
   getIt.registerLazySingleton(() => GestionDataBase());
   getIt.registerLazySingleton(() => PropietarioDataBase());
+  getIt.registerLazySingleton(() => GetxSitioTuristico());
+  getIt.registerLazySingleton(() => GetxGestionInformacionController());
+  getIt.registerLazySingleton(() => GextPropietarioController());
+  getIt.registerLazySingleton(() => GextControllerTurismo());
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp());

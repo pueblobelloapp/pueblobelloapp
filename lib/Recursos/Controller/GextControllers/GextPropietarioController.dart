@@ -15,7 +15,6 @@ class GextPropietarioController extends GetxController {
 
   List<String> list = <String>['Masculino', 'Femenino'];
 
-
   String get id => _id;
   String get nombre => _nombre;
   String get sitioTuristico => _sitioTuristico;
@@ -40,7 +39,6 @@ class GextPropietarioController extends GetxController {
       String contacto,
       String genero,
       String buttonText) {
-
     print("Llega informacion" + id);
     _id = id;
     _nombre = nombre;
@@ -53,7 +51,6 @@ class GextPropietarioController extends GetxController {
     _dropdownValue = genero;
     _buttonText = buttonText;
     update();
-
   }
 
   void updateButtonText(String button) {
@@ -61,7 +58,7 @@ class GextPropietarioController extends GetxController {
     update();
   }
 
-  void updateGenero(String genero ) {
+  void updateGenero(String genero) {
     _dropdownValue = genero;
     update();
   }

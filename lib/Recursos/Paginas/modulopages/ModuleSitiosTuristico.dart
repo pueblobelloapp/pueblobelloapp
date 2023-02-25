@@ -1,46 +1,27 @@
-// ignore_for_file: unnecessary_null_comparison, deprecated_member_use, unused_local_variable, unused_import, unnecessary_import
-
-import 'dart:io';
-
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Controller/SitesController.dart';
-import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/GoogleLocation.dart';
-import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 
-class ModuleSitiosTuristico extends StatefulWidget {
-  const ModuleSitiosTuristico({Key? key}) : super(key: key);
+class ModuleSitiosTuristicos extends StatelessWidget {
+  final GetxSitioTuristico _controllerGetxTurismo =
+      Get.put(GetxSitioTuristico());
 
-  @override
-  State<ModuleSitiosTuristico> createState() => _ModuleSitiosTuristicoState();
-}
-
-class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
-  Position? _position;
   final _nombreST = TextEditingController();
   final _tipoTurismo = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
   final _capacidadST = TextEditingController();
   final _descripcionST = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String _ubicacionST = "";
   String _uidUser = "";
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
-    ControllerLogin controllerLogin = Get.find();
-
-    final siteToEdit = Get.arguments as SitioTuristico?;
-    final editControllerSites = Get.put(EditSitesController(siteToEdit));
-
-    final GextControllerTurismo _controllerTurismo =
-    Get.put(GextControllerTurismo());
 
     final editControlTurismo = Get.find<GextControllerTurismo>();
     _uidUser = editControlTurismo.uidUser;
@@ -56,7 +37,15 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
   Widget Formulario() {
     final listTypeTravel = ["Cultural", "Rural", "Ecoturismo", "Bienestar"];
-    PickedFile? _pickedFile;
+    List<XFile>? images = [];
+    List<dynamic>? fotografias = [];
+
+    _nombreST.text = _controllerGetxTurismo.nombre;
+    _descripcionST.text = _controllerGetxTurismo.descripcion;
+    _capacidadST.text = _controllerGetxTurismo.capacidad;
+    _ubicacionST = _controllerGetxTurismo.ubicacion;
+    _tipoTurismo.text = _controllerGetxTurismo.tipoTurismo;
+    fotografias = _controllerGetxTurismo.fotoUrl;
 
     return Container(
         padding: EdgeInsets.all(20.0),
@@ -96,10 +85,18 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                 TextButton.icon(
                     onPressed: () async {
                       final editController = Get.find<EditSitesController>();
-                      _pickedFile =
-                          await _picker.getImage(source: ImageSource.gallery);
-                      if (_pickedFile != null) {
-                        editController.setImage(File(_pickedFile!.path));
+                      final editControlSitioTurismo = Get.find<GetxSitioTuristico>();
+                      images = await _picker.pickMultiImage();
+
+                      final List<XFile>? selectedImages = await
+                      _picker.pickMultiImage();
+                      if (selectedImages!.isNotEmpty) {
+                        print("Fotos seleccionadas");
+                        //editController.setImage(XFile(images));
+                        images!.addAll(selectedImages);
+                        editControlSitioTurismo.updateFilesImage(selectedImages);
+                      } else {
+                        print("NOO Fotos");
                       }
                     },
                     icon: Icon(
@@ -112,11 +109,15 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                     )),
                 Text("Ubicacion geografica",
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_ubicacionST),
+                GetBuilder<GetxSitioTuristico>(
+                  init: GetxSitioTuristico(),
+                  builder: (controller) {
+                    return Text('${controller.ubicacion}');
+                  },
+                ),
                 TextButton.icon(
                     onPressed: () {
                       _getCurrentLocation();
-
                     },
                     icon: Icon(
                       Icons.location_on,
@@ -135,8 +136,7 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                         final editController = Get.find<EditSitesController>();
 
                         if (_formKey.currentState!.validate() &&
-                            _ubicacionST.isEmpty
-                            ) {
+                            _ubicacionST.isEmpty) {
                           Get.showSnackbar(const GetSnackBar(
                             title: 'Validacion de datos',
                             message: 'Complete todos los campos.',
@@ -146,14 +146,29 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                           ));
                         } else {
                           print("Turismo registrado con : " + _uidUser);
-                          editController.saveSite(
-                              _nombreST.text,
-                              _capacidadST.text,
-                              _tipoTurismo.text,
-                              _descripcionST.text,
-                              _position.toString(),
-                              _uidUser
-                          );
+                          if (_controllerGetxTurismo.id != "") {
+                            print("Actualizando Sitio");
+
+                            editController.editSite(
+                                _controllerGetxTurismo.id,
+                                _nombreST.text,
+                                _capacidadST.text,
+                                _tipoTurismo.text,
+                                _descripcionST.text,
+                                _ubicacionST.toString(),
+                                _uidUser,
+                                fotografias
+                            );
+                          } else {
+                            print("Agregando Sitio");
+                            editController.saveSite(
+                                _nombreST.text,
+                                _capacidadST.text,
+                                _tipoTurismo.text,
+                                _descripcionST.text,
+                                _ubicacionST.toString(),
+                                _uidUser);
+                          }
                           cleanForm();
                         }
                       },
@@ -216,12 +231,11 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                 style: TextStyle(color: Colors.white),
               ));
         }).toList(),
-        onChanged: ((value) => setState(() {
-              _tipoTurismo.text = "Turismo";
-              _tipoTurismo.text += value!;
-            })),
+        onChanged: ((value) => _tipoTurismo.text = "Turismo " + value!),
         hint: Text(
-          'Seleccione un tipo de turismo',
+          _tipoTurismo.text == ""
+              ? 'Seleccione un tipo de turismo'
+              : _tipoTurismo.text,
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -231,17 +245,19 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
   //Funciones para localizacion
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-      _ubicacionST = _position.toString();
-    });
+    final GetxSitioTuristico _controllerGetxTurismo =
+        Get.put(GetxSitioTuristico());
+
+    _controllerGetxTurismo.updateUbicacion(position.toString());
+    print("Posicionado: " + position.toString());
+    _ubicacionST = position.toString();
   }
 
   Future<Position> _determinePosition() async {
     LocationPermission permission;
-
     permission = await Geolocator.checkPermission();
 
+    print("Posicion: " + permission.toString());
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -253,11 +269,22 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
   }
 
   void cleanForm() {
+    _controllerGetxTurismo.cleanTurismo();
     _nombreST.clear();
     _capacidadST.clear();
     _descripcionST.clear();
-    setState(() {
-      _ubicacionST = "";
-    });
+    _tipoTurismo.clear();
+    _ubicacionST = "";
   }
+}
+
+void messageInfromation(
+    String titulo, String mensaje, Icon icono, Color color) {
+  Get.showSnackbar(GetSnackBar(
+    title: titulo,
+    message: mensaje,
+    icon: icono,
+    duration: Duration(seconds: 4),
+    backgroundColor: color,
+  ));
 }

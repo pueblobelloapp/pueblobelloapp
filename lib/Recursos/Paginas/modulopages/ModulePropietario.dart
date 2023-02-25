@@ -1,4 +1,3 @@
-// ignore_for_file: sort_child_properties_last, non_constant_identifier_names
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
@@ -48,9 +47,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
   }
 
   Widget Formulario() {
-    /*final editController = Get.put(PropietarioController((propietarioToEdit)));
-    final editControlPropietario = Get.find<GextPropietarioController>();*/
-
     _uiPropietario = controllerPropietario.id;
     _nombrePropietario.text = controllerPropietario.nombre;
     _sitioTuristicoPropietario.text =

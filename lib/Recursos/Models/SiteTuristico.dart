@@ -7,8 +7,8 @@ class SitioTuristico extends Equatable{
   final String tipoTurismo;
   final String descripcion;
   final String ubicacion;
-  final String? foto;
   final String? userId;
+  final List<dynamic>? foto;
 
   const SitioTuristico({
     required this.id,
@@ -24,8 +24,6 @@ class SitioTuristico extends Equatable{
   @override
   // TODO: implement props
   List<Object?> get props => [id, nombre, capacidad, tipoTurismo, descripcion, ubicacion, userId, foto];
-
-
 
   Map<String, Object?> toFirebaseMap() {
     return <String, Object?>{
@@ -48,7 +46,7 @@ class SitioTuristico extends Equatable{
         descripcion = data['descripcion'] as String,
         ubicacion = data['ubicacion'] as String,
         userId = data['userId'] as String?,
-        foto = data['foto'] as String?;
+        foto = data['foto'] as List<String>?;
 
 
 
@@ -60,7 +58,7 @@ class SitioTuristico extends Equatable{
      String? descripcion,
      String? ubicacion,
      String? userId,
-     String? foto,
+     List<String>? foto,
 }) {
     return SitioTuristico(
         id : id ?? this.id,

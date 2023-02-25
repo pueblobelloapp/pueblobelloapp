@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,38 +8,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../Repository/RepositorySiteTuristico.dart';
+import 'GextControllers/GexTurismo.dart';
 
 class EditSitesController extends GetxController {
-
   final MySitesRepository _mySitesRepository = getIt();
 
   // Reactive variables that will hold the state of this GetxController
-  Rx<File?> pickedImage = Rx(null);
+  //Rx<XFile?> pickedImage = Rx(null);
+  //List<XFile>? _imageFileList;
+  List<XFile>? _imageFileList = [];
   Rx<bool> isLoading = Rx(false);
 
   // When we are editing _toEdit won't be null
   SitioTuristico? _toEdit;
 
-  EditSitesController(this._toEdit);
-
-  // This function will be called from the presentation layer
-  // when an image is selected
-  void setImage(File? imageFile) async {
-    pickedImage.value = imageFile;
-  }
+  //EditSitesController(this._toEdit);
 
   // This function will be called from the presentation layer
   // when the user has to be saved
-  Future<void> saveSite(
-      String nombre,
-      String capacidad,
-      String tipoTurismo,
-      String descripcion,
-      String ubicacion,
-      String uidUser
-      ) async {
+  Future<void> saveSite(String nombre, String capacidad, String tipoTurismo,
+      String descripcion, String ubicacion, String uidUser) async {
     isLoading.value = true;
 
     // If we are editing, we use the existing id. Otherwise, create a new one.
@@ -51,10 +42,10 @@ class EditSitesController extends GetxController {
         tipoTurismo: tipoTurismo,
         descripcion: descripcion,
         ubicacion: ubicacion,
-        userId: uidUser,
-        foto : _toEdit?.foto);
+        userId: uidUser);
 
-    await _mySitesRepository.saveMySite(_toEdit!, pickedImage.value);
+    print("Agregar datos: " + _toEdit.toString());
+    await _mySitesRepository.saveMySite(_toEdit!);
     isLoading.value = false;
 
     Get.showSnackbar(const GetSnackBar(
@@ -73,7 +64,8 @@ class EditSitesController extends GetxController {
       String tipoTurismo,
       String descripcion,
       String ubicacion,
-      String uidUser
+      String uidUser,
+      List<dynamic>? fotos
       ) async {
     isLoading.value = true;
 
@@ -85,11 +77,12 @@ class EditSitesController extends GetxController {
         descripcion: descripcion,
         ubicacion: ubicacion,
         userId: uidUser,
-        foto : _toEdit?.foto);
+        foto: fotos
+    );
 
-    await _mySitesRepository.saveMySite(_toEdit!, pickedImage.value);
+    print("Actualizacion datos: " + _toEdit.toString());
+    await _mySitesRepository.saveMySite(_toEdit!);
     isLoading.value = false;
-
   }
 
   Stream<QuerySnapshot> getSitesUser() {

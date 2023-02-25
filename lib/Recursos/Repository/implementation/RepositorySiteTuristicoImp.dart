@@ -29,8 +29,8 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   }
 
   @override
-  Future<void> saveMySite(SitioTuristico mySite, File? image) {
-    return _siteTuristicoDataSource.saveMySite(mySite, image);
+  Future<void> saveMySite(SitioTuristico mySite) {
+    return _siteTuristicoDataSource.saveMySite(mySite);
   }
 
   @override

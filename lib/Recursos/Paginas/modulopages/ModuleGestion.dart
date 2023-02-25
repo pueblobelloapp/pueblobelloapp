@@ -1,14 +1,9 @@
-// ignore_for_file: unused_local_variable, unused_import, deprecated_member_use
-
 import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GestionController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Models/GestionModel.dart';
-import 'package:app_turismo/Recursos/Paginas/Menu.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ListaInformacion.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';

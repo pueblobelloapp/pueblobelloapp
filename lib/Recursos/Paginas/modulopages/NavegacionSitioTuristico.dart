@@ -11,9 +11,6 @@ class NavegacionSitioTuristico extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final GextControllerTurismo controllerTurismo =
-    Get.put(GextControllerTurismo());
-
     return GetBuilder<GextControllerTurismo>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
@@ -25,10 +22,7 @@ class NavegacionSitioTuristico extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
-            children: [
-              ListaSitiosTuristicos(),
-              ModuleSitiosTuristico()
-            ],
+            children: [ListaSitiosTuristicos(), ModuleSitiosTuristicos()],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
