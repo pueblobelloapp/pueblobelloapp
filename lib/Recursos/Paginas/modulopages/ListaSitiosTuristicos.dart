@@ -47,7 +47,6 @@ class ListaSitiosTuristicos extends StatelessWidget {
   }
 
   Widget listaSitios(Map<String, dynamic> data) {
-    print(data);
     return ListTile(
       //leading: Image.network(data['foto']),
       title: Text(data['nombre']),

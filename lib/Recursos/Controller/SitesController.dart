@@ -16,16 +16,10 @@ import 'GextControllers/GexTurismo.dart';
 class EditSitesController extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
 
-  // Reactive variables that will hold the state of this GetxController
-  //Rx<XFile?> pickedImage = Rx(null);
-  //List<XFile>? _imageFileList;
-  List<XFile>? _imageFileList = [];
   Rx<bool> isLoading = Rx(false);
 
   // When we are editing _toEdit won't be null
   SitioTuristico? _toEdit;
-
-  //EditSitesController(this._toEdit);
 
   // This function will be called from the presentation layer
   // when the user has to be saved

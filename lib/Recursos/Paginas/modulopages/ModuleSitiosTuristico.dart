@@ -1,7 +1,6 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/SitesController.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,6 +45,9 @@ class ModuleSitiosTuristicos extends StatelessWidget {
     _ubicacionST = _controllerGetxTurismo.ubicacion;
     _tipoTurismo.text = _controllerGetxTurismo.tipoTurismo;
     fotografias = _controllerGetxTurismo.fotoUrl;
+    final editControlSitioTurismo = Get.find<GetxSitioTuristico>();
+
+    print("Turismo: " + _controllerGetxTurismo.tipoTurismo);
 
     return Container(
         padding: EdgeInsets.all(20.0),
@@ -69,7 +71,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                 SizedBox(height: 15),
                 Text("Capacidad personas",
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                //textForm(_capacidadST, "tEXTO", 1)
                 textForm(
                     _capacidadST, "Cantidad personas", 1, TextInputType.number),
                 SizedBox(height: 15),
@@ -84,19 +85,24 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 TextButton.icon(
                     onPressed: () async {
-                      final editController = Get.find<EditSitesController>();
-                      final editControlSitioTurismo = Get.find<GetxSitioTuristico>();
+
                       images = await _picker.pickMultiImage();
 
                       final List<XFile>? selectedImages = await
                       _picker.pickMultiImage();
                       if (selectedImages!.isNotEmpty) {
-                        print("Fotos seleccionadas");
-                        //editController.setImage(XFile(images));
                         images!.addAll(selectedImages);
                         editControlSitioTurismo.updateFilesImage(selectedImages);
+                        messageInformation("Fotografia",
+                            "${selectedImages.length.toString()} " +
+                                "fotografias seleccionadas",
+                            Icon(Icons.image_outlined),
+                            Colors.deepOrangeAccent);
                       } else {
-                        print("NOO Fotos");
+                        messageInformation("Fotografia",
+                            "Ups! no pudimos seleccionar las fotos",
+                            Icon(Icons.image_outlined),
+                            Colors.deepOrangeAccent);
                       }
                     },
                     icon: Icon(
@@ -145,10 +151,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                             backgroundColor: Colors.red,
                           ));
                         } else {
-                          print("Turismo registrado con : " + _uidUser);
                           if (_controllerGetxTurismo.id != "") {
-                            print("Actualizando Sitio");
-
                             editController.editSite(
                                 _controllerGetxTurismo.id,
                                 _nombreST.text,
@@ -160,7 +163,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                                 fotografias
                             );
                           } else {
-                            print("Agregando Sitio");
                             editController.saveSite(
                                 _nombreST.text,
                                 _capacidadST.text,
@@ -232,11 +234,12 @@ class ModuleSitiosTuristicos extends StatelessWidget {
               ));
         }).toList(),
         onChanged: ((value) => _tipoTurismo.text = "Turismo " + value!),
-        hint: Text(
-          _tipoTurismo.text == ""
-              ? 'Seleccione un tipo de turismo'
-              : _tipoTurismo.text,
-          style: TextStyle(color: Colors.white),
+        hint: GetBuilder<GetxSitioTuristico>(
+          init: GetxSitioTuristico(),
+          builder: (controller) {
+            return Text(controller.tipoTurismo.isEmpty ?
+              "Seleccionar" : '${controller.tipoTurismo}');
+          },
         ),
       ),
     );
@@ -249,15 +252,21 @@ class ModuleSitiosTuristicos extends StatelessWidget {
         Get.put(GetxSitioTuristico());
 
     _controllerGetxTurismo.updateUbicacion(position.toString());
-    print("Posicionado: " + position.toString());
     _ubicacionST = position.toString();
+    messageInformation("Ubicacion",
+        "Ubicacion actualizada.",
+        Icon(Icons.gps_fixed),
+        Colors.green);
   }
 
   Future<Position> _determinePosition() async {
+    final GetxSitioTuristico _controllerGetxTurismo =
+    Get.put(GetxSitioTuristico());
+    _controllerGetxTurismo.updateUbicacion("Realizando ubicacion");
+
     LocationPermission permission;
     permission = await Geolocator.checkPermission();
 
-    print("Posicion: " + permission.toString());
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -278,7 +287,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
   }
 }
 
-void messageInfromation(
+void messageInformation(
     String titulo, String mensaje, Icon icono, Color color) {
   Get.showSnackbar(GetSnackBar(
     title: titulo,

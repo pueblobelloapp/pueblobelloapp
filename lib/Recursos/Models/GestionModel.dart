@@ -5,7 +5,7 @@ class GestionModel extends Equatable{
   final String nombre;
   final String descripcion;
   final String ubicacion;
-  final String? foto;
+  final List<dynamic>? foto;
 
   const GestionModel({
     required this.id,
@@ -34,7 +34,7 @@ class GestionModel extends Equatable{
         nombre = data['nombre'] as String,
         descripcion = data['descripcion'] as String,
         ubicacion = data['ubicacion'] as String,
-        foto = data['foto'] as String?;
+        foto = data['foto'] as  List<dynamic>?;
 
   GestionModel copyWith({
     String? id,
@@ -43,7 +43,7 @@ class GestionModel extends Equatable{
     String? tipoTurismo,
     String? descripcion,
     String? ubicacion,
-    String? foto,
+    List<String>? foto,
   }) {
     return GestionModel(id : id ?? this.id,
         nombre: nombre ?? this.nombre,

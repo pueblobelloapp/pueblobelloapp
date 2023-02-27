@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:app_turismo/Recursos/Controller/GestionController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
@@ -51,15 +51,19 @@ class _ModuleGestionState extends State<ModuleGestion> {
 
   //Fomulario
   Widget FormGestion() {
-    final editController = Get.put(EditGestionController(gestionModel));
+    final editController = Get.put(EditGestionController());
     final editControlGestion = Get.find<GetxGestionInformacionController>();
+
+    List<XFile>? images = [];
+    List<dynamic>? fotografias = [];
 
     PickedFile? _pickedFile = null;
 
     idGestion = controllerGestion.id;
-    _nombreInformacion.text = controllerGestion.nombre ?? '';
-    _ubicacionC = controllerGestion.ubicacion ?? '';
-    _descripcionInformacion.text = controllerGestion.descripcion ?? '';
+    _nombreInformacion.text = controllerGestion.nombre;
+    _ubicacionC = controllerGestion.ubicacion;
+    _descripcionInformacion.text = controllerGestion.descripcion;
+    fotografias = controllerGestion.fotoUrl;
 
     return Form(
         key: _formKey,
@@ -95,14 +99,28 @@ class _ModuleGestionState extends State<ModuleGestion> {
                     ElevatedButton(
                         style: Constants.buttonPrimary,
                         onPressed: () async {
-                          //Carge de imagenes funcionalidad.
-                          final editController =
-                              Get.find<EditGestionController>();
-                          _pickedFile = await _picker.getImage(
-                              source: ImageSource.gallery);
 
-                          if (_pickedFile != null) {
-                            editController.setImage(File(_pickedFile!.path));
+                          final editController = Get.find<EditGestionController>();
+                          final editControlInformacion = Get.find<GetxGestionInformacionController>();
+                          images = await _picker.pickMultiImage();
+
+                          final List<XFile>? selectedImages = await
+                          _picker.pickMultiImage();
+                          if (selectedImages!.isNotEmpty) {
+                            images!.addAll(selectedImages);
+                            editControlInformacion.updateFilesImage(
+                                selectedImages);
+
+                            print("Foto seleccionada.");
+                            Get.showSnackbar(GetSnackBar(
+                              title: 'Fotografia',
+                              message: "Se cargaron: "
+                                  + selectedImages!.length.toString()
+                                  + " fotografias",
+                              icon: Icon(Icons.app_registration),
+                              duration: Duration(seconds: 6),
+                              backgroundColor: Colors.green.shade400,
+                            ));
                           }
                         },
                         child: const Text('Cargar fotos'))
@@ -115,10 +133,6 @@ class _ModuleGestionState extends State<ModuleGestion> {
                         style: Constants.buttonPrimary,
                         onPressed: () {
                           _getCurrentLocation();
-                          print("Ubicacion: " + _ubicacionC);
-                          setState(() {
-                            _posicionInformacion.text = _ubicacionC;
-                          });
                         },
                         child: const Text('Seleccionar Ubicacion'))
                   ],
@@ -131,21 +145,22 @@ class _ModuleGestionState extends State<ModuleGestion> {
                   style: Constants.buttonPrimary,
                   onPressed: () {
                     String mensaje = "";
-                    String errorMensaje = _pickedFile == null
+                    String errorMensaje = images == null
                         ? 'Error falta Fotografia'
                         : 'Error falta Ubicacion';
 
                     if (_formKey.currentState!.validate()) {
-                      if (_pickedFile == null || _ubicacionC.isEmpty) {
+                      if (_ubicacionC.isEmpty) {
                         Get.showSnackbar(GetSnackBar(
                           title: 'Validacion de datos',
                           message: errorMensaje,
                           icon: Icon(Icons.app_registration),
-                          duration: Duration(seconds: 4),
+                          duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ));
                       } else {
                         if (idGestion.isEmpty) {
+                          mensaje = "Se guardaron los datos";
                           editController.saveGestion(
                               _nombreInformacion.text,
                               _descripcionInformacion.text,
@@ -154,17 +169,19 @@ class _ModuleGestionState extends State<ModuleGestion> {
                         } else {
                           mensaje = "Se actualizaron los datos";
                           editController.editGestion(
-                            idGestion,
-                              _nombreInformacion.text,
+                            idGestion, _nombreInformacion.text,
                               _descripcionInformacion.text,
-                              _ubicacionC.toString());
+                              _ubicacionC.toString(),
+                              fotografias
+                          );
                         }
+                        cleanForm();
                         Get.showSnackbar(GetSnackBar(
                           title: 'Registro de informacion',
                           message: mensaje,
                           icon: Icon(Icons.app_registration),
                           duration: Duration(seconds: 4),
-                          backgroundColor: Colors.orange.shade400,
+                          backgroundColor: Colors.green.shade400,
                         ));
                       }
                     }
@@ -183,18 +200,28 @@ class _ModuleGestionState extends State<ModuleGestion> {
         ));
   }
 
-  //Funciones para localizacion
+//Funciones para localizacion
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-      _ubicacionC = _position.toString();
-    });
+    final GetxGestionInformacionController _controllerInformacion =
+    Get.put(GetxGestionInformacionController());
+    _controllerInformacion.updateUbicacion(position.toString());
+
+    print("Posicionado: " + position.toString());
+    Get.showSnackbar(GetSnackBar(
+      title: 'Ubicacion',
+      message: "Ubicacion capturada: "
+          + position.toString(),
+      icon: Icon(Icons.app_registration),
+      duration: Duration(seconds: 3),
+      backgroundColor: Colors.green,
+    ));
+
+    _ubicacionC = position.toString();
   }
 
   Future<Position> _determinePosition() async {
     LocationPermission permission;
-
     permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
@@ -203,6 +230,7 @@ class _ModuleGestionState extends State<ModuleGestion> {
         return Future.error('Location Permissions are denied');
       }
     }
+
     return await Geolocator.getCurrentPosition();
   }
 
@@ -243,9 +271,8 @@ class _ModuleGestionState extends State<ModuleGestion> {
     _descripcionInformacion.clear();
     _nombreInformacion.clear();
     _posicionInformacion.clear();
-    setState(() {
-      _ubicacionC = "";
-    });
+    _ubicacionC = "";
+
 
   }
 }

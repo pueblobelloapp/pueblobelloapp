@@ -8,7 +8,7 @@ abstract class MySitesRepository {
   Stream<Iterable<SitioTuristico>> getMySite();
   Stream<QuerySnapshot> getSitesUid();
   Future<void> saveMySite(SitioTuristico mySite);
-  Future<void> editMySite(SitioTuristico mySite, File? image);
+  Future<void> editMySite(SitioTuristico mySite);
   Future<void> deleteMySite(SitioTuristico mySite);
 
 }

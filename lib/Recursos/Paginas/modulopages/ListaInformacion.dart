@@ -64,7 +64,7 @@ class ListInformationGestion extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-              leading: Image.network(data['foto']),
+              //leading: Image.network(data['foto']),
               title: Text(data['nombre']),
               subtitle: Text(data['descripcion'])),
           Row(
@@ -85,7 +85,6 @@ class ListInformationGestion extends StatelessWidget {
                         data['ubicacion'],
                         'Actualizaar'
                     );
-
                     controllerTurismo.updateTapItem(1);
                   },
                   child: Text('Actualizar')),

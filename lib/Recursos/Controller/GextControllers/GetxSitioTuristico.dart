@@ -7,7 +7,7 @@ class GetxSitioTuristico extends GetxController {
   String _tipoTurismo = "";
   String _capacidad = "";
   String _descripcion = "";
-  String _ubicacion = "";
+  String _ubicacion = "Sin ubicacion";
   List<dynamic>? _fotoUrl = [];
 
   List<XFile> _imageFileList = [];
@@ -29,7 +29,7 @@ class GetxSitioTuristico extends GetxController {
 
   void updateSitioTuristico(String id, String nombre, String tipoTurismo,
       String capacidad, String descripcion, String ubicacion, List<dynamic>? fotos) {
-    print("Llega informacion" + id);
+    print("Llega informacion" + id +  "foto estado: " + fotos.toString());
     _id = id;
     _nombre = nombre;
     _tipoTurismo = tipoTurismo;

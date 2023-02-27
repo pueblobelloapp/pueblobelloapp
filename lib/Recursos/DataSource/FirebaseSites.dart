@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../Controller/GextControllers/GetxSitioTuristico.dart';
 
 class SiteTuristicoDataSource {
@@ -45,38 +43,23 @@ class SiteTuristicoDataSource {
     * actualizar las que vienen.
     * */
     if (controllerSitioTuristicos.imageFileList.isNotEmpty) {
-      print("Entra si 1");
-      // Delete current image if exists
-      //TODO: se debe implementar una logica distinta debido a que hora viene varias fotos.
-      //y borrar las demas fotografias para poder sobreescribir  y horrar espacios.
-      if (sitioTuristico.foto != null) {
-        //TODO: Se debe recorrer la lista de URL y mandar uno a uno a borrar.
-        //await storage.refFromURL(sitioTuristico.foto).delete();
-        print("SITIO TURIASTICO ES VACIO");
-      } else {
-        print("Busca fotos");
-        /*TODO: Sebe recorrer la lista de fotografias con las URLs traidas, y agregarlas
-        *  en firebase para poder visualizarlas al usuario final.*/
-        urlFotografias = await uploadFiles(controllerSitioTuristicos.imageFileList);
-        print("Resultados: " + urlFotografias.toString());
-      }
-
+      print("Busca fotos");
+      urlFotografias = await uploadFiles(controllerSitioTuristicos.imageFileList);
+      print("Resultados: " + urlFotografias.toString());
       sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias);
+      controllerSitioTuristicos.imageFileList.clear();
     }
     await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
   }
 
   Future <List<String>> uploadFiles(List<XFile> _images) async {
     var imageUrls = await Future.wait(_images.map((_image) => uploadFile(_image)));
-    print("Url generada: " + imageUrls.toString());
     return imageUrls;
   }
 
   Future<String> uploadFile(XFile _image) async {
     final storageReference = storage.ref().child('posts/${_image.path}');
     await storageReference.putFile(File(_image.path));
-    //final url = await storageReference.getDownloadURL();
-
     return await storageReference.getDownloadURL();
   }
 

@@ -34,7 +34,7 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   }
 
   @override
-  Future<void> editMySite(SitioTuristico mySite, File? image) {
+  Future<void> editMySite(SitioTuristico mySite) {
     // TODO: implement editMySite
     throw UnimplementedError();
   }
