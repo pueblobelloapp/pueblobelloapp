@@ -119,7 +119,7 @@ class PerfilPropietario extends StatelessWidget {
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 12, vertical: 4),
                                         leading: Icon(Icons.my_location),
-                                        title: Text("Edad"),
+                                        title: Text("Edad Requerida"),
                                         subtitle: Text("25"),
                                       ),
                                     ],
