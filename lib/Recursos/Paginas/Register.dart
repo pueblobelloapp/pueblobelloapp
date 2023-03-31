@@ -1,8 +1,10 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/HeaderProfile.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +22,9 @@ class _RegistrarState extends State<Registrar> {
   TextEditingController _email = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
   TextEditingController _passwordConfirmada = TextEditingController();
+
   ControllerLogin controllerLogin = Get.find();
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   final _auth = FirebaseAuth.instance;
   final _formkey = GlobalKey<FormState>();
@@ -114,32 +118,39 @@ class _RegistrarState extends State<Registrar> {
                       ElevatedButton(
                         style: Constants.buttonPrimary,
                         onPressed: () {
-                          if (_formkey.currentState!.validate()) {
-                            if (_passwordL.text == _passwordConfirmada.text) {
-                              signUp(_email.text, _passwordL.text, _nombre.text,
-                                  _contacto.text);
-
-                            } else {
-                              messageInfromation(
-                                  "Validacion campos",
-                                  "Las contraseñas no coinciden.",
-                                  Icon(Icons.password), Colors.red);
-                            }
-                          }
-                          _formkey.currentState?.reset();
-                          setState(() {
-                            _nombre.clear();
-                            _contacto.clear();
-                            _email.clear();
-                            _passwordL.clear();
-                            _passwordConfirmada.clear();
-                          });
+                          registerInformation();
                         },
                         child: const Text('Registrar'),
                       ),
                     ],
                   ),
                 ))));
+  }
+
+  void registerInformation() {
+    final bool isValidEmail = EmailValidator.validate(_email.text);
+    if (_formkey.currentState!.validate() && isValidEmail) {
+      if (_passwordL.text == _passwordConfirmada.text) {
+        signUp(_email.text, _passwordL.text, _nombre.text,
+            _contacto.text);
+        messageController.messageInfo("Registro",
+            "Iniciando registro");
+      } else {
+        messageController.messageWarning("Validacion campos",
+            "Las contraseñas no coinciden.");
+      }
+    } else {
+      messageController.messageWarning("Validacion",
+          "Compruebe los campos del formulario.");
+    }
+    _formkey.currentState?.reset();
+    setState(() {
+      _nombre.clear();
+      _contacto.clear();
+      _email.clear();
+      _passwordL.clear();
+      _passwordConfirmada.clear();
+    });
   }
 
   Widget TextFieldWidget(
@@ -178,28 +189,16 @@ class _RegistrarState extends State<Registrar> {
   void signUp(
       String email, String password, String nombre, String contacto) async {
     CircularProgressIndicator();
-    if (_formkey.currentState!.validate()) {
       try {
         await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
             .then((value) => {postDetailsToFirestore(nombre, contacto)});
       } on FirebaseException catch (e) {
         if (e.code == "email-already-in-use") {
-          messageInfromation("Validacion datos",
-              "El correo se encuentra registrado", Icon(Icons.email_outlined), Colors.red);
+          messageController.messageError("Validacion email",
+              "Correo electronico, se encuentra registrado.");
         }
       }
-    }
-  }
-
-  void messageInfromation(String titulo, String mensaje, Icon icono, Color color) {
-    Get.showSnackbar(GetSnackBar(
-      title: titulo,
-      message: mensaje,
-      icon: icono,
-      duration: Duration(seconds: 4),
-      backgroundColor: color,
-    ));
   }
 
   Future<void> postDetailsToFirestore(String nombre, String contacto) async {
@@ -215,13 +214,10 @@ class _RegistrarState extends State<Registrar> {
           'edad': '0',
           'genero': 'Sin Definir',
           'correo': user.email,
-          'contacto': contacto
+          'contacto': contacto,
+          'foto' : 'assets/img/user.jpg'
         }),
         SetOptions(merge: false));
-
-    messageInfromation(
-        "Informacion Registro",
-        "Se registro correctamente.",
-        Icon(Icons.person_add), Colors.lightGreen);
+    messageController.messageInfo("Registro", "Se registro exitoso.");
   }
 }

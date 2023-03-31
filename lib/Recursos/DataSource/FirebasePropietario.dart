@@ -8,10 +8,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
 class PropietarioDataBase {
-
+  var myUsers = null;
   User get currentUser {
-    final myUsers = FirebaseAuth.instance.currentUser;
-    if (myUsers == null) throw Exception('Not authenticated exception');
+    myUsers = FirebaseAuth.instance.currentUser;
+    if (myUsers == null) throw Exception('No autenticado.');
     return myUsers;
   }
 
@@ -23,8 +23,9 @@ class PropietarioDataBase {
   }
 
   Future<void> saveGestion(Propietario propietario, File? image) async {
-    final ref = firestore.doc(
-        'propietario/${propietario.id}');
+    final ref = firestore.doc('propietario/${propietario.id}');
+    List<String>? urlFotografias = [];
+    print("Iniciando guardado: " + propietario.toString());
 
     if (image != null) {
       // Delete current image if exists

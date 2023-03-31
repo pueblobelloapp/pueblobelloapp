@@ -5,6 +5,7 @@ import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
 import 'package:app_turismo/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyPropietarioImp extends MyPropietarioRepository {
 
@@ -14,12 +15,6 @@ class MyPropietarioImp extends MyPropietarioRepository {
   Future<void> deleteMyPropietario(Propietario propietario) {
     // TODO: implement deleteMySite
     throw UnimplementedError();
-  }
-
-  @override
-  Stream<Iterable<Propietario>> getMyPropietario() {
-    // TODO: implement getMySite
-    return _propietarioDataBase.getAllPropietario();
   }
 
   @override

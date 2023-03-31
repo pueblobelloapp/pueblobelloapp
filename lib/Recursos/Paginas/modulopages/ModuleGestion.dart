@@ -31,7 +31,6 @@ class _ModuleGestionState extends State<ModuleGestion> {
   final _descripcionInformacion = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   String idGestion = "";
-  Position? _position;
   String _ubicacionC = "";
 
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,10 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-
 import '../Repository/RepositorySiteTuristico.dart';
-import 'GextControllers/GexTurismo.dart';
 
 class EditSitesController extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();

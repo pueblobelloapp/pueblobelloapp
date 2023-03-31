@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
 import 'package:app_turismo/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,8 +16,6 @@ class PropietarioController extends GetxController {
   Rx<bool> isLoading = Rx(false);
 
   Propietario? _toEdit;
-  PropietarioController(this._toEdit);
-
 
   void setImage(File? imageFile) async {
     pickedImage.value = imageFile;

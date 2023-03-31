@@ -10,7 +10,7 @@ class GextPropietarioController extends GetxController {
   String _foto = "";
   String _contacto = "";
   String _genero = "";
-  String _buttonText = "";
+  String _buttonText = "Registrar";
   String _dropdownValue = "";
 
   List<String> list = <String>['Masculino', 'Femenino'];
@@ -28,28 +28,18 @@ class GextPropietarioController extends GetxController {
 
   String get dropdownValue => _dropdownValue;
 
-  void updatePropietario(
-      String id,
-      String nombre,
-      String sitioTuristico,
-      String edad,
-      String correo,
-      String clave,
-      String foto,
-      String contacto,
-      String genero,
-      String buttonText) {
-    print("Llega informacion" + id);
-    _id = id;
-    _nombre = nombre;
-    _sitioTuristico = sitioTuristico;
-    _edad = edad;
-    _correo = correo;
-    _clave = clave;
-    _foto = foto;
-    _contacto = contacto;
-    _dropdownValue = genero;
-    _buttonText = buttonText;
+  void updatePropietario(Map<String, dynamic> propietario, String button) {
+    print("Llega informacion" + propietario["id"]);
+    _id = propietario["id"];
+    _nombre = propietario["nombre"];
+    _sitioTuristico = propietario["sitioTuristico"];
+    _edad = propietario["edad"];
+    _correo = propietario["correo"];
+    _clave = propietario["clave"];
+    _foto = propietario["foto"];
+    _contacto = propietario["contacto"];
+    _dropdownValue = propietario["genero"];
+    _buttonText = button;
     update();
   }
 
@@ -60,6 +50,20 @@ class GextPropietarioController extends GetxController {
 
   void updateGenero(String genero) {
     _dropdownValue = genero;
+    update();
+  }
+
+  void cleanPropietario() {
+    _id = "";
+    _nombre = "";
+    _sitioTuristico = "";
+    _edad = "";
+    _correo = "";
+    _clave = "";
+    _foto = "";
+    _contacto = "";
+    _dropdownValue = "";
+    _buttonText = "Registrar";
     update();
   }
 }

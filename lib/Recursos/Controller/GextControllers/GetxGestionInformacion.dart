@@ -8,8 +8,6 @@ class GetxGestionInformacionController extends GetxController {
   String _ubicacion = "";
   String _buttonText = "Agregar";
 
-
-
   List<dynamic>? _fotoUrl = [];
 
   String get id => _id;

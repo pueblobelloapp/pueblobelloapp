@@ -57,18 +57,7 @@ class ListaPropietario extends StatelessWidget {
 
         final editController = Get.find<GextPropietarioController>();
 
-        editController.updatePropietario(
-            data['id'],
-            data['nombre'],
-            data['sitioturistico'],
-            data['edad'],
-            data['correo'],
-            data['clave'],
-            data['foto'],
-            data['contacto'],
-            data['genero'],
-            "Actualizar"
-        );
+        editController.updatePropietario( data, "Actualizar");
 
         controllerTurismo.updateTapItem(1);
       },

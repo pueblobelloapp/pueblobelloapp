@@ -8,6 +8,7 @@ class GetxSitioTuristico extends GetxController {
   String _capacidad = "";
   String _descripcion = "";
   String _ubicacion = "Sin ubicacion";
+  String _buttonText = "Registrar";
   List<dynamic>? _fotoUrl = [];
 
   List<XFile> _imageFileList = [];
@@ -18,13 +19,14 @@ class GetxSitioTuristico extends GetxController {
   String get capacidad => _capacidad;
   String get descripcion => _descripcion;
   String get ubicacion => _ubicacion;
+  String get buttonText => _buttonText;
   List<dynamic>? get fotoUrl => _fotoUrl;
 
   List<XFile> get imageFileList => _imageFileList;
 
-  void updateFilesImage(List<XFile> imageFileList) {
-      _imageFileList = imageFileList;
-      update();
+  void addFilesImage(XFile image) {
+    _imageFileList.add(image);
+    update();
   }
 
   void updateSitioTuristico(String id, String nombre, String tipoTurismo,
@@ -37,6 +39,7 @@ class GetxSitioTuristico extends GetxController {
     _descripcion = descripcion;
     _ubicacion = ubicacion;
     _fotoUrl = fotos;
+    _buttonText = "Actualizar";
     update();
   }
 
@@ -48,10 +51,11 @@ class GetxSitioTuristico extends GetxController {
   void cleanTurismo() {
     _id = "";
     _nombre = "";
-    _tipoTurismo = "";
+    _tipoTurismo = "Seleccionar";
     _capacidad = "";
     _descripcion = "";
     _ubicacion = "";
+    _buttonText = "Registrar";
     update();
   }
 }

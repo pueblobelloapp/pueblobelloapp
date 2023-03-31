@@ -1,14 +1,17 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:core';
+import 'package:email_validator/email_validator.dart';
 
 class LoginF extends StatefulWidget {
   LoginF({Key? key}) : super(key: key);
@@ -20,10 +23,12 @@ class LoginF extends StatefulWidget {
 class _LoginFState extends State<LoginF> {
   TextEditingController _userL = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
-  ControllerLogin controllerLogin = Get.find();
+
   String mensajeNotification = "Error";
-  final GextControllerTurismo _controllerTurismo =
-      Get.put(GextControllerTurismo());
+
+  ControllerLogin controllerLogin = Get.find();
+  final GetxUtils messageController = Get.put(GetxUtils());
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -32,7 +37,10 @@ class _LoginFState extends State<LoginF> {
     return Scaffold(
         body: SingleChildScrollView(
             child:
-                Column(children: [ImagenLogo(), FormLogin(), OptionSesion()])));
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [ImagenLogo(), FormLogin(), OptionSesion()])));
   }
 
   Widget ImagenLogo() {
@@ -55,7 +63,7 @@ class _LoginFState extends State<LoginF> {
             child: Form(
                 key: _formKey,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
+                  margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -64,9 +72,6 @@ class _LoginFState extends State<LoginF> {
                               fontSize: 25,
                               color: Colors.green,
                               fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      Text("Digite datos para iniciar sesion",
-                          style: TextStyle(color: Colors.grey.shade500)),
                       SizedBox(height: 10),
                       TextFieldWidget(
                           _userL,
@@ -101,7 +106,7 @@ class _LoginFState extends State<LoginF> {
                                   Get.to(() => RecuperarPassword());
                                 },
                                 child: AutoSizeText(
-                                  "Olvidaste contraseña?",
+                                  "Recuperar contraseña",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.green),
                                   maxLines: 2,
@@ -112,43 +117,51 @@ class _LoginFState extends State<LoginF> {
                       ElevatedButton(
                         style: Constants.buttonPrimary,
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            controllerLogin
-                                .getLogin(_userL.text, _passwordL.text)
-                                .then((value) => {
-                                      if (controllerLogin.email !=
-                                              "Sin Registro" &&
-                                          controllerLogin.userRole != "")
-                                        {Get.to(() => MenuModuls())}
-                                      else
-                                        {
-                                          messageInfromation(
-                                              "Validacion de usuario",
-                                              "No se encuentra registrado.",
-                                              Icon(Icons.person),
-                                              Colors.red)
-                                        }
-                                    })
-                                .catchError((onerror) {
-                                  print("Recibio: " + onerror);
-                                  if (onerror == "wrong-password") {
-                                    mensajeNotification = "Contraseña incorrecta";
-                                  } else if( onerror == "user-not-found") {
-                                    mensajeNotification = "Email no existe.";
-                                  }
-                              messageInfromation(
-                                  "Ups!",
-                                  mensajeNotification,
-                                  Icon(Icons.error),
-                                  Colors.red);
-                            });
-                          }
+                          validateLogin();
                         },
                         child: const Text('Acceder'),
                       ),
                     ],
                   ),
                 ))));
+  }
+
+  void validateLogin() {
+
+    final bool isValid = EmailValidator.validate(_userL.text);
+
+    if (_formKey.currentState!.validate() && isValid) {
+      messageController.messageInfo("Inicio de sesion",
+          "Validando informacion.");
+
+      controllerLogin.getLogin(_userL.text, _passwordL.text)
+          .then((value) => {
+
+        if (controllerLogin.email != "Sin Registro" &&
+            controllerLogin.userRole != "")
+          {
+            print(controllerLogin.dataUsuario.toString()),
+            Get.to(() => MenuModuls())
+          } else {
+            messageController.messageWarning("Usuario",
+                "No te encuentras registrado")
+          }}).catchError((onerror) {
+
+        if (onerror == "wrong-password") {
+          mensajeNotification = "Contraseña incorrecta";
+        } else if( onerror == "user-not-found") {
+          mensajeNotification = "Email no existe.";
+        } else {
+          mensajeNotification = onerror.toString();
+        }
+
+        print("Errpr: " + onerror.toString());
+        messageController.messageError("Validacion", mensajeNotification);
+      });
+    } else {
+      messageController.messageWarning("Validacion",
+          "Compruebe los datos");
+    }
   }
 
   Widget TextFieldWidget(
@@ -223,16 +236,5 @@ class _LoginFState extends State<LoginF> {
         Image.asset('assets/Icons/google.png', width: 30, height: 30)
       ],
     );
-  }
-
-  void messageInfromation(
-      String titulo, String mensaje, Icon icono, Color color) {
-    Get.showSnackbar(GetSnackBar(
-      title: titulo,
-      message: mensaje,
-      icon: icono,
-      duration: Duration(seconds: 4),
-      backgroundColor: color,
-    ));
   }
 }

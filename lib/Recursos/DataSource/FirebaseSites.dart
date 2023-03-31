@@ -21,7 +21,6 @@ class SiteTuristicoDataSource {
   final GetxSitioTuristico controllerSitioTuristicos =
       Get.put(GetxSitioTuristico());
 
-
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
   FirebaseStorage get storage => FirebaseStorage.instance;
 

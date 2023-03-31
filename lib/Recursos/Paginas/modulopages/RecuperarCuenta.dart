@@ -1,8 +1,10 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/HeaderProfile.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,18 +17,21 @@ class RecuperarPassword extends StatefulWidget {
 
 class _RecuperarPasswordState extends State<RecuperarPassword> {
   TextEditingController _email = TextEditingController();
-  ControllerLogin controllerLogin = Get.find();
+
   final _formkey = GlobalKey<FormState>();
+
+  final GetxUtils messageController = Get.put(GetxUtils());
+  ControllerLogin controllerLogin = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(children: [
-      HeaderImage(),
-      SizedBox(height: 100),
-      FormRegister()
-    ])));
+              HeaderImage(),
+              SizedBox(height: 100),
+              FormRegister()
+            ])));
   }
 
   Widget HeaderImage() {
@@ -57,7 +62,7 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 10),
-                      AutoSizeText("Ingrese correo electronico",
+                      AutoSizeText("Correo electronico",
                           style: TextStyle(
                               color: Colors.grey.shade500, fontSize: 15),
                           minFontSize: 8,
@@ -74,45 +79,47 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
                       ElevatedButton(
                         style: Constants.buttonPrimary,
                         onPressed: () {
-                          if (_formkey.currentState!.validate()) {
-                            controllerLogin
-                                .recuperarPassword(_email.text.trim())
-                                .then((value) => {
-                                      print("Valor regresado: " + value),
-                                      messageInfromation(
-                                          "Informacion",
-                                          "Correo enviado para verificacion",
-                                          Icon(Icons.email_outlined),
-                                          Colors.green),
-                                      Get.back()
-                                    })
-                                .catchError((onError) {
-                              if (onError == "user-not-found") {
-                                messageInfromation(
-                                    "Ups!",
-                                    "Este Correo no se encuentra registrado.",
-                                    Icon(Icons.email_outlined),
-                                    Colors.red);
-                              } else if(onError == "invalid-email") {
-                                messageInfromation(
-                                    "Ups!",
-                                    "Digita un correo valido.",
-                                    Icon(Icons.email_outlined),
-                                    Colors.red);
-                              }
-
-                            });
-                          }
-                          _formkey.currentState?.reset();
-                          setState(() {
-                            _email.clear();
-                          });
+                          validateEmail();
                         },
                         child: const Text('Registrar'),
                       ),
                     ],
                   ),
                 ))));
+  }
+
+  void validateEmail() {
+    final bool isValidEmail = EmailValidator.validate(_email.text);
+    if (_formkey.currentState!.validate() && isValidEmail) {
+      controllerLogin
+          .recuperarPassword(_email.text.trim())
+          .then((value) => {
+        messageController.messageWarning(
+            "Recuperacion",
+            "Correo enviado para verificacion"),
+        Get.back()
+      })
+          .catchError((onError) {
+        if (onError == "user-not-found") {
+          messageController.messageWarning(
+              "Correo invalido",
+              "Este Correo no se encuentra registrado.");
+        } else if(onError == "invalid-email") {
+          messageController.messageWarning(
+              "Correo invalido",
+              "Digita un correo valido.");
+        }
+
+      });
+    } else {
+      messageController.messageWarning(
+          "Informacion",
+          "Validar correo electronico.");
+    }
+    _formkey.currentState?.reset();
+    setState(() {
+      _email.clear();
+    });
   }
 
   Widget TextFieldWidget(
@@ -146,16 +153,5 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
           }
         },
         cursorColor: Colors.green);
-  }
-
-  void messageInfromation(
-      String titulo, String mensaje, Icon icono, Color color) {
-    Get.showSnackbar(GetSnackBar(
-      title: titulo,
-      message: mensaje,
-      icon: icono,
-      duration: Duration(seconds: 4),
-      backgroundColor: color,
-    ));
   }
 }
