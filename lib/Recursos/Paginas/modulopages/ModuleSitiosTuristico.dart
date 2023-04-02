@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/SitesController.dart';
@@ -199,7 +200,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             if (utilsController.isReadyAction) {
               utilsController.updateAction(false);
@@ -217,10 +218,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
             }
             utilsController.updateAction(true);
           },
-          style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.green,
-              textStyle: const TextStyle(fontSize: 20)),
+          style: Constants.buttonPrimary,
           child: GetBuilder<GetxUtils>(
             init: GetxUtils(),
             builder: (controller) {

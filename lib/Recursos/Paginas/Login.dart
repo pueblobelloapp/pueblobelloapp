@@ -25,6 +25,7 @@ class _LoginFState extends State<LoginF> {
   TextEditingController _passwordL = TextEditingController();
 
   String mensajeNotification = "Error";
+  bool isLoading = false;
 
   ControllerLogin controllerLogin = Get.find();
   final GetxUtils messageController = Get.put(GetxUtils());
@@ -44,11 +45,12 @@ class _LoginFState extends State<LoginF> {
   }
 
   Widget ImagenLogo() {
-    return Image.asset(
+    return  SafeArea(
+        child: Image.asset(
       'assets/img/Logo.png',
       width: 250,
       height: 250,
-    );
+    ));
   }
 
   Widget FormLogin() {
@@ -119,7 +121,18 @@ class _LoginFState extends State<LoginF> {
                         onPressed: () {
                           validateLogin();
                         },
-                        child: const Text('Acceder'),
+                        child: isLoading
+                            ? Center(child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 20.0,
+                                  width: 20.0,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white),
+                              ),SizedBox(width: 10.5),
+                               Text("Iniciando sesion")],))
+                            : Center(child: Text("Acceder"))
                       ),
                     ],
                   ),
@@ -133,6 +146,11 @@ class _LoginFState extends State<LoginF> {
     if (_formKey.currentState!.validate() && isValid) {
       messageController.messageInfo("Inicio de sesion",
           "Validando informacion.");
+
+
+      setState(() {
+        isLoading = true;
+      });
 
       controllerLogin.getLogin(_userL.text, _passwordL.text)
           .then((value) => {

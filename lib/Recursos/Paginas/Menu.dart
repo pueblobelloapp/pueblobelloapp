@@ -1,3 +1,4 @@
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
@@ -76,7 +77,10 @@ class _MenuModulsState extends State<MenuModuls> {
               "Mi perfil",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
               "Propietario",
-              "")
+              ""),Align(
+            heightFactor: 3.5,
+            child: _btonCerrarSesion(context),
+          )
         ]).toList());
   }
 
@@ -113,7 +117,11 @@ class _MenuModulsState extends State<MenuModuls> {
               "Propietarios",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
               "MenuPropietario",
-              "")
+              ""),
+          Align(
+            heightFactor: 3.5,
+            child: _btonCerrarSesion(context),
+          )
         ]).toList());
   }
 
@@ -131,5 +139,19 @@ class _MenuModulsState extends State<MenuModuls> {
           Get.toNamed(route);
           _controllerTurismo.tipoGestion(nombreGestion);
         });
+  }
+
+  Widget _btonCerrarSesion(BuildContext context) {
+    return ElevatedButton(
+        style: Constants.buttonPrimary,
+        onPressed: () {
+          setState(() {
+            shouldPop = true;
+          });
+          controladorLogin.signOut();
+          Navigator.of(context).pop();
+          Get.to(() => LoginF());
+        },
+        child: Text('Cerrar Sesión'));
   }
 }
