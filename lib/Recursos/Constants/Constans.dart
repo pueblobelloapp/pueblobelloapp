@@ -3,7 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Constants {
   static ButtonStyle buttonPrimary = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 15), backgroundColor: Colors.green);
+      textStyle: const TextStyle(fontSize: 15),
+      backgroundColor: Colors.green,
+      padding: EdgeInsets.symmetric(horizontal: 23.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)));
 
   static Color colorPrimary = Colors.white38;
 
