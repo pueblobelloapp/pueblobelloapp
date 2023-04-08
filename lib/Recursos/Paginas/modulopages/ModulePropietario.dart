@@ -170,9 +170,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                       image =
                           await _picker.pickImage(source: ImageSource.gallery);
 
-                      if (image != null) {
-                        editController.setImage(File(image!.path));
-                      }
                     },
                     label: const Text('Subir Imagenes',
                         textAlign: TextAlign.center)),

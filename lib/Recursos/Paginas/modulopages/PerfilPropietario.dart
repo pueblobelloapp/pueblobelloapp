@@ -1,16 +1,41 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Controller/PropietarioController.dart';
-import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/HeaderProfile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
-class PerfilPropietario extends StatelessWidget {
-  //const PerfilPropietario({Key? key}) : super(key: key);
+class PerfilPropietario extends StatefulWidget {
+  @override
+  State<PerfilPropietario> createState() => _PerfilPropietarioState();
+}
+
+class _PerfilPropietarioState extends State<PerfilPropietario> {
+
   ControllerLogin controllerLogin = Get.find();
+  final PropietarioController controllerPropietario =
+      Get.put(PropietarioController());
+  final GetxUtils messageController = Get.put(GetxUtils());
+
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController contactController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordValidateController = TextEditingController();
+
+  Map<String, dynamic> informationUser = {};
+  StepperType stepperType = StepperType.vertical;
+  int _currentStep = 0;
+
+  bool updateUser = false;
+  bool isValid = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +65,13 @@ class PerfilPropietario extends StatelessWidget {
               ),
               child: Stack(
                 children: <Widget>[
-                  FaIcon(
-                    FontAwesomeIcons.pen,
-                    color: Colors.white,
-                    size: 20,
-                  )
+                  IconButton(
+                      onPressed: () => enableBox(),
+                      icon: FaIcon(
+                        FontAwesomeIcons.pen,
+                        color: Colors.white,
+                        size: 20,
+                      ))
                 ],
               ),
             )
@@ -53,11 +80,9 @@ class PerfilPropietario extends StatelessWidget {
         body: SingleChildScrollView(
             child: Stack(children: [HeaderImage(), BodyApp()])));
   }
-
   Widget HeaderImage() {
     return Container(height: 100, child: HeaderProfile(100));
   }
-
   Widget BodyApp() {
     return Container(
       alignment: Alignment.center,
@@ -68,7 +93,7 @@ class PerfilPropietario extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(80),
               border: Border.all(width: 5, color: Colors.white),
               color: Colors.white,
               boxShadow: [
@@ -81,16 +106,9 @@ class PerfilPropietario extends StatelessWidget {
             ),
             child: Icon(
               Icons.person,
-              size: 80,
+              size: 75,
               color: Colors.grey.shade300,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            controllerLogin.dataUsuario['nombre'],
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 20,
@@ -100,68 +118,174 @@ class PerfilPropietario extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Card(
-                  elevation: 7,
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            ...ListTile.divideTiles(
-                              color: Colors.grey,
-                              tiles: [
-                                ListTile(
-                                  leading: FaIcon(
-                                    FontAwesomeIcons.solidEnvelope,
-                                    color: Colors.green,
-                                  ),
-                                  title: Text("Email"),
-                                  subtitle: Text(
-                                      controllerLogin.dataUsuario['correo']),
-                                ),
-                                ListTile(
-                                  leading: FaIcon(
-                                    FontAwesomeIcons.phone,
-                                    color: Colors.green,
-                                  ),
-                                  title: Text("Contacto"),
-                                  subtitle: Text(
-                                      controllerLogin.dataUsuario['contacto']),
-                                ),
-                                ListTile(
-                                  leading: FaIcon(
-                                    FontAwesomeIcons.person,
-                                    color: Colors.green,
-                                  ),
-                                  title: Text("Genero"),
-                                  subtitle: Text(
-                                      controllerLogin.dataUsuario['genero']),
-                                ),
-                                ListTile(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 4),
-                                  leading: FaIcon(
-                                    FontAwesomeIcons.idCard,
-                                    color: Colors.green,
-                                  ),
-                                  title: Text("edad"),
-                                  subtitle:
-                                      Text(controllerLogin.dataUsuario['edad']),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                )
+                  elevation: 4,
+                  child: Container(child: listViewInformation())),
               ],
             ),
-          )
+          ),
+          updateUser ? buttonOption() : Container()
         ],
       ),
+    );
+  }
+  enableBox() {
+    informationUser = controllerLogin.dataUsuario;
+    emailController.text = informationUser["correo"];
+    nameController.text = informationUser["nombre"];
+    contactController.text = informationUser["contacto"];
+    ageController.text = informationUser["edad"];
+    genderController.text = informationUser["genero"];
+    setState(() {
+      updateUser = true;
+    });
+  }
+  tapped(int step){
+    setState(() => _currentStep = step);
+  }
+  continued(){
+    _currentStep < 2 ?
+    setState(() => _currentStep += 1): null;
+  }
+  cancel(){
+    _currentStep > 0 ?
+    setState(() => _currentStep -= 1) : null;
+  }
+  clearForm() {
+    emailController.clear();
+    passwordController.clear();
+    nameController.clear();
+    contactController.clear();
+    ageController.clear();
+    genderController.clear();
+  }
+  Widget buttonContinue(buildContext, details) {
+    return Row(
+      children: [
+        _currentStep == 0 ?
+          ElevatedButton(onPressed: continued, child: const Text("Continuar"),
+              style: ElevatedButton.styleFrom(
+                 backgroundColor: Colors.green)) :
+          ElevatedButton(onPressed: cancel, child: const Text("Atras"),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green))
+      ],
+    );
+  }
+  //Boton para cancelar la actualizacion
+  Widget buttonOption() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+            style: Constants.buttonPrimary,
+            onPressed: () {
+                if (emailController.text.trim().isNotEmpty   &&
+                    passwordController.text.trim().isNotEmpty&&
+                    nameController.text.trim().isNotEmpty    &&
+                    contactController.text.trim().isNotEmpty &&
+                    ageController.text.trim().isNotEmpty     &&
+                    genderController.text.trim().isNotEmpty) {
+
+                    informationUser['contacto'] = contactController.text.trim();
+                    informationUser['edad'] = ageController.text.trim();
+                    informationUser['genero'] = genderController.text.trim();
+                    informationUser['nombre'] = nameController.text.trim();
+                    informationUser['correo'] = emailController.text.trim();
+
+                  controllerPropietario.savePropietario(
+                      informationUser['id'],
+                      informationUser['nombre'],
+                      informationUser['rool'],
+                      informationUser['edad'],
+                      informationUser['genero'],
+                      informationUser['correo'],
+                      informationUser['contacto']).then((value) => {
+
+                        //controllerLogin.updateDataUsuario(informationUser),
+                        messageController.messageInfo(
+                            "Actualziacion", "Se actualizaron los datos."),
+                        clearForm(),
+                        setState(() {updateUser = false;})
+                  }).catchError((error) => {
+                      informationUser = controllerLogin.dataUsuario
+                  });
+
+                } else {
+                  messageController.messageError(
+                      "Validacion", "Complete campos faltanes");
+                }
+
+            },
+            child: Text("Actualizar")),
+        SizedBox(width: 15),
+        ElevatedButton(
+            style: Constants.buttonCancel,
+            onPressed: () {
+
+              setState(() {
+                informationUser = controllerLogin.dataUsuario;
+                updateUser = false;
+              });
+            },
+            child: Text("Calcelar"))
+      ],
+    );
+  }
+  Widget listViewInformation() {
+    return Stepper(
+      type: StepperType.vertical,
+      physics: ScrollPhysics(),
+      currentStep: _currentStep,
+      onStepTapped: (step) => tapped(step),
+      controlsBuilder: buttonContinue,
+      steps: <Step> [
+        Step(
+          title: new Text('Informacion personal'),
+          content: Column(
+            children: <Widget>[
+              listTileInformation(nameController, "Nombre", TextInputType.text),
+              listTileInformation(
+                  contactController, "Contacto", TextInputType.number),
+              listTileInformation(
+                  genderController, "Genero", TextInputType.text),
+              listTileInformation(ageController, "Edad", TextInputType.number),
+            ],
+          ),
+          isActive: _currentStep >= 0,
+        ), Step(
+          title: new Text('Datos electronicos'),
+          content: Column(
+            children: <Widget>[
+              listTileInformation(
+                  emailController, "Correo", TextInputType.text),
+              listTileInformation(
+                  passwordController, "Contraseña", TextInputType.text)
+            ],
+          ),
+          isActive: _currentStep >= 0
+        ),
+        ]
+    );
+  }
+  Widget listTileInformation(TextEditingController controller, String title,
+      TextInputType textInputType) {
+    return ListTile(
+      title: Text(title),
+      subtitle: updateUser
+          ? boxField(controller, "Campo requerido", textInputType)
+          : Text(controllerLogin.dataUsuario[title.toLowerCase().trim()] != null
+              ? controllerLogin.dataUsuario[title.toLowerCase().trim()]
+                : title == "Contraseña" ? "**********" : "Sin datos"));
+  }
+  Widget boxField(TextEditingController controlador, String msgError,
+      TextInputType textInputType) {
+    return TextField(
+      controller: controlador,
+      keyboardType: textInputType,
+      decoration: InputDecoration(
+          errorText: controlador.text.isEmpty ? msgError : null,
+          isCollapsed: true),
+      cursorColor: Colors.green,
     );
   }
 }

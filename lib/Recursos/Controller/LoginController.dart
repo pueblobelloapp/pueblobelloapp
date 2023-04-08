@@ -1,10 +1,7 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-
-import '../Paginas/Menu.dart';
 
 class ControllerLogin extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -12,7 +9,7 @@ class ControllerLogin extends GetxController {
 
   final GextControllerTurismo _controllerTurismo =
   Get.put(GextControllerTurismo());
-  final editControlTurismo = Get.find<GextControllerTurismo>();
+  //final editControlTurismo = Get.find<GextControllerTurismo>();
 
   final Rx<dynamic> _uid = "".obs;
   final Rx<dynamic> _email = "Sin Registro".obs;
@@ -25,6 +22,11 @@ class ControllerLogin extends GetxController {
   String get userRole => _userRole;
   Map<String, dynamic> get dataUsuario => _dataUsuario;
 
+  void updateDataUsuario( Map<String, dynamic> userUpdate ) {
+   _dataUsuario = userUpdate;
+   update();
+  }
+
   Future<void> getLogin(String e, String p) async {
     try {
       UserCredential user =
@@ -32,7 +34,7 @@ class ControllerLogin extends GetxController {
       _uid.value = user.user!.uid;
       _email.value = user.user!.email;
 
-      editControlTurismo.updateUidUserLogin(_uid.value);
+      _controllerTurismo.updateUidUserLogin(_uid.value);
 
       final snapshot = await FirebaseFirestore.instance
           .collection('propietario').doc(uid).get()
@@ -44,16 +46,6 @@ class ControllerLogin extends GetxController {
           }).catchError((onError) {
             print("Se genero un error: " + onError);
       });
-
-      //editControlPropietario.updatePropietario(snapshot.data(), "Listo");
-      /*Map<String, dynamic> data = snapshot.data()!;
-      data['rool'] == 'Propietario' ? _userRole = "true" : _userRole = "false";
-      update();*/
-
-
-
-      /*print("USUARIO: " + data.toString());
-      editControlPropietario.updatePropietario(data, "Listo");*/
 
     } on FirebaseException catch (e) {
       print("Error: ? " + e.toString());

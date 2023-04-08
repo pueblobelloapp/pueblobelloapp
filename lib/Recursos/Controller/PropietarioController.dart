@@ -7,24 +7,28 @@ import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PropietarioController extends GetxController {
 
   final MyPropietarioRepository _myPropietarioRepository = getIt();
 
-  Rx<File?> pickedImage = Rx(null);
-  Rx<bool> isLoading = Rx(false);
-
   Propietario? _toEdit;
 
-  void setImage(File? imageFile) async {
-    pickedImage.value = imageFile;
+  XFile? _imagePerfil;
+  Rx<bool> isLoading = Rx(false);
+
+  XFile? get imagePerfil => _imagePerfil;
+
+  void setImage(XFile? imageFile) async {
+    _imagePerfil = imageFile;
+    update();
   }
 
   Future<void> savePropietario(
+      String uidPropietario,
       String nombre,
       String rool,
-      String sitioturistico,
       String edad,
       String genero,
       String correo,
@@ -32,10 +36,8 @@ class PropietarioController extends GetxController {
       ) async {
     isLoading.value = true;
 
-    // If we are editing, we use the existing id. Otherwise, create a new one.
-    final uid = _myPropietarioRepository.newId();
     _toEdit = Propietario(
-        id: uid,
+        id: uidPropietario,
         rool: rool,
         nombre: nombre,
         edad: edad,
@@ -44,16 +46,8 @@ class PropietarioController extends GetxController {
         contacto : contacto,
         foto : _toEdit?.foto);
 
-    await _myPropietarioRepository.saveMyPropietario(_toEdit!, pickedImage.value);
+    await _myPropietarioRepository.saveMyPropietario(_toEdit!);
     isLoading.value = false;
-
-    Get.showSnackbar(const GetSnackBar(
-      title: 'Validacion de propietario',
-      message: 'agregado correctamente',
-      icon: Icon(Icons.add),
-      duration: Duration(seconds: 3),
-      backgroundColor: Colors.green,
-    ));
   }
 
   Future<void> editSite(
@@ -77,27 +71,11 @@ class PropietarioController extends GetxController {
         contacto : contacto,
         foto : _toEdit?.foto);
 
-    await _myPropietarioRepository.saveMyPropietario(_toEdit!, pickedImage.value);
+    await _myPropietarioRepository.saveMyPropietario(_toEdit!);
     isLoading.value = false;
-
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  Future<void> informationUser() async {
+    await _myPropietarioRepository.informationUser();
+  }
 }

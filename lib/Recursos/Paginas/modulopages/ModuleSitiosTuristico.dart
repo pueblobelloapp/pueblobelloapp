@@ -139,7 +139,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
               ],
             )));
   }
-
   selectMultPhoto() async {
     try {
       editControlSitioTurismo.imageFileList.clear();
@@ -153,33 +152,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
           "Fotografias", "No pudimos seleccionar las fotografias");
     }
   }
-  void validatePhoto(List<XFile> photos) {
-    photos.forEach((element) {
-      Image image = Image.file(File(element.path));
-      image.image.resolve(ImageConfiguration()).addListener(
-        ImageStreamListener(
-              (ImageInfo image, bool synchronousCall) {
-            var myImage = image.image;
-            if (myImage.width.toDouble() >= 1024 &&
-                myImage.width.toDouble() <= 1080) {
-              if (myImage.height.toDouble() >= 566 &&
-                  myImage.height.toDouble() <= 1080) {
-                editControlSitioTurismo.addFilesImage(element);
-              } else {
-                photos.remove(element);
-              }
-            } else {
-              photos.remove(element);
-            }
-          },
-        ),
-      );
-    });
-
-    utilsController.messageInfo(
-        "Validacion", "Fotos seleccionadas y validadas.");
-  }
-
   Widget caruselPhotos() {
     List<XFile> listPhotos = editControlSitioTurismo.imageFileList;
     return listPhotos.length == 0
@@ -195,7 +167,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                     child: Center(child: Image.file(File(photo.path)))))
                 .toList());
   }
-
   Widget buttonOption(GlobalKey<FormState> formKey) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -256,40 +227,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
       ],
     );
   }
-
-  void actionButton() {
-    print("Action buttton");
-    final editController = Get.find<EditSitesController>();
-    if (_controllerGetxTurismo.id != "") {
-      print("Update Data");
-      editController.editSite(
-          _controllerGetxTurismo.id,
-          _nombreST.text,
-          _capacidadST.text,
-          _tipoTurismo.text,
-          _descripcionST.text,
-          _ubicacionST.toString(),
-          _uidUser,
-          fotografias);
-    } else {
-      print("Guardando");
-      if ( editControlSitioTurismo.imageFileList.length > 0 ) {
-        editController.saveSite(
-            _nombreST.text,
-            _capacidadST.text,
-            _tipoTurismo.text,
-            _descripcionST.text,
-            _ubicacionST.toString(),
-            _uidUser);
-      } else {
-        utilsController.messageError(
-            "Fotos", "Seleccione fotografias del sitio.");
-      }
-
-    }
-    cleanForm();
-  }
-
   Widget textForm(TextEditingController _controller, String HintText,
       int LinesMax, TextInputType textInputType) {
     return TextFormField(
@@ -319,7 +256,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
 
     );
   }
-
   Widget ListTravel(
       TextEditingController _tipoTurismo, List<String> listTypeCulture) {
     return Container(
@@ -355,7 +291,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
       ),
     );
   }
-
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
     final GetxSitioTuristico _controllerGetxTurismo =
@@ -365,7 +300,74 @@ class ModuleSitiosTuristicos extends StatelessWidget {
     _ubicacionST = position.toString();
     utilsController.messageInfo("Ubicacion", "Ubicacion actualizada");
   }
+  void cleanForm() {
+    _controllerGetxTurismo.cleanTurismo();
+    _controllerGetxTurismo.imageFileList.clear();
+    _controllerGetxTurismo.updateUbicacion("Sin Ubicacion");
+    _nombreST.clear();
+    _capacidadST.clear();
+    _descripcionST.clear();
+    _tipoTurismo.clear();
+    _ubicacionST = "Sin ubicacion";
+  }
+  void validatePhoto(List<XFile> photos) {
+    photos.forEach((element) {
+      Image image = Image.file(File(element.path));
+      image.image.resolve(ImageConfiguration()).addListener(
+        ImageStreamListener(
+              (ImageInfo image, bool synchronousCall) {
+            var myImage = image.image;
+            if (myImage.width.toDouble() >= 1024 &&
+                myImage.width.toDouble() <= 1080) {
+              if (myImage.height.toDouble() >= 566 &&
+                  myImage.height.toDouble() <= 1080) {
+                editControlSitioTurismo.addFilesImage(element);
+              } else {
+                photos.remove(element);
+              }
+            } else {
+              photos.remove(element);
+            }
+          },
+        ),
+      );
+    });
 
+    utilsController.messageInfo(
+        "Validacion", "Fotos seleccionadas y validadas.");
+  }
+  void actionButton() {
+    print("Action buttton");
+    final editController = Get.find<EditSitesController>();
+    if (_controllerGetxTurismo.id != "") {
+      print("Update Data");
+      editController.editSite(
+          _controllerGetxTurismo.id,
+          _nombreST.text,
+          _capacidadST.text,
+          _tipoTurismo.text,
+          _descripcionST.text,
+          _ubicacionST.toString(),
+          _uidUser,
+          fotografias);
+    } else {
+      print("Guardando");
+      if ( editControlSitioTurismo.imageFileList.length > 0 ) {
+        editController.saveSite(
+            _nombreST.text,
+            _capacidadST.text,
+            _tipoTurismo.text,
+            _descripcionST.text,
+            _ubicacionST.toString(),
+            _uidUser);
+      } else {
+        utilsController.messageError(
+            "Fotos", "Seleccione fotografias del sitio.");
+      }
+
+    }
+    cleanForm();
+  }
   Future<Position> _determinePosition() async {
     final GetxSitioTuristico _controllerGetxTurismo =
         Get.put(GetxSitioTuristico());
@@ -380,18 +382,6 @@ class ModuleSitiosTuristicos extends StatelessWidget {
         return Future.error('Location Permissions are denied');
       }
     }
-
     return await Geolocator.getCurrentPosition();
-  }
-
-  void cleanForm() {
-    _controllerGetxTurismo.cleanTurismo();
-    _controllerGetxTurismo.imageFileList.clear();
-    _controllerGetxTurismo.updateUbicacion("Sin Ubicacion");
-    _nombreST.clear();
-    _capacidadST.clear();
-    _descripcionST.clear();
-    _tipoTurismo.clear();
-    _ubicacionST = "Sin ubicacion";
   }
 }

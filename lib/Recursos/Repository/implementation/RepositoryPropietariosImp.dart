@@ -23,15 +23,19 @@ class MyPropietarioImp extends MyPropietarioRepository {
   }
 
   @override
-  Future<void> saveMyPropietario(Propietario propietario, File? image) {
-    return _propietarioDataBase.saveGestion(propietario, image);
+  Future<void> saveMyPropietario(Propietario propietario) {
+    return _propietarioDataBase.saveGestion(propietario);
   }
 
   @override
-  Future<void> editMyPropietarios(Propietario mySite, File? image) {
+  Future<void> editMyPropietarios(Propietario mySite) {
     // TODO: implement editMyPropietarios
     throw UnimplementedError();
   }
 
-
+  @override
+  Future<void> informationUser() {
+    // TODO: implement updateEmailPropietario
+    return _propietarioDataBase.informationUser();
+  }
 }

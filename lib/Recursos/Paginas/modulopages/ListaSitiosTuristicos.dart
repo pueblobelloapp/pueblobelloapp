@@ -10,26 +10,25 @@ class ListaSitiosTuristicos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final editController = Get.find<EditSitesController>();
     final EditSitesController editController = Get.find<EditSitesController>();
 
     return Container(
       color: Colors.grey.shade100,
       child: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
-        stream: editController.getSitesUser(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-                child: Text('Lo sentimos se ha producido un error.'));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text('Cargando datos.'));
-          }
+            stream: editController.getSitesUser(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                    child: Text('Lo sentimos se ha producido un error.'));
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: Text('Cargando datos.'));
+              }
 
-          if (snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('Registra sitios turisticos.'));
-          }
+              if (snapshot.data!.docs.isEmpty) {
+                return const Center(child: Text('Registra sitios turisticos.'));
+              }
 
           return ListView(
             children: snapshot.data!.docs
