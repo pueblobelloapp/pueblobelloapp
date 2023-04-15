@@ -24,7 +24,7 @@ class MyPropietarioImp extends MyPropietarioRepository {
 
   @override
   Future<void> saveMyPropietario(Propietario propietario) {
-    return _propietarioDataBase.saveGestion(propietario);
+    return _propietarioDataBase.savePropietario(propietario);
   }
 
   @override

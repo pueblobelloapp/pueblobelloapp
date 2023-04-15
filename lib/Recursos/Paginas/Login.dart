@@ -144,10 +144,6 @@ class _LoginFState extends State<LoginF> {
     final bool isValid = EmailValidator.validate(_userL.text);
 
     if (_formKey.currentState!.validate() && isValid) {
-      messageController.messageInfo("Inicio de sesion",
-          "Validando informacion.");
-
-
       setState(() {
         isLoading = true;
       });
@@ -173,6 +169,9 @@ class _LoginFState extends State<LoginF> {
           mensajeNotification = onerror.toString();
         }
 
+        setState(() {
+          isLoading = false;
+        });
         print("Errpr: " + onerror.toString());
         messageController.messageError("Validacion", mensajeNotification);
       });

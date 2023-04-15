@@ -1,14 +1,22 @@
 
 import 'dart:io';
 
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
+import 'package:app_turismo/Recursos/Controller/PropietarioController.dart';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PropietarioDataBase {
+  final GetxUtils messageController = Get.put(GetxUtils());
+  final GextPropietarioController propietarioController =
+          Get.put(GextPropietarioController());
   var myUsers = null;
+
   User get currentUser {
     myUsers = FirebaseAuth.instance.currentUser;
     if (myUsers == null) throw Exception('No autenticado.');
@@ -22,32 +30,68 @@ class PropietarioDataBase {
     return firestore.collection("propietarios").doc().id;
   }
 
-  Future<void> saveGestion(Propietario propietario, File? image) async {
+  Future<void> savePropietario(Propietario propietario) async {
     final ref = firestore.doc('propietario/${propietario.id}');
-    List<String>? urlFotografias = [];
     print("Iniciando guardado: " + propietario.toString());
 
-    if (image != null) {
-      // Delete current image if exists
-      if (propietario.foto != null) {
-        await storage.refFromURL(propietario.foto!).delete();
+    User myusuario = currentUser;
+    String urlPhoto;
+
+    try {
+
+      //Validacion si existe una fotografia seleccionada.
+      if (propietarioController.imagePerfil != null) {
+        urlPhoto = await uploadPhoto(propietarioController.imagePerfil, propietario.id);
+        print("Foto subida: " + urlPhoto.toString());
+
+        final fileName = propietarioController.imagePerfil!.name;
+        final imagePath = '${currentUser.uid}/mySiteImages/$fileName';
+
+        final storageRef = storage.ref(imagePath);
+        await storageRef.putFile(File(propietarioController.imagePerfil!.path));
+        final url = await storageRef.getDownloadURL();
+        propietario = propietario.copyWith(foto: url);
       }
 
-      final fileName = image.uri.pathSegments.last;
-      final imagePath = '${currentUser.uid}/myPropietarioImages/$fileName';
-
-      final storageRef = storage.ref(imagePath);
-      await storageRef.putFile(image);
-      final url = await storageRef.getDownloadURL();
-      propietario = propietario.copyWith(foto: url);
+      await myusuario.updateEmail(propietario.correo.trim());
+      await ref.set(propietario.toFirebaseMap(), SetOptions(merge: true))
+      .then((value) => {
+        messageController.messageError(
+            "Actualizacion", "Actualizacion correcta.")
+      }).onError((error, stackTrace) =>  {
+        messageController.messageError(
+            "Actualizacion",
+            "Ups! Ocurrio un error inesperado." + error.toString())
+      });
+    } on FirebaseException catch(e) {
+      if (e.code == "requires-recent-login") {
+        messageController.messageError(
+            "Actualizacion",
+            "Inicia sesion nuevamente para verificar: " + e.code);
+        return Future.error('requires-recent-login');
+      }
     }
-    await ref.set(propietario.toFirebaseMap(), SetOptions(merge: true));
+  }
+
+  Future<String> uploadPhoto(XFile? file, String id) async {
+    final storageReference = storage.ref().child('post/${id}/${file?.path}');
+    await storageReference.putFile(File(file!.path));
+    return await storageReference.getDownloadURL();
   }
 
   Stream<Iterable<Propietario>> getAllPropietario() {
-    return firestore
-        .collection('propietario/')
-        .snapshots()
+    return firestore.collection('propietario/').snapshots()
         .map((it) => it.docs.map((e) => Propietario.fromFirebaseMap(e.data())));
+  }
+
+  //Modificacion para clave y contraseña del usuario propietario
+  Future<void> informationUser() async {
+    FirebaseAuth.instance
+        .authStateChanges()
+        .listen((User? user) {
+      if (user != null) {
+        print("Update Email: " + user.uid);
+      }
+    });
   }
 }

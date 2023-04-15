@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Controller/PropietarioController.dart';
@@ -14,11 +17,13 @@ class PerfilPropietario extends StatefulWidget {
 }
 
 class _PerfilPropietarioState extends State<PerfilPropietario> {
-
   ControllerLogin controllerLogin = Get.find();
   final PropietarioController controllerPropietario =
-      Get.put(PropietarioController());
+                                            Get.put(PropietarioController());
   final GetxUtils messageController = Get.put(GetxUtils());
+  final GextPropietarioController propietarioGext =
+                                          Get.put(GextPropietarioController());
+
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController contactController = TextEditingController();
@@ -80,9 +85,11 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
         body: SingleChildScrollView(
             child: Stack(children: [HeaderImage(), BodyApp()])));
   }
+
   Widget HeaderImage() {
     return Container(height: 100, child: HeaderProfile(100));
   }
+
   Widget BodyApp() {
     return Container(
       alignment: Alignment.center,
@@ -90,26 +97,36 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(80),
-              border: Border.all(width: 5, color: Colors.white),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 20,
-                  offset: const Offset(5, 5),
+              SizedBox(
+                height: 125,
+                width: 125,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  fit: StackFit.expand,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      backgroundImage: propietarioGext.imagePerfil != null ?
+                          AssetImage(propietarioGext.imagePerfil!.path) :
+                          AssetImage('assets/Icons/usuarioPerfil.png')
+                    ),
+                    Positioned(
+                        bottom: 0,
+                        right: -25,
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            //Consultar fotografia. Poner de momento mientras se actualiza la informacion
+                            selectMultPhoto();
+                          },
+                          elevation: 2.0,
+                          fillColor: Color(0xFFF5F6F9),
+                          child: Icon(Icons.camera_alt_outlined, color: Colors.blue,),
+                          padding: EdgeInsets.all(10.0),
+                          shape: CircleBorder(),
+                        )),
+                  ],
                 ),
-              ],
-            ),
-            child: Icon(
-              Icons.person,
-              size: 75,
-              color: Colors.grey.shade300,
-            ),
-          ),
+              ),
           SizedBox(
             height: 20,
           ),
@@ -118,8 +135,8 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
             child: Column(
               children: <Widget>[
                 Card(
-                  elevation: 4,
-                  child: Container(child: listViewInformation())),
+                    elevation: 4,
+                    child: Container(child: listViewInformation())),
               ],
             ),
           ),
@@ -128,6 +145,25 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
       ),
     );
   }
+
+  selectMultPhoto() async {
+    try {
+      final ImagePicker _picker = ImagePicker();
+      final XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (selectedImage != null) {
+        propietarioGext.updateImagePerfil(selectedImage);
+      }
+
+      setState(() {
+
+      });
+    } catch (e) {
+      messageController.messageWarning(
+          "Fotografias", "No pudimos seleccionar las fotografias");
+    }
+  }
+
   enableBox() {
     informationUser = controllerLogin.dataUsuario;
     emailController.text = informationUser["correo"];
@@ -139,17 +175,19 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
       updateUser = true;
     });
   }
-  tapped(int step){
+
+  tapped(int step) {
     setState(() => _currentStep = step);
   }
-  continued(){
-    _currentStep < 2 ?
-    setState(() => _currentStep += 1): null;
+
+  continued() {
+    _currentStep < 2 ? setState(() => _currentStep += 1) : null;
   }
-  cancel(){
-    _currentStep > 0 ?
-    setState(() => _currentStep -= 1) : null;
+
+  cancel() {
+    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
   }
+
   clearForm() {
     emailController.clear();
     passwordController.clear();
@@ -158,19 +196,23 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
     ageController.clear();
     genderController.clear();
   }
+
   Widget buttonContinue(buildContext, details) {
     return Row(
       children: [
-        _currentStep == 0 ?
-          ElevatedButton(onPressed: continued, child: const Text("Continuar"),
-              style: ElevatedButton.styleFrom(
-                 backgroundColor: Colors.green)) :
-          ElevatedButton(onPressed: cancel, child: const Text("Atras"),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green))
+        _currentStep == 0
+            ? ElevatedButton(
+                onPressed: continued,
+                child: const Text("Continuar"),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green))
+            : ElevatedButton(
+                onPressed: cancel,
+                child: const Text("Atras"),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green))
       ],
     );
   }
+
   //Boton para cancelar la actualizacion
   Widget buttonOption() {
     return Row(
@@ -179,49 +221,48 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
         ElevatedButton(
             style: Constants.buttonPrimary,
             onPressed: () {
-                if (emailController.text.trim().isNotEmpty   &&
-                    passwordController.text.trim().isNotEmpty&&
-                    nameController.text.trim().isNotEmpty    &&
-                    contactController.text.trim().isNotEmpty &&
-                    ageController.text.trim().isNotEmpty     &&
-                    genderController.text.trim().isNotEmpty) {
+              if (emailController.text.trim().isNotEmpty &&
+                  passwordController.text.trim().isNotEmpty &&
+                  nameController.text.trim().isNotEmpty &&
+                  contactController.text.trim().isNotEmpty &&
+                  ageController.text.trim().isNotEmpty &&
+                  genderController.text.trim().isNotEmpty) {
+                informationUser['contacto'] = contactController.text.trim();
+                informationUser['edad'] = ageController.text.trim();
+                informationUser['genero'] = genderController.text.trim();
+                informationUser['nombre'] = nameController.text.trim();
+                informationUser['correo'] = emailController.text.trim();
 
-                    informationUser['contacto'] = contactController.text.trim();
-                    informationUser['edad'] = ageController.text.trim();
-                    informationUser['genero'] = genderController.text.trim();
-                    informationUser['nombre'] = nameController.text.trim();
-                    informationUser['correo'] = emailController.text.trim();
-
-                  controllerPropietario.savePropietario(
-                      informationUser['id'],
-                      informationUser['nombre'],
-                      informationUser['rool'],
-                      informationUser['edad'],
-                      informationUser['genero'],
-                      informationUser['correo'],
-                      informationUser['contacto']).then((value) => {
-
-                        //controllerLogin.updateDataUsuario(informationUser),
-                        messageController.messageInfo(
-                            "Actualziacion", "Se actualizaron los datos."),
-                        clearForm(),
-                        setState(() {updateUser = false;})
-                  }).catchError((error) => {
-                      informationUser = controllerLogin.dataUsuario
-                  });
-
-                } else {
-                  messageController.messageError(
-                      "Validacion", "Complete campos faltanes");
-                }
-
+                controllerPropietario
+                    .savePropietario(
+                        informationUser['id'],
+                        informationUser['nombre'],
+                        informationUser['rool'],
+                        informationUser['edad'],
+                        informationUser['genero'],
+                        informationUser['correo'],
+                        informationUser['contacto'])
+                    .then((value) => {
+                          //controllerLogin.updateDataUsuario(informationUser),
+                          messageController.messageInfo(
+                              "Actualziacion", "Se actualizaron los datos."),
+                          clearForm(),
+                          setState(() {
+                            updateUser = false;
+                          })
+                        })
+                    .catchError((error) =>
+                        {informationUser = controllerLogin.dataUsuario});
+              } else {
+                messageController.messageError(
+                    "Validacion", "Complete campos faltanes");
+              }
             },
             child: Text("Actualizar")),
         SizedBox(width: 15),
         ElevatedButton(
             style: Constants.buttonCancel,
             onPressed: () {
-
               setState(() {
                 informationUser = controllerLogin.dataUsuario;
                 updateUser = false;
@@ -231,52 +272,59 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
       ],
     );
   }
+
   Widget listViewInformation() {
     return Stepper(
-      type: StepperType.vertical,
-      physics: ScrollPhysics(),
-      currentStep: _currentStep,
-      onStepTapped: (step) => tapped(step),
-      controlsBuilder: buttonContinue,
-      steps: <Step> [
-        Step(
-          title: new Text('Informacion personal'),
-          content: Column(
-            children: <Widget>[
-              listTileInformation(nameController, "Nombre", TextInputType.text),
-              listTileInformation(
-                  contactController, "Contacto", TextInputType.number),
-              listTileInformation(
-                  genderController, "Genero", TextInputType.text),
-              listTileInformation(ageController, "Edad", TextInputType.number),
-            ],
+        type: StepperType.vertical,
+        physics: ScrollPhysics(),
+        currentStep: _currentStep,
+        onStepTapped: (step) => tapped(step),
+        controlsBuilder: buttonContinue,
+        steps: <Step>[
+          Step(
+            title: new Text('Informacion personal'),
+            content: Column(
+              children: <Widget>[
+                listTileInformation(
+                    nameController, "Nombre", TextInputType.text),
+                listTileInformation(
+                    contactController, "Contacto", TextInputType.number),
+                listTileInformation(
+                    genderController, "Genero", TextInputType.text),
+                listTileInformation(
+                    ageController, "Edad", TextInputType.number),
+              ],
+            ),
+            isActive: _currentStep >= 0,
           ),
-          isActive: _currentStep >= 0,
-        ), Step(
-          title: new Text('Datos electronicos'),
-          content: Column(
-            children: <Widget>[
-              listTileInformation(
-                  emailController, "Correo", TextInputType.text),
-              listTileInformation(
-                  passwordController, "Contraseña", TextInputType.text)
-            ],
-          ),
-          isActive: _currentStep >= 0
-        ),
-        ]
-    );
+          Step(
+              title: new Text('Datos electronicos'),
+              content: Column(
+                children: <Widget>[
+                  listTileInformation(
+                      emailController, "Correo", TextInputType.text),
+                  listTileInformation(
+                      passwordController, "Contraseña", TextInputType.text)
+                ],
+              ),
+              isActive: _currentStep >= 0),
+        ]);
   }
+
   Widget listTileInformation(TextEditingController controller, String title,
       TextInputType textInputType) {
     return ListTile(
-      title: Text(title),
-      subtitle: updateUser
-          ? boxField(controller, "Campo requerido", textInputType)
-          : Text(controllerLogin.dataUsuario[title.toLowerCase().trim()] != null
-              ? controllerLogin.dataUsuario[title.toLowerCase().trim()]
-                : title == "Contraseña" ? "**********" : "Sin datos"));
+        title: Text(title),
+        subtitle: updateUser
+            ? boxField(controller, "Campo requerido", textInputType)
+            : Text(
+                controllerLogin.dataUsuario[title.toLowerCase().trim()] != null
+                    ? controllerLogin.dataUsuario[title.toLowerCase().trim()]
+                    : title == "Contraseña"
+                        ? "**********"
+                        : "Sin datos"));
   }
+
   Widget boxField(TextEditingController controlador, String msgError,
       TextInputType textInputType) {
     return TextField(

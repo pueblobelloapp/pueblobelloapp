@@ -1,29 +1,15 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
 import 'package:app_turismo/main.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PropietarioController extends GetxController {
-
   final MyPropietarioRepository _myPropietarioRepository = getIt();
 
   Propietario? _toEdit;
-
-  XFile? _imagePerfil;
   Rx<bool> isLoading = Rx(false);
-
-  XFile? get imagePerfil => _imagePerfil;
-
-  void setImage(XFile? imageFile) async {
-    _imagePerfil = imageFile;
-    update();
-  }
 
   Future<void> savePropietario(
       String uidPropietario,

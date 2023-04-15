@@ -21,7 +21,6 @@ class Propietario extends Equatable {
       this.foto});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [id, rool, nombre, edad, genero, correo, contacto];
 
   Map<String, Object?> toFirebaseMap() {
