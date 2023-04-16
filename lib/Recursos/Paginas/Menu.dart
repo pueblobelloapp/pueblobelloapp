@@ -31,38 +31,41 @@ class _MenuModulsState extends State<MenuModuls> {
             body: controladorLogin.userRole == "true"
                 ? _listPropietario(context)
                 : _listAdmin(context)),
-        onWillPop: () async {
-          print("Entra");
-          if (shouldPop) {
-            return true;
-          } else {
-            showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                      title: const Text("Cerrar sesion"),
-                      content: const Text("Quieres cerrar sesion ?"),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              shouldPop = true;
-                            });
-                            controladorLogin.signOut();
-                            Navigator.of(context).pop();
-                            Get.to(() => LoginF());
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ));
-            return false;
-          }
-        });
+        onWillPop: () async => false);
   }
+
+  void closeSesion() {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Cerrar sesion"),
+            content: const Text("Quieres cerrar sesion ?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('No'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() => shouldPop = true);
+                  controladorLogin.signOut();
+                  Navigator.of(context).pop();
+                  Get.to(() => LoginF());
+                },
+                child: const Text('Si'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
+                ),
+              ),
+            ],
+          ));
+    }
+
 
   Widget _listPropietario(BuildContext context) {
     return ListView(
@@ -89,30 +92,20 @@ class _MenuModulsState extends State<MenuModuls> {
         padding: const EdgeInsets.all(8),
         children: ListTile.divideTiles(context: context, tiles: [
           _title(
-              "Sitios turisticos",
-              FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green),
-              "ModuleSitios",
-              ""),
-          _title(
-              "Culturas",
-              FaIcon(FontAwesomeIcons.award, color: Colors.green),
-              "MenuGestion",
-              "cultura"),
+              "Culturas", FaIcon(FontAwesomeIcons.award, color: Colors.green),
+              "MenuGestion", "cultura"),
           _title(
               "Gastronomias",
               FaIcon(FontAwesomeIcons.bowlFood, color: Colors.green),
-              "MenuGestion",
-              "gastronomia"),
+              "MenuGestion", "gastronomia"),
           _title(
               "Festividades",
               FaIcon(FontAwesomeIcons.calendar, color: Colors.green),
-              "MenuGestion",
-              "festividad"),
+              "MenuGestion", "festividad"),
           _title(
               "Religiones",
               FaIcon(FontAwesomeIcons.church, color: Colors.green),
-              "MenuGestion",
-              "religion"),
+              "MenuGestion", "religion"),
           _title(
               "Propietarios",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
@@ -142,16 +135,13 @@ class _MenuModulsState extends State<MenuModuls> {
   }
 
   Widget _btonCerrarSesion(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
         style: Constants.buttonPrimary,
+        icon: FaIcon(FontAwesomeIcons.doorOpen, color: Colors.white),
+        label: Text("Cerrar sesion"),
         onPressed: () {
-          setState(() {
-            shouldPop = true;
-          });
-          controladorLogin.signOut();
-          Navigator.of(context).pop();
-          Get.to(() => LoginF());
-        },
-        child: Text('Cerrar Sesión'));
+            closeSesion();
+        });
   }
 }
+

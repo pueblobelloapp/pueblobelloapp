@@ -57,9 +57,14 @@ class ListaSitiosTuristicos extends StatelessWidget {
         final GetxSitioTuristico _controllerGetxTurismo =
         Get.put(GetxSitioTuristico());
 
-        _controllerGetxTurismo.updateSitioTuristico(data['id'], data['nombre'],
-            data['tipoTurismo'], data['capacidad'],
-            data['descripcion'], data['ubicacion'], data['foto']);
+        _controllerGetxTurismo.updateSitioTuristico(
+            data['id'],
+            data['nombre'],
+            data['tipoTurismo'],
+            data['capacidad'],
+            data['descripcion'],
+            data['ubicacion'],
+            data['foto']);
 
         controllerTurismo.updateTapItem(1);
       },

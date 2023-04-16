@@ -13,11 +13,11 @@ class NavegacionSitioTuristico extends StatelessWidget {
 
     return GetBuilder<GextControllerTurismo>(builder: (controller) {
       return Scaffold(
+        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
           backgroundColor: Colors.green,
           centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: Text("App Turismo"),
+          title: Text("Gestion de sitios turisticos"),
         ),
         body: SafeArea(
           child: IndexedStack(
@@ -29,11 +29,11 @@ class NavegacionSitioTuristico extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.list),
+              icon: FaIcon(FontAwesomeIcons.barsStaggered),
               label: 'Listado',
             ),
             BottomNavigationBarItem(
-                icon: FaIcon(FontAwesomeIcons.plus), label: 'Agregar'),
+                icon: FaIcon(FontAwesomeIcons.houseFlag), label: 'Agregar'),
           ],
           currentIndex: controller.countTapItem,
           onTap: controller.updateTapItem,

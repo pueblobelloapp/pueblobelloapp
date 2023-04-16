@@ -214,7 +214,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                 _controllerGetxTurismo.buttonText.toString() == "Actualizar"
                     ? true
                     : false,
-            child: TextButton(
+            child: ElevatedButton(
               onPressed: () {
                 cleanForm();
               },
