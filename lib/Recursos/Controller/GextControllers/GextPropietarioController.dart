@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GextPropietarioController extends GetxController {
   String _id = "";
@@ -40,6 +41,15 @@ class GextPropietarioController extends GetxController {
     _contacto = propietario["contacto"];
     _dropdownValue = propietario["genero"];
     _buttonText = button;
+    update();
+  }
+
+  var imagePerfil = XFile('').obs;
+  var imagePerfilUrl = ''.obs;
+
+  void updateImagePerfil(XFile imageFile) async {
+    imagePerfil.value = imageFile;
+    print("Actualiza imagen");
     update();
   }
 
