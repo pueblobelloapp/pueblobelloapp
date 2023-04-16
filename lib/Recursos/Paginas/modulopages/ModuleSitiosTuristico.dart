@@ -219,10 +219,7 @@ class ModuleSitiosTuristicos extends StatelessWidget {
                 cleanForm();
               },
               child: Text("Cancelar"),
-              style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                  textStyle: const TextStyle(fontSize: 15)),
+              style: Constants.buttonCancel,
             ))
       ],
     );

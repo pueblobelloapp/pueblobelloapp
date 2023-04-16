@@ -12,4 +12,5 @@ abstract class MyPropietarioRepository {
   Future<void> editMyPropietarios(Propietario mySite);
   Future<void> deleteMyPropietario(Propietario mySite);
   Future<void> informationUser();
+  Future<void> saveImageProfile();
 }

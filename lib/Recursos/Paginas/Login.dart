@@ -108,7 +108,7 @@ class _LoginFState extends State<LoginF> {
                                   Get.to(() => RecuperarPassword());
                                 },
                                 child: AutoSizeText(
-                                  "Recuperar contraseña",
+                                  "¿Olvidaste tu conatraseña?",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.green),
                                   maxLines: 2,

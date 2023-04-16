@@ -55,18 +55,26 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       AutoSizeText(
-                        "Recibiras un correo para restablecer la contraseña",
-                        style: TextStyle(fontSize: 25, color: Colors.green),
+                        "Recupera tu cuenta",
+                        style: TextStyle(fontSize: 20, color: Colors.black87),
                         maxLines: 2,
                         minFontSize: 18,
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 10),
-                      AutoSizeText("Correo electronico",
-                          style: TextStyle(
-                              color: Colors.grey.shade500, fontSize: 15),
-                          minFontSize: 8,
-                          textAlign: TextAlign.center),
+                      const Divider(
+                        height: 20,
+                        thickness: 1,
+                        indent: 1,
+                        endIndent: 1,
+                        color: Colors.grey,
+                      ),
+                      AutoSizeText(
+                        "Ingresa tu correo electronico.",
+                        style: TextStyle(fontSize: 20, color: Colors.green),
+                        maxLines: 2,
+                        minFontSize: 18,
+                        textAlign: TextAlign.center,
+                      ),
                       SizedBox(height: 10),
                       TextFieldWidget(
                           _email,
@@ -76,13 +84,26 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
                           "Error, campo requerido",
                           TextInputType.emailAddress),
                       SizedBox(height: 10),
-                      ElevatedButton(
-                        style: Constants.buttonPrimary,
-                        onPressed: () {
-                          validateEmail();
-                        },
-                        child: const Text('Registrar'),
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            style: Constants.buttonPrimary,
+                            onPressed: () {
+                              validateEmail();
+                            },
+                            child: const Text('Buscar'),
+                          ),
+                          SizedBox(width: 10),
+                          ElevatedButton(
+                            style: Constants.buttonCancel,
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text('Volver'),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ))));
@@ -98,8 +119,8 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
             "Recuperacion",
             "Correo enviado para verificacion"),
         Get.back()
-      })
-          .catchError((onError) {
+
+      }).catchError((onError) {
         if (onError == "user-not-found") {
           messageController.messageWarning(
               "Correo invalido",
@@ -109,12 +130,11 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
               "Correo invalido",
               "Digita un correo valido.");
         }
-
       });
     } else {
       messageController.messageWarning(
           "Informacion",
-          "Validar correo electronico.");
+          "Verifique el correo electronico.");
     }
     _formkey.currentState?.reset();
     setState(() {

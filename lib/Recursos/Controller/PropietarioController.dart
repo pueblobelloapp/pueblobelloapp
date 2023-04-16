@@ -11,6 +11,10 @@ class PropietarioController extends GetxController {
   Propietario? _toEdit;
   Rx<bool> isLoading = Rx(false);
 
+  Future<void> saveImageProfile() async {
+    _myPropietarioRepository.saveImageProfile();
+  }
+
   Future<void> savePropietario(
       String uidPropietario,
       String nombre,

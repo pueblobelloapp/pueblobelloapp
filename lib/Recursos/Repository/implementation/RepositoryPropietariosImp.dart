@@ -38,4 +38,10 @@ class MyPropietarioImp extends MyPropietarioRepository {
     // TODO: implement updateEmailPropietario
     return _propietarioDataBase.informationUser();
   }
+
+  @override
+  Future<void> saveImageProfile() {
+    // TODO: implement saveImageProfile
+   return _propietarioDataBase.saveImageProfile();
+  }
 }

@@ -19,13 +19,11 @@ class PerfilPropietario extends StatefulWidget {
 class _PerfilPropietarioState extends State<PerfilPropietario> {
   ControllerLogin controllerLogin = Get.find();
   final PropietarioController controllerPropietario =
-                                            Get.put(PropietarioController());
+      Get.put(PropietarioController());
   final GetxUtils messageController = Get.put(GetxUtils());
-  final GextPropietarioController propietarioGext =
-                                          Get.put(GextPropietarioController());
+  final GextPropietarioController _propietarioController =
+      Get.put(GextPropietarioController());
 
-
-  final _formKey = GlobalKey<FormState>();
   TextEditingController contactController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
@@ -97,36 +95,40 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
       padding: EdgeInsets.fromLTRB(7, 0, 7, 0),
       child: Column(
         children: [
-              SizedBox(
-                height: 125,
-                width: 125,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  fit: StackFit.expand,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      backgroundImage: propietarioGext.imagePerfil != null ?
-                          AssetImage(propietarioGext.imagePerfil!.path) :
-                          AssetImage('assets/Icons/usuarioPerfil.png')
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: -25,
-                        child: RawMaterialButton(
-                          onPressed: () {
-                            //Consultar fotografia. Poner de momento mientras se actualiza la informacion
-                            selectMultPhoto();
-                          },
-                          elevation: 2.0,
-                          fillColor: Color(0xFFF5F6F9),
-                          child: Icon(Icons.camera_alt_outlined, color: Colors.blue,),
-                          padding: EdgeInsets.all(10.0),
-                          shape: CircleBorder(),
-                        )),
-                  ],
-                ),
-              ),
+          SizedBox(
+            height: 125,
+            width: 125,
+            child: Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                Obx(() => CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        _propietarioController.imagePerfilUrl.isEmpty
+                            ? AssetImage('assets/Icons/usuarioPerfil.png')
+                            : NetworkImage(_propietarioController.imagePerfilUrl
+                                .toString()) as ImageProvider)),
+                Positioned(
+                    bottom: 0,
+                    right: -25,
+                    child: RawMaterialButton(
+                      onPressed: () async {
+                        selectMultPhoto();
+                        controllerPropietario.saveImageProfile();
+                      },
+                      elevation: 2.0,
+                      fillColor: Color(0xFFF5F6F9),
+                      child: Icon(
+                        Icons.camera_alt_outlined,
+                        color: Colors.blue,
+                      ),
+                      padding: EdgeInsets.all(10.0),
+                      shape: CircleBorder(),
+                    )),
+              ],
+            ),
+          ),
           SizedBox(
             height: 20,
           ),
@@ -149,15 +151,12 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
   selectMultPhoto() async {
     try {
       final ImagePicker _picker = ImagePicker();
-      final XFile? selectedImage = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? selectedImage =
+          await _picker.pickImage(source: ImageSource.gallery);
 
       if (selectedImage != null) {
-        propietarioGext.updateImagePerfil(selectedImage);
+        _propietarioController.updateImagePerfil(selectedImage);
       }
-
-      setState(() {
-
-      });
     } catch (e) {
       messageController.messageWarning(
           "Fotografias", "No pudimos seleccionar las fotografias");
@@ -221,42 +220,7 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
         ElevatedButton(
             style: Constants.buttonPrimary,
             onPressed: () {
-              if (emailController.text.trim().isNotEmpty &&
-                  passwordController.text.trim().isNotEmpty &&
-                  nameController.text.trim().isNotEmpty &&
-                  contactController.text.trim().isNotEmpty &&
-                  ageController.text.trim().isNotEmpty &&
-                  genderController.text.trim().isNotEmpty) {
-                informationUser['contacto'] = contactController.text.trim();
-                informationUser['edad'] = ageController.text.trim();
-                informationUser['genero'] = genderController.text.trim();
-                informationUser['nombre'] = nameController.text.trim();
-                informationUser['correo'] = emailController.text.trim();
-
-                controllerPropietario
-                    .savePropietario(
-                        informationUser['id'],
-                        informationUser['nombre'],
-                        informationUser['rool'],
-                        informationUser['edad'],
-                        informationUser['genero'],
-                        informationUser['correo'],
-                        informationUser['contacto'])
-                    .then((value) => {
-                          //controllerLogin.updateDataUsuario(informationUser),
-                          messageController.messageInfo(
-                              "Actualziacion", "Se actualizaron los datos."),
-                          clearForm(),
-                          setState(() {
-                            updateUser = false;
-                          })
-                        })
-                    .catchError((error) =>
-                        {informationUser = controllerLogin.dataUsuario});
-              } else {
-                messageController.messageError(
-                    "Validacion", "Complete campos faltanes");
-              }
+              saveInformation();
             },
             child: Text("Actualizar")),
         SizedBox(width: 15),
@@ -271,6 +235,43 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
             child: Text("Calcelar"))
       ],
     );
+  }
+
+  void saveInformation() {
+    if (emailController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty &&
+        nameController.text.trim().isNotEmpty &&
+        contactController.text.trim().isNotEmpty &&
+        ageController.text.trim().isNotEmpty &&
+        genderController.text.trim().isNotEmpty) {
+      informationUser['contacto'] = contactController.text.trim();
+      informationUser['edad'] = ageController.text.trim();
+      informationUser['genero'] = genderController.text.trim();
+      informationUser['nombre'] = nameController.text.trim();
+      informationUser['correo'] = emailController.text.trim();
+
+      controllerPropietario
+          .savePropietario(
+              informationUser['id'],
+              informationUser['nombre'],
+              informationUser['rool'],
+              informationUser['edad'],
+              informationUser['genero'],
+              informationUser['correo'],
+              informationUser['contacto'])
+          .then((value) => {
+                messageController.messageInfo(
+                    "Actualziacion", "Se actualizaron los datos."),
+                clearForm(),
+                setState(() {
+                  updateUser = false;
+                })
+              })
+          .catchError(
+              (error) => {informationUser = controllerLogin.dataUsuario});
+    } else {
+      messageController.messageError("Validacion", "Complete campos faltanes");
+    }
   }
 
   Widget listViewInformation() {

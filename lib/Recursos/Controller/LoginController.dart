@@ -1,15 +1,20 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+
+import 'GextControllers/GextUtils.dart';
 
 class ControllerLogin extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
   final GextControllerTurismo _controllerTurismo =
-  Get.put(GextControllerTurismo());
-  //final editControlTurismo = Get.find<GextControllerTurismo>();
+        Get.put(GextControllerTurismo());
+  final GetxUtils messageController = Get.put(GetxUtils());
+  final GextPropietarioController propietarioController=
+        Get.put(GextPropietarioController());
 
   final Rx<dynamic> _uid = "".obs;
   final Rx<dynamic> _email = "Sin Registro".obs;
@@ -42,6 +47,7 @@ class ControllerLogin extends GetxController {
               _dataUsuario = value.data()!;
               _dataUsuario['rool'] == 'Propietario' ?
                               _userRole = "true" : _userRole = "false";
+              propietarioController.imagePerfilUrl.value = _dataUsuario["foto"];
               update();
           }).catchError((onError) {
             print("Se genero un error: " + onError);

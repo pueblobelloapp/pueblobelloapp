@@ -9,7 +9,7 @@ class Constants {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)));
 
   static ButtonStyle buttonCancel = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 15),
+      textStyle: const TextStyle(fontSize: 15, color: Colors.white),
       backgroundColor: Colors.red,
       padding: EdgeInsets.symmetric(horizontal: 23.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)));
