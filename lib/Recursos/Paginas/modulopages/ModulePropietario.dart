@@ -142,14 +142,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                 "Error, correo electronico del propietario.",
                 TextInputType.text),
             SizedBox(height: 10),
-            Text("Contraseña"),
-            TextFieldWidget(
-                _passwordPropietario,
-                FaIcon(FontAwesomeIcons.key, color: Colors.green),
-                "Contraseña.",
-                "Error, ingrese contraseña.",
-                TextInputType.text),
-            SizedBox(height: 10),
             Text("Numero telefonico"),
             TextFieldWidget(
                 _contactoPropietario,
@@ -162,26 +154,12 @@ class _ModulePropietarioState extends State<ModulePropietario> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 ElevatedButton.icon(
-                    icon: FaIcon(FontAwesomeIcons.image),
-                    style: Constants.buttonPrimary,
-                    onPressed: () async {
-                      final editController = Get.find<PropietarioController>();
-
-                      image =
-                          await _picker.pickImage(source: ImageSource.gallery);
-
-                    },
-                    label: const Text('Subir Imagenes',
-                        textAlign: TextAlign.center)),
-                ElevatedButton.icon(
                     icon: FaIcon(FontAwesomeIcons.floppyDisk),
                     style: Constants.buttonPrimary,
                     onPressed: () {
                       final editController = Get.find<PropietarioController>();
                       if (_formKey.currentState!.validate()) {
-
                         if (_uiPropietario.isEmpty) {
-                          //Actualizamos
                           editController.editSite(
                             _uiPropietario,
                               "Propietario",
@@ -192,7 +170,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                               _correoPropietario.text,
                           );
                         }
-
                         setState(() {});
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

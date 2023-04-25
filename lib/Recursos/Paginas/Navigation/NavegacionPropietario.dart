@@ -1,34 +1,32 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ListaInformacion.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleGestion.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/ListaPropietario.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-import '../GoogleLocation.dart';
+import '../modulopages/ModulePropietario.dart';
 
-class NavegacionGestion extends StatelessWidget {
-  NavegacionGestion({Key? key}) : super(key: key);
+class NavegacionPropietario extends StatelessWidget {
 
-  final GextControllerTurismo controllerTurismo =
-      Get.put(GextControllerTurismo());
+  final GextPropietarioController propietarioController =
+      Get.put(GextPropietarioController());
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GextControllerTurismo>(builder: (controller) {
+    return GetBuilder<GextPropietarioController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green,
           centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: Text("Modulo de ${controllerTurismo.typeInformation}"),
+          automaticallyImplyLeading: true,
+          title: Text("App Turismo"),
         ),
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
             children: [
-              ListInformationGestion(),
-              ModuleGestion()
+              ListaPropietario(),
+              ModulePropietario()
             ],
           ),
         ),

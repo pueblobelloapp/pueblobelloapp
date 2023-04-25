@@ -20,15 +20,20 @@ class ListaPropietario extends StatelessWidget {
       child: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
         stream: _propietarioStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-                child: Text('Lo sentimos se ha producido un error.'));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text('Cargando datos.'));
-          }
-          //if(!snapshot.hasData) return CircularProgressIndicator();
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Center(
+                  child: Text('Lo sentimos se ha producido un error.'));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: Text('Cargando datos.'));
+            }
+            if (snapshot.data!.docs.isEmpty) {
+              return Center(
+                  child: Text("Sin datos para mostrar",
+                      style: TextStyle(fontWeight: FontWeight.bold)));
+            }
           return ListView(
             children: snapshot.data!.docs
                 .map((DocumentSnapshot document) {
@@ -37,29 +42,24 @@ class ListaPropietario extends StatelessWidget {
                   return listaPropietario(data);
                 })
                 .toList()
-                .cast(),
-          );
-        },
-      )),
+                .cast());
+        }))
     );
   }
 
   Widget listaPropietario(Map<String, dynamic> data) {
     return ListTile(
-      leading: Image.network(data['foto']),
+      leading: data['foto'] == ""?
+                Image.asset('assets/Icons/usuarioPerfil.png')
+              : Image.network(data['foto']),
       title: Text(data['nombre']),
-      subtitle: Text(data['sitioturistico']),
+      subtitle: Text(""),
       trailing: Icon(Icons.arrow_forward_ios_outlined),
       onTap: () {
 
-        final GextControllerTurismo controllerTurismo =
-            Get.put(GextControllerTurismo());
-
         final editController = Get.find<GextPropietarioController>();
-
-        editController.updatePropietario( data, "Actualizar");
-
-        controllerTurismo.updateTapItem(1);
+        editController.updatePropietario(data, "Actualizar");
+        editController.updateTapItem(1);
       },
     );
   }

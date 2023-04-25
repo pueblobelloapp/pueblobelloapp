@@ -240,17 +240,7 @@ class _LoginFState extends State<LoginF> {
                   style: TextStyle(color: Colors.green),
                 ))
           ],
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Inicia sesion con",
-          style: TextStyle(
-            color: Colors.grey.shade500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 5),
-        Image.asset('assets/Icons/google.png', width: 30, height: 30)
+        )
       ],
     );
   }

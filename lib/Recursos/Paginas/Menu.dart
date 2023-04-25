@@ -89,14 +89,15 @@ class _MenuModulsState extends State<MenuModuls> {
 
   Widget _listAdmin(BuildContext context) {
     return ListView(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(5),
         children: ListTile.divideTiles(context: context, tiles: [
           _title(
-              "Culturas", FaIcon(FontAwesomeIcons.award, color: Colors.green),
+              "Culturas", FaIcon(FontAwesomeIcons.peopleArrows,
+              color: Colors.green),
               "MenuGestion", "cultura"),
           _title(
               "Gastronomias",
-              FaIcon(FontAwesomeIcons.bowlFood, color: Colors.green),
+              FaIcon(FontAwesomeIcons.plateWheat, color: Colors.green),
               "MenuGestion", "gastronomia"),
           _title(
               "Festividades",
@@ -107,12 +108,15 @@ class _MenuModulsState extends State<MenuModuls> {
               FaIcon(FontAwesomeIcons.church, color: Colors.green),
               "MenuGestion", "religion"),
           _title(
-              "Propietarios",
-              FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-              "MenuPropietario",
-              ""),
+              "Indigenas",
+              FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green),
+              "MenuGestion", "indigenas"),
+          _title(
+              "Cuenteros",
+              FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green),
+              "MenuGestion", "cuenteros"),
           Align(
-            heightFactor: 3.5,
+            heightFactor: 8.0,
             child: _btonCerrarSesion(context),
           )
         ]).toList());

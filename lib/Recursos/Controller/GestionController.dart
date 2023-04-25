@@ -42,7 +42,6 @@ class EditGestionController extends GetxController {
       String nombre,
       String descripcion,
       String ubicacion,
-      List<dynamic>? fotos
       ) async {
     isLoading.value = true;
 
@@ -50,10 +49,13 @@ class EditGestionController extends GetxController {
         id: uid,
         nombre: nombre,
         descripcion: descripcion,
-        ubicacion: ubicacion,
-        foto : fotos);
+        ubicacion: ubicacion);
 
     await _myCulturaRepository.saveMyGestion(_toEdit!);
     isLoading.value = false;
+  }
+
+  Future<void> deleteInformation(String uid, String module) async {
+    await _myCulturaRepository.deleteMyGestion(uid, module);
   }
 }
