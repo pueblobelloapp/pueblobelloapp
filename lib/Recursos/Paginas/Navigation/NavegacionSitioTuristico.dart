@@ -1,6 +1,6 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ListaSitiosTuristicos.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/ModuleSitiosTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ListaSitiosTuristicos.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ModuleSitiosTuristico.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';

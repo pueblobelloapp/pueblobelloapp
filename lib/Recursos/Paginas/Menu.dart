@@ -74,13 +74,11 @@ class _MenuModulsState extends State<MenuModuls> {
           _title(
               "Mis sitios turisticos",
               FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green),
-              "MenuSitioTuristico",
-              ""),
+              "MenuSitioTuristico"),
           _title(
               "Mi perfil",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-              "Propietario",
-              ""),Align(
+              "Propietario"),Align(
             heightFactor: 3.5,
             child: _btonCerrarSesion(context),
           )
@@ -94,27 +92,39 @@ class _MenuModulsState extends State<MenuModuls> {
           _title(
               "Culturas", FaIcon(FontAwesomeIcons.peopleArrows,
               color: Colors.green),
-              "MenuGestion", "cultura"),
+              "MenuGestion"),
+          _title(
+              "Etnoturismo",
+              FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green),
+              "MenuGestion"),
           _title(
               "Gastronomias",
               FaIcon(FontAwesomeIcons.plateWheat, color: Colors.green),
-              "MenuGestion", "gastronomia"),
+              "MenuGestion"),
           _title(
               "Festividades",
               FaIcon(FontAwesomeIcons.calendar, color: Colors.green),
-              "MenuGestion", "festividad"),
+              "MenuGestion"),
           _title(
               "Religiones",
               FaIcon(FontAwesomeIcons.church, color: Colors.green),
-              "MenuGestion", "religion"),
-          _title(
-              "Indigenas",
-              FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green),
-              "MenuGestion", "indigenas"),
+              "MenuGestion"),
           _title(
               "Cuenteros",
               FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green),
-              "MenuGestion", "cuenteros"),
+              "GestionSites"),
+          _title(
+              "Bienestar", FaIcon(FontAwesomeIcons.peopleArrows,
+              color: Colors.green),
+              "GestionSites"),
+          _title(
+              "Eccoturismo", FaIcon(FontAwesomeIcons.peopleArrows,
+              color: Colors.green),
+              "GestionSites"),
+          _title(
+              "Rural", FaIcon(FontAwesomeIcons.peopleArrows,
+              color: Colors.green),
+              "GestionSites"),
           Align(
             heightFactor: 8.0,
             child: _btonCerrarSesion(context),
@@ -123,7 +133,7 @@ class _MenuModulsState extends State<MenuModuls> {
   }
 
   Widget _title(
-      String title, FaIcon icono, String route, String nombreGestion) {
+      String title, FaIcon icono, String route) {
     return ListTile(
         title: Text(title,
             style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 17)),
@@ -134,7 +144,6 @@ class _MenuModulsState extends State<MenuModuls> {
         ),
         onTap: () {
           Get.toNamed(route);
-          _controllerTurismo.tipoGestion(nombreGestion);
         });
   }
 

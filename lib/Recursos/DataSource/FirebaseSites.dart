@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Controller/GextControllers/GetxSitioTuristico.dart';
+import '../Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 
 class SiteTuristicoDataSource {
   User get currentUser {

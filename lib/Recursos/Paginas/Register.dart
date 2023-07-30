@@ -179,7 +179,7 @@ class _RegistrarState extends State<Registrar> {
           labelStyle: TextStyle(color: Colors.green),
         ),
         validator: (value) {
-          if (value!.isEmpty) {
+          if (value == null || value.isEmpty) {
             return msgError;
           }
         },
