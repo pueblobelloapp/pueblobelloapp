@@ -20,214 +20,201 @@ class ModuleSitiosTuristicos extends StatefulWidget {
 }
 
 class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
-  /*final GetxSitioTuristico _controllerGetxTurismo =
-      Get.put(GetxSitioTuristico());*/
 
-  final nombreController = TextEditingController();
-  final tipoTurismoController = TextEditingController();
-  final descripcionController = TextEditingController();
-  final direccionController = TextEditingController();
-  final ubicacionController = TextEditingController();
-
-  final controllerSitio = Get.find<GetxSitioTuristico>();
-  final editControlTurismo = Get.find<GextControllerTurismo>();
-  final utilsController = Get.find<GetxUtils>();
-
-  bool stateSiteChecked = false;
-
-  List<dynamic>? listFotografias = [];
-  List<dynamic>? listContacto = [];
-  List<dynamic>? listApertura = [];
-  List<dynamic>? listComentarios = [];
-  List<dynamic>? listServicios = [];
-
-  bool estadoController = true;
-
-  //String ubicacionController = "Sin Ubicacion";
-  String uidUsuarioAcces = "";
-
+  Position? _position;
+  final _nombreST = TextEditingController();
+  final _tipoTurismo = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  int _currentStep = 0;
-  bool updateUser = false;
-  bool isValid = true;
+  final _capacidadST = TextEditingController();
+  final _descripcionST = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _ubicacionST = "";
+  String _uidUser = "";
 
   @override
   Widget build(BuildContext context) {
-    uidUsuarioAcces = editControlTurismo.uidUser;
+    final siteToEdit = Get.arguments as SitioTuristico?;
+    final GextControllerTurismo _controllerTurismo =
+    Get.put(GextControllerTurismo());
+    final editControlTurismo = Get.find<GextControllerTurismo>();
+    _uidUser = editControlTurismo.uidUser;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+    return  SingleChildScrollView(
         reverse: true,
-        child: Formulario(context),
-      ),
-    );
+        child: Formulario(),
+      );
   }
 
-  Widget Formulario(BuildContext context) {
+  Widget Formulario() {
     final listTypeTravel = ["Cultural", "Rural", "Ecoturismo", "Bienestar"];
-    final _formKey = GlobalKey<FormState>();
-    SitioTuristico sitioTuristico;
-
-    sitioTuristico = controllerSitio.sitioTuristico;
-
-    nombreController.text = sitioTuristico.nombre;
-    descripcionController.text = sitioTuristico.descripcion;
-    ubicacionController.text = sitioTuristico.ubicacion;
-    tipoTurismoController.text = sitioTuristico.tipoTurismo;
-    listFotografias = sitioTuristico.foto;
 
     return Container(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(40.0),
         child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(
-                  child: BodyApp(),
+                Text("Nombre", textDirection: TextDirection.rtl),
+                textForm(
+                    _nombreST, "Nombre sitio turistico", 1, TextInputType.name),
+                SizedBox(height: 15),
+                Text("Tipo de turismo"),
+                ListTravel(_tipoTurismo, listTypeTravel),
+                SizedBox(height: 15),
+                Text("Capacidad personas"),
+                //textForm(_capacidadST, "tEXTO", 1)
+                textForm(
+                    _capacidadST, "Cantidad personas", 1, TextInputType.number),
+                SizedBox(height: 15),
+                Text(
+                  "Descripcion",
+                  textDirection: TextDirection.rtl,
+                ),
+                textForm(_descripcionST, "Descripcion del sitio", 5,
+                    TextInputType.name),
+                SizedBox(height: 15),
+                Text(
+                  "Carga de fotografias",
+                  textDirection: TextDirection.rtl,
+                ),
+                TextButton.icon(
+                    onPressed: () async {},
+                    icon: Icon(
+                      Icons.photo,
+                      color: Colors.green,
+                    ),
+                    label: Text(
+                      "Seleccionar",
+                      style: TextStyle(color: Colors.green),
+                    )),
+                Text("Ubicacion geografica"),
+                Text(_ubicacionST),
+                TextButton.icon(
+                    onPressed: () {
+                      _getCurrentLocation();
+                    },
+                    icon: Icon(
+                      Icons.location_on,
+                      color: Colors.green,
+                    ),
+                    label: Text(
+                      "Ubicar",
+                      style: TextStyle(color: Colors.green),
+                    )),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        final editController = Get.find<EditSitesController>();
+
+                        if (_nombreST.text.isEmpty ||
+                            _capacidadST.text.isEmpty ||
+                            _tipoTurismo.text.isEmpty ||
+                            _tipoTurismo.text.isEmpty ||
+                            _descripcionST.text.isEmpty ||
+                            _ubicacionST.isEmpty) {
+                          print("Error campos vacios");
+                          Get.showSnackbar(const GetSnackBar(
+                            title: 'Validacion de datos',
+                            message: 'Error datos faltantes',
+                            icon: Icon(Icons.app_registration),
+                            duration: Duration(seconds: 4),
+                            backgroundColor: Colors.red,
+                          ));
+                        } else {
+                          print("Turismo registrado con : " + _uidUser);
+                        }
+                      },
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.green,
+                          textStyle: const TextStyle(fontSize: 15)),
+                      child: const Text("REGISTRAR"),
+                    )
+                  ],
                 )
               ],
             )));
   }
 
-  tapped(int step) {
-    setState(() => _currentStep = step);
+  Widget textForm(TextEditingController _controller, String HintText,
+      int LinesMax, TextInputType textInputType) {
+    return TextFormField(
+        controller: _controller,
+        maxLines: LinesMax,
+        keyboardType: textInputType,
+        textCapitalization: TextCapitalization.sentences,
+        cursorColor: Colors.black,
+        decoration: InputDecoration(
+          focusedBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(16.0),
+          filled: true,
+          fillColor: Colors.green.shade300,
+          hintText: HintText,
+          hintStyle: TextStyle(color: Colors.white),
+        ));
   }
 
-  continued() {
-    _currentStep < 2 ? setState(() => _currentStep += 1) : null;
-  }
-
-  cancel() {
-    _currentStep > 0 ? setState(() => _currentStep -= 1) : null;
-  }
-
-  Widget buttonContinue(buildContext, details) {
-    return Row(
-      children: [
-        _currentStep <= 1
-            ? ElevatedButton(
-                onPressed: continued,
-                child: const Text("Continuar"),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green))
-            : ElevatedButton(
-                onPressed: cancel,
-                child: const Text("Atras"),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green))
-      ],
-    );
-  }
-
-  Widget BodyApp() {
-    SitioTuristico sitioTuristico;
-    sitioTuristico = controllerSitio.sitioTuristico;
-
-    return Container(
-      child: Stepper(
-        type: StepperType.vertical,
-        physics: ScrollPhysics(),
-        currentStep: _currentStep,
-        onStepTapped: (step) => tapped(step),
-        controlsBuilder: buttonContinue,
-        steps: <Step>[
-          Step(
-              title: new Text('Informacion'),
-              content: Column(
-                children: <Widget>[
-                  listTileInformation(nombreController, "Nombre sitio",
-                      TextInputType.text, sitioTuristico.nombre),
-                  listTileInformation(
-                      descripcionController,
-                      "Descripcion sitio",
-                      TextInputType.text,
-                      sitioTuristico.descripcion),
-                  listTileInformation(ubicacionController, "Ubicacion sitio",
-                      TextInputType.text, sitioTuristico.ubicacion),
-                  checkboxState("Estado", sitioTuristico.estado)
-                ],
-              ),
-              isActive: _currentStep >= 0),
-          Step(
-              title: new Text('Contactos'),
-              content: Column(
-                children: <Widget>[
-                  listTileInformation(direccionController, "Direccion sitio",
-                      TextInputType.text, sitioTuristico.direccion),
-
-
-
-
-
-                ],
-              ),
-              isActive: _currentStep >= 1),
-          Step(
-              title: new Text('Contactos'),
-              content: Column(
-                children: <Widget>[
-                  listTileInformation(direccionController, "Direccion sitio",
-                      TextInputType.text, sitioTuristico.direccion),
-                ],
-              ),
-              isActive: _currentStep >= 0),
-        ],
+  Widget ListTravel(
+      TextEditingController _tipoTurismo, List<String> listTypeCulture) {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.green.shade300,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        contentPadding: EdgeInsets.all(16.0),
+      ),
+      isExpanded: true,
+      dropdownColor: Colors.green.shade300,
+      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
+      items: listTypeCulture.map((listTypeCulture) {
+        return DropdownMenuItem(
+            value: listTypeCulture,
+            child: Text(
+              'Turismo $listTypeCulture',
+              style: TextStyle(color: Colors.white),
+            ));
+      }).toList(),
+      onChanged: ((value) => setState(() {
+        _tipoTurismo.text = "Turismo";
+        _tipoTurismo.text += value!;
+      })),
+      hint: Text(
+        'Seleccione un tipo de turismo',
+        style: TextStyle(color: Colors.white),
       ),
     );
   }
 
-  Widget optionCheckbox() {
-    return Checkbox(
-        value: stateSiteChecked,
-        onChanged: (bool? value) {
-          setState(() {
-            stateSiteChecked = value!;
-          });
-        });
+  //Funciones para localizacion
+  void _getCurrentLocation() async {
+    Position position = await _determinePosition();
+    setState(() {
+      _position = position;
+      _ubicacionST = _position.toString();
+    });
   }
 
-  Widget TextFieldWidget(TextEditingController controlador, String textGuide,
-      String msgError, TextInputType textInputType) {
-    return TextFormField(
-        controller: controlador,
-        keyboardType: textInputType,
-        decoration: InputDecoration(
-          fillColor: Colors.grey.shade300,
-          filled: true,
-          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              borderSide: BorderSide(color: Colors.green)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          hintText: textGuide,
-          labelStyle: TextStyle(color: Colors.green),
-        ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return msgError;
-          }
-        },
-        cursorColor: Colors.green);
+  Future<Position> _determinePosition() async {
+    LocationPermission permission;
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location Permissions are denied');
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
-  Widget listTileInformation(TextEditingController controller, String title,
-      TextInputType textInputType, valorSitio) {
-    return ListTile(
-        title: Text(title),
-        subtitle: updateUser
-            ? TextFieldWidget(
-                controller, "Nombre", "Digite campo", textInputType)
-            : Text(valorSitio));
-  }
-
-  Widget checkboxState(String title, bool valorSitio) {
-    return ListTile(
-        title: Text(title),
-        subtitle: updateUser
-            ? optionCheckbox()
-            : Text(valorSitio ? "Abierto" : "Cerrado"));
-  }
 }
