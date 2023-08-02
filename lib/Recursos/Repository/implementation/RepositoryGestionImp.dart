@@ -5,18 +5,17 @@ import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
 
-
 class MyRepositoryGestionImp extends MyGestionRepository {
   final GestionDataBase _gestionDataBase = getIt();
 
   @override
-  Future<void> deleteMyGestion(GestionModel myGestion) {
+  Future<void> deleteMyGestion(String uid, String module) async {
     // TODO: implement deleteMyCultura
-    throw UnimplementedError();
+    _gestionDataBase.deleteInformation(uid, module);
   }
 
   @override
-  Future<void> editMyGestion(GestionModel myGestion, File? image) {
+  Future<void> editMyGestion(GestionModel myGestion) {
     // TODO: implement editMyCultura
     throw UnimplementedError();
   }
@@ -34,9 +33,9 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   }
 
   @override
-  Future<void> saveMyGestion(GestionModel myGestion, File? image) {
+  Future<void> saveMyGestion(GestionModel myGestion) {
     // TODO: implement saveMyCultura
-    return _gestionDataBase.saveGestion(myGestion, image);
+    return _gestionDataBase.saveGestion(myGestion);
   }
 
 }

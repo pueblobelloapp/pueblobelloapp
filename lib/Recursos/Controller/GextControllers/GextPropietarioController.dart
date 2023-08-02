@@ -1,20 +1,22 @@
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GextPropietarioController extends GetxController {
+
+  int _countTapItem = 0;
   String _id = "";
   String _nombre = "";
   String _sitioTuristico = "";
   String _edad = "";
   String _correo = "";
-  String _clave = "";
+  String _clave = "La clave";
   String _foto = "";
   String _contacto = "";
-  String _genero = "Masculino";
-  String _buttonText = "";
+  String _genero = "";
+  String _buttonText = "Registrar";
   String _dropdownValue = "";
 
   List<String> list = <String>['Masculino', 'Femenino'];
-
 
   String get id => _id;
   String get nombre => _nombre;
@@ -26,34 +28,34 @@ class GextPropietarioController extends GetxController {
   String get contacto => _contacto;
   String get genero => _genero;
   String get buttonText => _buttonText;
-
+  int get countTapItem => _countTapItem;
   String get dropdownValue => _dropdownValue;
 
-  void updatePropietario(
-      String id,
-      String nombre,
-      String sitioTuristico,
-      String edad,
-      String correo,
-      String clave,
-      String foto,
-      String contacto,
-      String genero,
-      String buttonText) {
-
-    print("Llega informacion" + id);
-    _id = id;
-    _nombre = nombre;
-    _sitioTuristico = sitioTuristico;
-    _edad = edad;
-    _correo = correo;
-    _clave = clave;
-    _foto = foto;
-    _contacto = contacto;
-    _dropdownValue = genero;
-    _buttonText = buttonText;
+  void updateTapItem(int posicion) {
+    _countTapItem = posicion;
     update();
+  }
 
+  void updatePropietario(Map<String, dynamic> propietario, String button) {
+    print("Llega informacion" + propietario["uid"]);
+    _id = propietario["uid"];
+    _nombre = propietario["nombre"];
+    _edad = propietario["edad"];
+    _correo = propietario["correo"];
+    _foto = propietario["foto"];
+    _contacto = propietario["contacto"];
+    _dropdownValue = propietario["genero"];
+    _buttonText = button;
+    update();
+  }
+
+  var imagePerfil = XFile('').obs;
+  var imagePerfilUrl = ''.obs;
+
+  void updateImagePerfil(XFile imageFile) async {
+    imagePerfil.value = imageFile;
+    print("Actualiza imagen");
+    update();
   }
 
   void updateButtonText(String button) {
@@ -61,8 +63,22 @@ class GextPropietarioController extends GetxController {
     update();
   }
 
-  void updateGenero(String genero ) {
+  void updateGenero(String genero) {
     _dropdownValue = genero;
+    update();
+  }
+
+  void cleanPropietario() {
+    _id = "";
+    _nombre = "";
+    _sitioTuristico = "";
+    _edad = "";
+    _correo = "";
+    _clave = "";
+    _foto = "";
+    _contacto = "";
+    _dropdownValue = "";
+    _buttonText = "Registrar";
     update();
   }
 }

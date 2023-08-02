@@ -1,12 +1,16 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
+
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:core';
+import 'package:email_validator/email_validator.dart';
 
 class LoginF extends StatefulWidget {
   LoginF({Key? key}) : super(key: key);
@@ -18,10 +22,12 @@ class LoginF extends StatefulWidget {
 class _LoginFState extends State<LoginF> {
   TextEditingController _userL = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
-  ControllerLogin controllerLogin = Get.find();
 
-  final GextControllerTurismo _controllerTurismo =
-      Get.put(GextControllerTurismo());
+  String mensajeNotification = "Error";
+  bool isLoading = false;
+
+  ControllerLogin controllerLogin = Get.find();
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -30,22 +36,23 @@ class _LoginFState extends State<LoginF> {
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
-                children: [ImagenLogo(), FormLogin(), SocialNetworks()])));
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [ImagenLogo(), FormLogin(), OptionSesion()])));
   }
 
   Widget ImagenLogo() {
     return SafeArea(
-      child: Image.asset(
-        'assets/img/Logo.png',
-        width: 300,
-        height: 300,
-      ),
-    );
+        child: Image.asset(
+      'assets/img/Logo.png',
+      width: 250,
+      height: 250,
+    ));
   }
 
   Widget FormLogin() {
     return Padding(
-        padding: EdgeInsets.fromLTRB(25, 5, 25, 5),
+        padding: EdgeInsets.fromLTRB(25, 0, 25, 5),
         child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -55,7 +62,7 @@ class _LoginFState extends State<LoginF> {
             child: Form(
                 key: _formKey,
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+                  margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -65,12 +72,12 @@ class _LoginFState extends State<LoginF> {
                               color: Colors.green,
                               fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
-                      Text("Digite datos para iniciar sesion",
-                          style: TextStyle(color: Colors.grey.shade500)),
-                      SizedBox(height: 10),
                       TextFieldWidget(
                           _userL,
-                          Icon(Icons.email, color: Colors.green),
+                          FaIcon(
+                            FontAwesomeIcons.envelope,
+                            color: Colors.green,
+                          ),
                           "Digite correo electronico",
                           false,
                           "Error, compruebe correo.",
@@ -78,8 +85,8 @@ class _LoginFState extends State<LoginF> {
                       SizedBox(height: 20),
                       TextFieldWidget(
                           _passwordL,
-                          Icon(
-                            Icons.password,
+                          FaIcon(
+                            FontAwesomeIcons.lock,
                             color: Colors.green,
                           ),
                           "Digite contraseña",
@@ -89,76 +96,98 @@ class _LoginFState extends State<LoginF> {
                       Container(
                         margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextButton(
-                              onPressed: () {
-                                Get.to(() => Registrar());
-                              },
-                              child: Text("Registrarme",
-                                  style: TextStyle(color: Colors.green)),
-                            ),
-                            TextButton(
                                 onPressed: () {
                                   //Move to page Recovery password
+                                  Get.to(() => RecuperarPassword());
                                 },
                                 child: AutoSizeText(
-                                  "Recuperar contraseña",
-                                  style: TextStyle(fontSize: 30),
+                                  "¿Olvidaste tu conatraseña?",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.green),
                                   maxLines: 2,
                                 ))
                           ],
                         ),
                       ),
                       ElevatedButton(
-                        style: Constants.buttonPrimary,
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            controllerLogin
-                                .getLogin(_userL.text, _passwordL.text)
-                                .then((value) => {
-                                      if (controllerLogin.email !=
-                                              "Sin Registro" &&
-                                          controllerLogin.userRole != "")
-                                        {
-                                          print("Rol accedido: " +
-                                              controllerLogin.userRole),
-                                          Get.to(() => MenuModuls())
-                                        }
-                                      else
-                                        {
-                                          Get.showSnackbar(const GetSnackBar(
-                                            title: 'Validacion de Usuarios',
-                                            message:
-                                                'Error desde la validacion',
-                                            icon: Icon(Icons.person_add),
-                                            duration: Duration(seconds: 4),
-                                            backgroundColor: Colors.red,
-                                          ))
-                                        }
-                                    })
-                                .catchError((onerror) {
-                              Get.showSnackbar(const GetSnackBar(
-                                title: 'Validacion de Usuarios',
-                                message: 'Error desde la Excepcion',
-                                icon: Icon(Icons.person_add),
-                                duration: Duration(seconds: 4),
-                                backgroundColor: Colors.red,
-                              ));
-                            });
-                          }
-                        },
-                        child: const Text('Acceder'),
-                      ),
+                          style: Constants.buttonPrimary,
+                          onPressed: () {
+                            validateLogin();
+                          },
+                          child: isLoading
+                              ? Center(
+                                  child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 20.0,
+                                      width: 20.0,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(width: 10.5),
+                                    Text("Iniciando sesion")
+                                  ],
+                                ))
+                              : Center(child: Text("Acceder"))),
                     ],
                   ),
                 ))));
   }
 
+  void validateLogin() {
+    final bool isValid = EmailValidator.validate(_userL.text);
+
+    if (_formKey.currentState!.validate() && isValid) {
+      setState(() {
+        isLoading = true;
+      });
+
+      controllerLogin
+          .getLogin(_userL.text, _passwordL.text)
+          .then((value) => {
+                if (controllerLogin.email != "Sin Registro" &&
+                    controllerLogin.userRole != "")
+                  {
+                    print(controllerLogin.dataUsuario.toString()),
+                    Get.to(() => MenuModuls())
+                  }
+                else
+                  {
+                    messageController.messageWarning(
+                        "Usuario", "No te encuentras registrado"),
+                    Get.to(() => MenuModuls())
+                  }
+              })
+          .catchError((onerror) {
+        if (onerror == "wrong-password") {
+          mensajeNotification = "Contraseña incorrecta";
+        } else if (onerror == "user-not-found") {
+          mensajeNotification = "Email no existe.";
+        } else if (onerror == "network-request-failed"){
+          mensajeNotification = "No pudimos consultar tu usuario.";
+        } else {
+          mensajeNotification = onerror.toString();
+        }
+
+        setState(() {
+          isLoading = false;
+        });
+        print("Errpr: " + onerror.toString());
+        messageController.messageError("Validacion", mensajeNotification);
+      });
+    } else {
+      messageController.messageWarning("Validacion", "Compruebe los datos");
+    }
+  }
+
   Widget TextFieldWidget(
       TextEditingController controlador,
-      icon,
+      FaIcon icono,
       String textGuide,
       bool estate,
       String msgError,
@@ -168,7 +197,10 @@ class _LoginFState extends State<LoginF> {
         keyboardType: textInputType,
         obscureText: estate,
         decoration: InputDecoration(
-          prefixIcon: icon,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: icono,
+          ),
           fillColor: Colors.grey.shade300,
           filled: true,
           enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
@@ -189,18 +221,30 @@ class _LoginFState extends State<LoginF> {
         cursorColor: Colors.green);
   }
 
-  Widget SocialNetworks() {
+  Widget OptionSesion() {
     return Column(
       children: [
-        Text(
-          "- O - \n\n Inicia sesion con",
-          style: TextStyle(
-            color: Colors.grey.shade500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 10),
-        Image.asset('assets/Icons/google.png', width: 30, height: 30)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "No tienes una cuenta?",
+              style: TextStyle(
+                color: Colors.grey.shade500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            TextButton(
+                onPressed: () {
+                  Get.to(() => Registrar());
+                },
+                child: Text(
+                  "Crear cuenta",
+                  style: TextStyle(color: Colors.green),
+                ))
+          ],
+        )
       ],
     );
   }

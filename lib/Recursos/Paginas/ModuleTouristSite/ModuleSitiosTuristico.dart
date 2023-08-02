@@ -1,27 +1,26 @@
-// ignore_for_file: unnecessary_null_comparison, deprecated_member_use, unused_local_variable, unused_import, unnecessary_import
-
+import 'dart:async';
 import 'dart:io';
 
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Controller/LoginController.dart';
-import 'package:app_turismo/Recursos/Controller/SitesController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/GoogleLocation.dart';
-import 'package:app_turismo/Recursos/Paginas/Menu.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Controller/SitesController.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:geolocator/geolocator.dart';
 
-class ModuleSitiosTuristico extends StatefulWidget {
-  const ModuleSitiosTuristico({Key? key}) : super(key: key);
-
+class ModuleSitiosTuristicos extends StatefulWidget {
   @override
-  State<ModuleSitiosTuristico> createState() => _ModuleSitiosTuristicoState();
+  State<ModuleSitiosTuristicos> createState() => _ModuleSitiosTuristicosState();
 }
 
-class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
+class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
+
   Position? _position;
   final _nombreST = TextEditingController();
   final _tipoTurismo = TextEditingController();
@@ -34,53 +33,16 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
   @override
   Widget build(BuildContext context) {
-    ControllerLogin controllerLogin = Get.find();
     final siteToEdit = Get.arguments as SitioTuristico?;
-    final editController = Get.put(EditSitesController(siteToEdit));
-
     final GextControllerTurismo _controllerTurismo =
-        Get.put(GextControllerTurismo());
+    Get.put(GextControllerTurismo());
     final editControlTurismo = Get.find<GextControllerTurismo>();
     _uidUser = editControlTurismo.uidUser;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.green.shade400,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MenuModuls()));
-            },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
-            )),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.output_sharp,
-                color: Colors.black,
-              )),
-        ],
-        title: Align(
-          child: Text(
-            'Módulo sitios turístico',
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          alignment: Alignment.center,
-        ),
-      ),
-      body: SingleChildScrollView(
+    return  SingleChildScrollView(
         reverse: true,
         child: Formulario(),
-      ),
-    );
+      );
   }
 
   Widget Formulario() {
@@ -118,14 +80,7 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                   textDirection: TextDirection.rtl,
                 ),
                 TextButton.icon(
-                    onPressed: () async {
-                      final editController = Get.find<EditSitesController>();
-                      PickedFile? _pickedFile =
-                          await _picker.getImage(source: ImageSource.gallery);
-                      if (_pickedFile != null) {
-                        editController.setImage(File(_pickedFile.path));
-                      }
-                    },
+                    onPressed: () async {},
                     icon: Icon(
                       Icons.photo,
                       color: Colors.green,
@@ -172,13 +127,6 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
                           ));
                         } else {
                           print("Turismo registrado con : " + _uidUser);
-                          editController.saveSite(
-                              _nombreST.text,
-                              _capacidadST.text,
-                              _tipoTurismo.text,
-                              _descripcionST.text,
-                              _position.toString(),
-                              _uidUser);
                         }
                       },
                       style: TextButton.styleFrom(
@@ -235,9 +183,9 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
             ));
       }).toList(),
       onChanged: ((value) => setState(() {
-            _tipoTurismo.text = "Turismo";
-            _tipoTurismo.text += value!;
-          })),
+        _tipoTurismo.text = "Turismo";
+        _tipoTurismo.text += value!;
+      })),
       hint: Text(
         'Seleccione un tipo de turismo',
         style: TextStyle(color: Colors.white),
@@ -268,4 +216,5 @@ class _ModuleSitiosTuristicoState extends State<ModuleSitiosTuristico> {
 
     return await Geolocator.getCurrentPosition();
   }
+
 }

@@ -1,18 +1,25 @@
 import 'dart:io';
-
+import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
-
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 
 class SiteTuristicoDataSource {
-
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
     if (myUsers == null) throw Exception('Not authenticated exception');
     return myUsers;
   }
+
+  final GextControllerTurismo controllerTurismo =
+      Get.put(GextControllerTurismo());
+
+  final GetxSitioTuristico controllerSitioTuristicos =
+      Get.put(GetxSitioTuristico());
 
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
   FirebaseStorage get storage => FirebaseStorage.instance;
@@ -24,32 +31,47 @@ class SiteTuristicoDataSource {
 
   // Creates or updates a document in myUser collection. If image is not null
   // it will create or update the image in Firebase Storage
-  Future<void> saveMySite(SitioTuristico sitioTuristico, File? image) async {
+  Future<void> saveMySite(SitioTuristico sitioTuristico) async {
+
     final ref = firestore.doc('sites/${sitioTuristico.id}');
+    List<String>? urlFotografias = [];
+    print("Iniciando guardado: " + sitioTuristico.toString());
 
-
-    if (image != null) {
-      // Delete current image if exists
-      if (sitioTuristico.foto != null) {
-        await storage.refFromURL(sitioTuristico.foto!).delete();
-      }
-
-      final fileName = image.uri.pathSegments.last;
-      final imagePath = '${currentUser.uid}/mySiteImages/$fileName';
-
-      final storageRef = storage.ref(imagePath);
-      await storageRef.putFile(image);
-      final url = await storageRef.getDownloadURL();
-      sitioTuristico = sitioTuristico.copyWith(foto: url);
+    /*TODO: Si no es vacio entonces selecciono fotografias, se debe borrar,
+    * tener en cuenta, borrar fotografias que ya se tenian guardadas para poder
+    * actualizar las que vienen.
+    * */
+    if (controllerSitioTuristicos.imageFileList.isNotEmpty) {
+      print("Busca fotos");
+      urlFotografias = await uploadFiles(controllerSitioTuristicos.imageFileList);
+      print("Resultados: " + urlFotografias.toString());
+      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias);
+      controllerSitioTuristicos.imageFileList.clear();
     }
     await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  Stream<Iterable<SitioTuristico>> getAllSites() {
-    return firestore
-        .collection('sites/')
-        .snapshots()
-        .map((it) => it.docs.map((e) => SitioTuristico.fromFirebaseMap(e.data())));
+  Future <List<String>> uploadFiles(List<XFile> _images) async {
+    var imageUrls = await Future.wait(_images.map((_image) => uploadFile(_image)));
+    return imageUrls;
   }
 
+  Future<String> uploadFile(XFile _image) async {
+    final storageReference = storage.ref().child('posts/${_image.path}');
+    await storageReference.putFile(File(_image.path));
+    return await storageReference.getDownloadURL();
+  }
+
+  Stream<Iterable<SitioTuristico>> getAllSites() {
+    return firestore.collection('sites/').snapshots().map(
+        (it) => it.docs.map((e) => SitioTuristico.fromFirebaseMap(e.data())));
+  }
+
+  Stream<QuerySnapshot> getSitesUid() {
+    print("Uid: " + controllerTurismo.uidUser);
+    return firestore
+        .collection('sites')
+        .where("userId", isEqualTo: controllerTurismo.uidUser)
+        .snapshots();
+  }
 }

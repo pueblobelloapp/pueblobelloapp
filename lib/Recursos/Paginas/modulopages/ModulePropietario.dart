@@ -1,4 +1,3 @@
-// ignore_for_file: sort_child_properties_last, non_constant_identifier_names
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
@@ -48,17 +47,14 @@ class _ModulePropietarioState extends State<ModulePropietario> {
   }
 
   Widget Formulario() {
-    final editController = Get.put(PropietarioController((propietarioToEdit)));
-    final editControlPropietario = Get.find<GextPropietarioController>();
-
-    _uiPropietario = controllerPropietario.id ?? '';
-    _nombrePropietario.text = controllerPropietario.nombre ?? '';
+    _uiPropietario = controllerPropietario.id;
+    _nombrePropietario.text = controllerPropietario.nombre;
     _sitioTuristicoPropietario.text =
-        controllerPropietario.sitioTuristico ?? '';
-    _correoPropietario.text = controllerPropietario.correo ?? '';
-    _edadPropietario.text = controllerPropietario.edad ?? '';
-    _contactoPropietario.text = controllerPropietario.contacto ?? '';
-    _passwordPropietario.text = controllerPropietario.clave ?? '';
+        controllerPropietario.sitioTuristico;
+    _correoPropietario.text = controllerPropietario.correo;
+    _edadPropietario.text = controllerPropietario.edad;
+    _contactoPropietario.text = controllerPropietario.contacto;
+
     XFile? image = null;
 
     return Form(
@@ -72,14 +68,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                 _nombrePropietario,
                 FaIcon(FontAwesomeIcons.user, color: Colors.green),
                 "Nombre del propietario",
-                "Error, digite nombre del propietario.",
-                TextInputType.text),
-            SizedBox(height: 10),
-            Text("Sitio turistico"),
-            TextFieldWidget(
-                _sitioTuristicoPropietario,
-                FaIcon(FontAwesomeIcons.houseCrack, color: Colors.green),
-                "Nombre del sitio turistico.",
                 "Error, digite nombre del propietario.",
                 TextInputType.text),
             SizedBox(height: 10),
@@ -154,14 +142,6 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                 "Error, correo electronico del propietario.",
                 TextInputType.text),
             SizedBox(height: 10),
-            Text("Contraseña"),
-            TextFieldWidget(
-                _passwordPropietario,
-                FaIcon(FontAwesomeIcons.key, color: Colors.green),
-                "Contraseña.",
-                "Error, ingrese contraseña.",
-                TextInputType.text),
-            SizedBox(height: 10),
             Text("Numero telefonico"),
             TextFieldWidget(
                 _contactoPropietario,
@@ -174,60 +154,22 @@ class _ModulePropietarioState extends State<ModulePropietario> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 ElevatedButton.icon(
-                    icon: FaIcon(FontAwesomeIcons.image),
-                    style: Constants.buttonPrimary,
-                    onPressed: () async {
-                      final editController = Get.find<PropietarioController>();
-
-                      image =
-                          await _picker.pickImage(source: ImageSource.gallery);
-
-                      if (image != null) {
-                        editController.setImage(File(image!.path));
-                      }
-                    },
-                    label: const Text('Cargar\nImagenes',
-                        textAlign: TextAlign.center)),
-                ElevatedButton.icon(
                     icon: FaIcon(FontAwesomeIcons.floppyDisk),
                     style: Constants.buttonPrimary,
                     onPressed: () {
                       final editController = Get.find<PropietarioController>();
                       if (_formKey.currentState!.validate()) {
-
                         if (_uiPropietario.isEmpty) {
-                          editController.savePropietario(
-                              _nombrePropietario.text,
-                              _sitioTuristicoPropietario.text,
-                              _edadPropietario.text,
-                              _tipoGenero.toString(),
-                              _correoPropietario.text,
-                              _contactoPropietario.text,
-                              _passwordPropietario.text);
-                        } else {
-                          //Actualizamos
                           editController.editSite(
                             _uiPropietario,
+                              "Propietario",
                               _nombrePropietario.text,
                               _sitioTuristicoPropietario.text,
                               _edadPropietario.text,
                               _tipoGenero.toString(),
                               _correoPropietario.text,
-                              _contactoPropietario.text,
-                              _passwordPropietario.text
                           );
                         }
-
-                        _uiPropietario = "";
-                        _nombrePropietario.text = "";
-                        _sitioTuristicoPropietario.text = "";
-                        _correoPropietario.text = "";
-                        _edadPropietario.text = "";
-                        _contactoPropietario.text = "";
-                        _passwordPropietario.text = "";
-
-                        editControlPropietario.updatePropietario(
-                            "", "", "", "", "", "", "", "", "", "Agregar");
                         setState(() {});
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -238,16 +180,12 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                         print("Datos Incorrectos");
                       }
                     },
-                    label: Text(controllerPropietario.buttonText,
+                    label: Text("Actualizar",
                         textAlign: TextAlign.center))
               ],
             ),
           ],
         ));
-  }
-
-  void updateButton() {
-    controllerPropietario.updateButtonText("Agregar");
   }
 
   Widget TextFieldWidget(TextEditingController controlador, FaIcon icono,
@@ -276,4 +214,13 @@ class _ModulePropietarioState extends State<ModulePropietario> {
         },
         cursorColor: Colors.green);
   }
+
+  void formClean() {
+    _nombrePropietario.clear();
+    _contactoPropietario.clear();
+    _correoPropietario.clear();
+    _edadPropietario.clear();
+    _sitioTuristicoPropietario.clear();
+  }
+
 }
