@@ -14,35 +14,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ModuleSitiosTuristicos extends StatefulWidget {
-  @override
-  State<ModuleSitiosTuristicos> createState() => _ModuleSitiosTuristicosState();
-}
-
-class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
-
-  Position? _position;
-  final _nombreST = TextEditingController();
-  final _tipoTurismo = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  final _capacidadST = TextEditingController();
-  final _descripcionST = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  String _ubicacionST = "";
-  String _uidUser = "";
-
+class ModuleSitiosTuristicos extends GetView<GextControllerTurismo> {
   @override
   Widget build(BuildContext context) {
-    final siteToEdit = Get.arguments as SitioTuristico?;
-    final GextControllerTurismo _controllerTurismo =
-    Get.put(GextControllerTurismo());
-    final editControlTurismo = Get.find<GextControllerTurismo>();
-    _uidUser = editControlTurismo.uidUser;
-
-    return  SingleChildScrollView(
-        reverse: true,
-        child: Formulario(),
-      );
+    return SingleChildScrollView(
+      reverse: true,
+      child: Formulario(),
+    );
   }
 
   Widget Formulario() {
@@ -51,28 +29,26 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
     return Container(
         padding: EdgeInsets.all(40.0),
         child: Form(
-            key: _formKey,
+            key: controller.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Text("Nombre", textDirection: TextDirection.rtl),
-                textForm(
-                    _nombreST, "Nombre sitio turistico", 1, TextInputType.name),
+                textForm(controller.nombreST, "Nombre sitio turistico", 1,
+                    TextInputType.name),
                 SizedBox(height: 15),
                 Text("Tipo de turismo"),
-                ListTravel(_tipoTurismo, listTypeTravel),
+                ListInformation(controller.tipoTurismo, dropdownItems),
                 SizedBox(height: 15),
-                Text("Capacidad personas"),
-                //textForm(_capacidadST, "tEXTO", 1)
-                textForm(
-                    _capacidadST, "Cantidad personas", 1, TextInputType.number),
+                Text("Actividades"),
+                ListInformation(controller.tipoTurismo, dropdownItemsServices),
                 SizedBox(height: 15),
-                Text(
-                  "Descripcion",
-                  textDirection: TextDirection.rtl,
-                ),
-                textForm(_descripcionST, "Descripcion del sitio", 5,
+                Text("Contactos"),
+                ListSocial(controller.tipoTurismo, dropdownItemsSocial),
+                SizedBox(height: 15),
+                Text("Descripcion", textDirection: TextDirection.rtl),
+                textForm(controller.descripcionST, "Descripcion del sitio", 5,
                     TextInputType.name),
                 SizedBox(height: 15),
                 Text(
@@ -90,7 +66,7 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
                       style: TextStyle(color: Colors.green),
                     )),
                 Text("Ubicacion geografica"),
-                Text(_ubicacionST),
+                Text(controller.ubicacionST),
                 TextButton.icon(
                     onPressed: () {
                       _getCurrentLocation();
@@ -109,25 +85,7 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        final editController = Get.find<EditSitesController>();
-
-                        if (_nombreST.text.isEmpty ||
-                            _capacidadST.text.isEmpty ||
-                            _tipoTurismo.text.isEmpty ||
-                            _tipoTurismo.text.isEmpty ||
-                            _descripcionST.text.isEmpty ||
-                            _ubicacionST.isEmpty) {
-                          print("Error campos vacios");
-                          Get.showSnackbar(const GetSnackBar(
-                            title: 'Validacion de datos',
-                            message: 'Error datos faltantes',
-                            icon: Icon(Icons.app_registration),
-                            duration: Duration(seconds: 4),
-                            backgroundColor: Colors.red,
-                          ));
-                        } else {
-                          print("Turismo registrado con : " + _uidUser);
-                        }
+                        controller.validateForms();
                       },
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -161,8 +119,8 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
         ));
   }
 
-  Widget ListTravel(
-      TextEditingController _tipoTurismo, List<String> listTypeCulture) {
+  Widget ListInformation(TextEditingController _tipoTurismo,
+      List<DropdownMenuItem<String>> listInformation) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         filled: true,
@@ -174,20 +132,32 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
       isExpanded: true,
       dropdownColor: Colors.green.shade300,
       icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
-      items: listTypeCulture.map((listTypeCulture) {
-        return DropdownMenuItem(
-            value: listTypeCulture,
-            child: Text(
-              'Turismo $listTypeCulture',
-              style: TextStyle(color: Colors.white),
-            ));
-      }).toList(),
-      onChanged: ((value) => setState(() {
-        _tipoTurismo.text = "Turismo";
-        _tipoTurismo.text += value!;
-      })),
+      items: listInformation,
+      onChanged: (String? value) {},
       hint: Text(
-        'Seleccione un tipo de turismo',
+        'Seleccionar',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget ListSocial(TextEditingController _tipoTurismo,
+      List<DropdownMenuItem<String>> listInformation) {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.green.shade300,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        contentPadding: EdgeInsets.all(16.0),
+      ),
+      isExpanded: true,
+      dropdownColor: Colors.green.shade300,
+      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
+      items: listInformation,
+      onChanged: (String? value) {},
+      hint: Text(
+        'Seleccionar',
         style: TextStyle(color: Colors.white),
       ),
     );
@@ -196,10 +166,7 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
   //Funciones para localizacion
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
-    setState(() {
-      _position = position;
-      _ubicacionST = _position.toString();
-    });
+    controller.ubicacionST = position.toString();
   }
 
   Future<Position> _determinePosition() async {
@@ -217,4 +184,57 @@ class _ModuleSitiosTuristicosState extends State<ModuleSitiosTuristicos> {
     return await Geolocator.getCurrentPosition();
   }
 
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Sitio de interes"), value: "sitio_interes"),
+      DropdownMenuItem(
+          child: Text("Sitio turistico"), value: "sitio_turistico"),
+      DropdownMenuItem(child: Text("Bienestar"), value: "bienestar"),
+      DropdownMenuItem(child: Text("Ecoturismo"), value: "ecoturismo"),
+      DropdownMenuItem(child: Text("Rural"), value: "rural"),
+    ];
+    return menuItems;
+  }
+
+  List<DropdownMenuItem<String>> get dropdownItemsServices {
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("Senderismo"), value: "test1"),
+      DropdownMenuItem(child: Text("Cabalgatas"), value: "test2"),
+      DropdownMenuItem(child: Text("Caminatas"), value: "test3"),
+      DropdownMenuItem(child: Text("Test 1"), value: "test4"),
+      DropdownMenuItem(child: Text("Test2"), value: "test5"),
+    ];
+    return menuItems;
+  }
+
+  List<DropdownMenuItem<String>> get dropdownItemsSocial {
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: checkRedSocial("Facebook"), value: "test1"),
+      DropdownMenuItem(child: Text("Cabalgatas"), value: "test2"),
+      DropdownMenuItem(child: Text("Caminatas"), value: "test3"),
+      DropdownMenuItem(child: Text("Test 1"), value: "test4"),
+      DropdownMenuItem(child: Text("Test2"), value: "test5"),
+    ];
+    return menuItems;
+  }
+
+  Widget checkRedSocial(String valueText) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(valueText),
+        Checkbox(
+          checkColor: Colors.white,
+          value: true,
+          onChanged: (bool? value) {
+            if (value!) {
+              controller.isChecked.value = true;
+            } else {
+              controller.isChecked.value = false;
+            }
+          },
+        )
+      ],
+    );
+  }
 }

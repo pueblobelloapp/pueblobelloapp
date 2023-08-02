@@ -1,8 +1,22 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GextControllerTurismo extends GetxController {
 
   int _countTapItem = 0;
+
+  Position? _position;
+  final nombreST = TextEditingController();
+  final tipoTurismo = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  final capacidadST = TextEditingController();
+  final descripcionST = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  String ubicacionST = "";
+  var isChecked = false.obs;
 
   String _tipoGestion = "";
   bool  _stateTextForm = true;
@@ -39,6 +53,21 @@ class GextControllerTurismo extends GetxController {
   void roleState(bool estado) {
     _roleState = estado;
     update();
+  }
+
+  Future<void> validateForms() async {
+    if (formKey.currentState!.validate()) {
+      print("Error campos vacios");
+      Get.showSnackbar(const GetSnackBar(
+        title: 'Validacion de datos',
+        message: 'Error datos faltantes',
+        icon: Icon(Icons.app_registration),
+        duration: Duration(seconds: 4),
+        backgroundColor: Colors.red,
+      ));
+    } else {
+      print("Turismo registrado con : " + uidUser);
+    }
   }
 
 }
