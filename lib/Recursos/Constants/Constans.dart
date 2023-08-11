@@ -22,22 +22,6 @@ class Constants {
   static const IconData google_plus_g =
       IconData(0xf0d5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
-  static InputDecoration decarationTextBox = InputDecoration(
-      focusedBorder: InputBorder.none,
-      disabledBorder: InputBorder.none,
-      border: InputBorder.none,
-      contentPadding: const EdgeInsets.all(16.0),
-      fillColor: Colors.grey,
-      hintText: 'Titulo informativo',
-      hintStyle: TextStyle(color: Colors.white),
-      prefixIcon: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: FaIcon(
-          FontAwesomeIcons.houseUser,
-          color: Colors.green,
-        ),
-      ));
-
   static ButtonStyle flatButtonStyle = TextButton.styleFrom(
     foregroundColor: Colors.black87,
     minimumSize: Size(88, 36),

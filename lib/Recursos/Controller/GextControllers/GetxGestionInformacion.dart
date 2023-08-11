@@ -17,11 +17,21 @@ class GetxGestionInformacionController extends GetxController {
   String get buttonText => _buttonText;
 
   List<dynamic>? get fotoUrl => _fotoUrl;
+
   List<XFile> _imageFileList = [];
   List<XFile> get imageFileList => _imageFileList;
 
-  void updateFilesImage(List<XFile> imageFileList) {
-    _imageFileList = imageFileList;
+  void cleanData() {
+    _id = "";
+    _nombre = "";
+    _descripcion  = "";
+    _ubicacion = "Sin posicion";
+    _imageFileList.clear();
+    update();
+  }
+
+  void addFilesImage(XFile image) {
+    _imageFileList.add(image);
     update();
   }
 

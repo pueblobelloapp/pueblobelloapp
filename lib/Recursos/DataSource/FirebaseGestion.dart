@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GestionDataBase {
+
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   final GextControllerTurismo _controllerTurismo =
   Get.put(GextControllerTurismo());
@@ -29,31 +32,17 @@ class GestionDataBase {
     return firestore.collection(_controllerTurismo.typeInformation).doc().id;
   }
 
-  //Funcion para añadir una nueva informacion cultural.
+  //Funcion para añadir una nueva informacion.
   Future<void> saveGestion(GestionModel myGestionModel) async {
     final ref = firestore.doc(
         '${_controllerTurismo.typeInformation}/${myGestionModel.id}');
     List<String>? urlFotografias = [];
 
     if (controllerGestionInformacion.imageFileList.isNotEmpty) {
-      print("Entra si 1");
-      // Delete current image if exists
-      //TODO: se debe implementar una logica distinta debido a que hora viene varias fotos.
-      //y borrar las demas fotografias para poder sobreescribir  y horrar espacios.
-      if (myGestionModel.foto == null) {
-        //TODO: Se debe recorrer la lista de URL y mandar uno a uno a borrar.
-        //await storage.refFromURL(sitioTuristico.foto).delete();
-        print("SITIO TURIASTICO ES VACIO");
-      } else {
-        print("Busca fotos");
-        /*TODO: Sebe recorrer la lista de fotografias con las URLs traidas, y agregarlas
-        *  en firebase para poder visualizarlas al usuario final.*/
-        urlFotografias = await uploadFiles(controllerGestionInformacion.imageFileList);
-        print("Resultados: " + urlFotografias.toString());
-      }
-
+      urlFotografias = await uploadFiles(controllerGestionInformacion.imageFileList);
       myGestionModel = myGestionModel.copyWith(foto: urlFotografias);
     }
+
     await ref.set(myGestionModel.toFirebaseMap(), SetOptions(merge: true));
   }
 
@@ -73,6 +62,17 @@ class GestionDataBase {
         .collection('${_controllerTurismo.typeInformation}/')
         .snapshots()
         .map((it) => it.docs.map((e) => GestionModel.fromFirebaseMap(e.data())));
+  }
+
+  Future<void> deleteInformation(String uid, String module) async {
+    print("Informacion: " + uid +" modulo: " + module);
+    final ref = firestore.doc('${module}/${uid}');
+    await ref.delete().then((value) =>  {
+      messageController.messageInfo("Informacion", "Se elimino correctamente"),
+    })
+        .onError((error, stackTrace) => {messageController.messageError(
+        "Error module", "Error al eliminar: " + error.toString())
+    });
   }
 
 

@@ -34,11 +34,13 @@ class ControllerLogin extends GetxController {
 
   Future<void> getLogin(String e, String p) async {
     try {
+      _dataUsuario['rool'] == 'Propietario';
       UserCredential user =
           await firebaseAuth.signInWithEmailAndPassword(email: e, password: p);
       _uid.value = user.user!.uid;
       _email.value = user.user!.email;
 
+      print("UID: ${user.user!.uid}" );
       _controllerTurismo.updateUidUserLogin(_uid.value);
 
       final snapshot = await FirebaseFirestore.instance

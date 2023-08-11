@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GextPropietarioController extends GetxController {
+
+  int _countTapItem = 0;
   String _id = "";
   String _nombre = "";
   String _sitioTuristico = "";
@@ -26,17 +28,20 @@ class GextPropietarioController extends GetxController {
   String get contacto => _contacto;
   String get genero => _genero;
   String get buttonText => _buttonText;
-
+  int get countTapItem => _countTapItem;
   String get dropdownValue => _dropdownValue;
 
+  void updateTapItem(int posicion) {
+    _countTapItem = posicion;
+    update();
+  }
+
   void updatePropietario(Map<String, dynamic> propietario, String button) {
-    print("Llega informacion" + propietario["id"]);
-    _id = propietario["id"];
+    print("Llega informacion" + propietario["uid"]);
+    _id = propietario["uid"];
     _nombre = propietario["nombre"];
-    _sitioTuristico = propietario["sitioTuristico"];
     _edad = propietario["edad"];
     _correo = propietario["correo"];
-    _clave = propietario["clave"];
     _foto = propietario["foto"];
     _contacto = propietario["contacto"];
     _dropdownValue = propietario["genero"];

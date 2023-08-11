@@ -1,8 +1,11 @@
+import 'dart:io';
 
 import 'package:app_turismo/Recursos/Controller/GestionController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/GestionModel.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,12 +20,12 @@ class ModuleGestion extends StatefulWidget {
 }
 
 class _ModuleGestionState extends State<ModuleGestion> {
-
   final GetxGestionInformacionController controllerGestion =
-  Get.put(GetxGestionInformacionController());
+      Get.put(GetxGestionInformacionController());
 
   final GextControllerTurismo controllerTurismo =
-  Get.put(GextControllerTurismo());
+      Get.put(GextControllerTurismo());
+  final utilsController = Get.find<GetxUtils>();
 
   final gestionModel = Get.arguments as GestionModel?;
 
@@ -33,15 +36,13 @@ class _ModuleGestionState extends State<ModuleGestion> {
   String idGestion = "";
   String _ubicacionC = "";
 
-
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-          padding: EdgeInsets.all(25.0),
+          padding: EdgeInsets.symmetric(vertical: 10.5, horizontal: 20),
           child: SingleChildScrollView(
             child: FormGestion(),
           )),
@@ -51,19 +52,15 @@ class _ModuleGestionState extends State<ModuleGestion> {
   //Fomulario
   Widget FormGestion() {
     final editController = Get.put(EditGestionController());
-    final editControlGestion = Get.find<GetxGestionInformacionController>();
 
-    List<XFile>? images = [];
-    List<dynamic>? fotografias = [];
 
-    PickedFile? _pickedFile = null;
-
-    idGestion = controllerGestion.id;
     _nombreInformacion.text = controllerGestion.nombre;
     _ubicacionC = controllerGestion.ubicacion;
     _descripcionInformacion.text = controllerGestion.descripcion;
-    fotografias = controllerGestion.fotoUrl;
 
+    setState(() {
+      idGestion = controllerGestion.id;
+    });
     return Form(
         key: _formKey,
         child: Column(
@@ -74,7 +71,7 @@ class _ModuleGestionState extends State<ModuleGestion> {
             TextFieldWidget(
                 _nombreInformacion,
                 Icon(Icons.abc, color: Colors.green),
-                "Nombre de la " + controllerTurismo.typeInformation,
+                "Titulo de " + controllerTurismo.typeInformation,
                 1,
                 "Error, falta nombre",
                 TextInputType.text),
@@ -83,117 +80,98 @@ class _ModuleGestionState extends State<ModuleGestion> {
             TextFieldWidget(
                 _descripcionInformacion,
                 Icon(Icons.description, color: Colors.green),
-                "Descripcion de la " + controllerTurismo.typeInformation,
+                "Descripcion " + controllerTurismo.typeInformation,
                 3,
                 "Error, complete la descripcion",
                 TextInputType.text),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
+            Text("Carga de fotografias",
+                textDirection: TextDirection.rtl,
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 15),
+            GetBuilder<GetxGestionInformacionController>(
+              init: GetxGestionInformacionController(),
+              builder: (controller) {
+                return Column(
                   children: [
-                    Text("Fotografias"),
-                    ElevatedButton(
-                        style: Constants.buttonPrimary,
-                        onPressed: () async {
-
-                          final editController = Get.find<EditGestionController>();
-                          final editControlInformacion = Get.find<GetxGestionInformacionController>();
-                          images = await _picker.pickMultiImage();
-
-                          final List<XFile>? selectedImages = await
-                          _picker.pickMultiImage();
-                          if (selectedImages!.isNotEmpty) {
-                            images!.addAll(selectedImages);
-                            editControlInformacion.updateFilesImage(
-                                selectedImages);
-
-                            print("Foto seleccionada.");
-                            Get.showSnackbar(GetSnackBar(
-                              title: 'Fotografia',
-                              message: "Se cargaron: "
-                                  + selectedImages!.length.toString()
-                                  + " fotografias",
-                              icon: Icon(Icons.app_registration),
-                              duration: Duration(seconds: 6),
-                              backgroundColor: Colors.green.shade400,
-                            ));
-                          }
-                        },
-                        child: const Text('Cargar fotos'))
+                    Container(
+                        alignment: Alignment.center, child: caruselPhotos()),
+                    ElevatedButton.icon(
+                      label: Text("Cargar fotos"),
+                      onPressed: () => selectMultPhoto(),
+                      icon: Icon(Icons.image_outlined, color: Colors.white),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green),
+                    )
                   ],
-                ),
-                Column(
-                  children: [
-                    Text("Ubicacion Gps"),
-                    ElevatedButton(
-                        style: Constants.buttonPrimary,
-                        onPressed: () {
-                          _getCurrentLocation();
-                        },
-                        child: const Text('Seleccionar Ubicacion'))
-                  ],
-                )
-              ],
+                );
+              },
             ),
+            SizedBox(height: 10),
+            Text("Posicion geografica",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            GetBuilder<GetxGestionInformacionController>(
+              init: GetxGestionInformacionController(),
+              builder: (controller) {
+                return Text('${controller.ubicacion}');
+              },
+            ),
+            TextButton.icon(
+                onPressed: () {
+                  _getCurrentLocation();
+                },
+                icon: Icon(
+                  Icons.location_on,
+                  color: Colors.green,
+                ),
+                label: Text(
+                  "Ubicar",
+                  style: TextStyle(color: Colors.green),
+                )),
             SizedBox(height: 35),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  style: Constants.buttonPrimary,
-                  onPressed: () {
-                    String mensaje = "";
-                    String errorMensaje = images == null
-                        ? 'Error falta Fotografia'
-                        : 'Error falta Ubicacion';
+                style: Constants.buttonPrimary,
+                onPressed: () {
+                  String mensaje = "";
 
-                    if (_formKey.currentState!.validate()) {
-                      if (_ubicacionC.isEmpty) {
-                        Get.showSnackbar(GetSnackBar(
-                          title: 'Validacion de datos',
-                          message: errorMensaje,
-                          icon: Icon(Icons.app_registration),
-                          duration: Duration(seconds: 5),
-                          backgroundColor: Colors.red,
-                        ));
+                  if (_formKey.currentState!.validate()) {
+                    if (_ubicacionC.isEmpty ||
+                        controllerGestion.imageFileList.length == 0) {
+                      utilsController.messageError(
+                          "Validaciones", "Complete informacion requerida.");
+                    } else {
+                      if (idGestion.isEmpty) {
+                        mensaje = "Se guardaron los datos";
+                        editController.saveGestion(
+                            _nombreInformacion.text,
+                            _descripcionInformacion.text,
+                            _ubicacionC.toString());
                       } else {
-                        if (idGestion.isEmpty) {
-                          mensaje = "Se guardaron los datos";
-                          editController.saveGestion(
-                              _nombreInformacion.text,
-                              _descripcionInformacion.text,
-                              _ubicacionC.toString());
-
-                        } else {
-                          mensaje = "Se actualizaron los datos";
-                          editController.editGestion(
-                            idGestion, _nombreInformacion.text,
-                              _descripcionInformacion.text,
-                              _ubicacionC.toString(),
-                              fotografias
-                          );
-                        }
-                        cleanForm();
-                        Get.showSnackbar(GetSnackBar(
-                          title: 'Registro de informacion',
-                          message: mensaje,
-                          icon: Icon(Icons.app_registration),
-                          duration: Duration(seconds: 4),
-                          backgroundColor: Colors.green.shade400,
-                        ));
+                        mensaje = "Se actualizaron los datos";
+                        editController.editGestion(
+                            idGestion,
+                            _nombreInformacion.text,
+                            _descripcionInformacion.text,
+                            _ubicacionC.toString());
                       }
+                      utilsController.messageInfo("Informacion", mensaje);
+                      cleanForm();
                     }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 25.0, vertical: 12.0),
-                    child: const Text(
-                      'Guardar',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                  ))
+                  }
+                },
+                child: const Text(
+                  'Guardar',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(width: 10),
+              idGestion != "" ?
+              ElevatedButton(
+                onPressed: () => cleanForm(),
+                child: Text("Cancelar"),
+                style: Constants.buttonCancel,
+              ) : Container()
             ]),
           ],
         ));
@@ -202,20 +180,7 @@ class _ModuleGestionState extends State<ModuleGestion> {
 //Funciones para localizacion
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
-    final GetxGestionInformacionController _controllerInformacion =
-    Get.put(GetxGestionInformacionController());
-    _controllerInformacion.updateUbicacion(position.toString());
-
-    print("Posicionado: " + position.toString());
-    Get.showSnackbar(GetSnackBar(
-      title: 'Ubicacion',
-      message: "Ubicacion capturada: "
-          + position.toString(),
-      icon: Icon(Icons.app_registration),
-      duration: Duration(seconds: 3),
-      backgroundColor: Colors.green,
-    ));
-
+    controllerGestion.updateUbicacion(position.toString());
     _ubicacionC = position.toString();
   }
 
@@ -271,7 +236,66 @@ class _ModuleGestionState extends State<ModuleGestion> {
     _nombreInformacion.clear();
     _posicionInformacion.clear();
     _ubicacionC = "";
+    controllerGestion.cleanData();
+    idGestion = "";
+    setState(() {});
+  }
 
+  //Se agrega funcionalidad para carga de fotografia
+  selectMultPhoto() async {
+    try {
+      controllerGestion.imageFileList.clear();
+      final List<XFile>? selectedImages = await _picker.pickMultiImage();
 
+      if (selectedImages!.isNotEmpty) {
+        validatePhoto(selectedImages);
+      }
+    } catch (e) {
+      utilsController.messageWarning(
+          "Fotografias", "No pudimos seleccionar las fotografias");
+    }
+  }
+
+  void validatePhoto(List<XFile> photos) {
+    photos.forEach((element) {
+      Image image = Image.file(File(element.path));
+      image.image.resolve(ImageConfiguration()).addListener(
+        ImageStreamListener(
+          (ImageInfo image, bool synchronousCall) {
+            var myImage = image.image;
+            if (myImage.width.toDouble() >= 1024 &&
+                myImage.width.toDouble() <= 1080) {
+              if (myImage.height.toDouble() >= 566 &&
+                  myImage.height.toDouble() <= 1080) {
+                controllerGestion.addFilesImage(element);
+              } else {
+                photos.remove(element);
+              }
+            } else {
+              photos.remove(element);
+            }
+          },
+        ),
+      );
+    });
+
+    utilsController.messageInfo(
+        "Validacion", "Fotos seleccionadas y validadas.");
+  }
+
+  Widget caruselPhotos() {
+    List<XFile> listPhotos = controllerGestion.imageFileList;
+    return listPhotos.length == 0
+        ? Image.asset(
+            "assets/Icons/photo.png",
+            width: 60,
+            height: 60,
+          )
+        : CarouselSlider(
+            options: CarouselOptions(),
+            items: listPhotos
+                .map((photo) => Container(
+                    child: Center(child: Image.file(File(photo.path)))))
+                .toList());
   }
 }

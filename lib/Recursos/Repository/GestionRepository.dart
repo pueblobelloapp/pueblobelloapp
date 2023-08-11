@@ -7,6 +7,6 @@ abstract class MyGestionRepository {
   Stream<Iterable<GestionModel>> getMyGestion();
   Future<void> saveMyGestion(GestionModel modelGestion);
   Future<void> editMyGestion(GestionModel modelGestion);
-  Future<void> deleteMyGestion(GestionModel modelGestion);
+  Future<void> deleteMyGestion(String uid, String module);
 
 }

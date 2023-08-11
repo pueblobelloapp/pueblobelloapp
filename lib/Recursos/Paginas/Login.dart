@@ -5,7 +5,6 @@ import 'package:app_turismo/Recursos/Paginas/Register.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -30,22 +29,20 @@ class _LoginFState extends State<LoginF> {
   ControllerLogin controllerLogin = Get.find();
   final GetxUtils messageController = Get.put(GetxUtils());
 
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child:
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [ImagenLogo(), FormLogin(), OptionSesion()])));
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [ImagenLogo(), FormLogin(), OptionSesion()])));
   }
 
   Widget ImagenLogo() {
-    return  SafeArea(
+    return SafeArea(
         child: Image.asset(
       'assets/img/Logo.png',
       width: 250,
@@ -117,30 +114,32 @@ class _LoginFState extends State<LoginF> {
                         ),
                       ),
                       ElevatedButton(
-                        style: Constants.buttonPrimary,
-                        onPressed: () {
-                          validateLogin();
-                        },
-                        child: isLoading
-                            ? Center(child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  height: 20.0,
-                                  width: 20.0,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white),
-                              ),SizedBox(width: 10.5),
-                               Text("Iniciando sesion")],))
-                            : Center(child: Text("Acceder"))
-                      ),
+                          style: Constants.buttonPrimary,
+                          onPressed: () {
+                            validateLogin();
+                          },
+                          child: isLoading
+                              ? Center(
+                                  child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 20.0,
+                                      width: 20.0,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ),
+                                    SizedBox(width: 10.5),
+                                    Text("Iniciando sesion")
+                                  ],
+                                ))
+                              : Center(child: Text("Acceder"))),
                     ],
                   ),
                 ))));
   }
 
   void validateLogin() {
-
     final bool isValid = EmailValidator.validate(_userL.text);
 
     if (_formKey.currentState!.validate() && isValid) {
@@ -148,23 +147,29 @@ class _LoginFState extends State<LoginF> {
         isLoading = true;
       });
 
-      controllerLogin.getLogin(_userL.text, _passwordL.text)
+      controllerLogin
+          .getLogin(_userL.text, _passwordL.text)
           .then((value) => {
-
-        if (controllerLogin.email != "Sin Registro" &&
-            controllerLogin.userRole != "")
-          {
-            print(controllerLogin.dataUsuario.toString()),
-            Get.to(() => MenuModuls())
-          } else {
-            messageController.messageWarning("Usuario",
-                "No te encuentras registrado")
-          }}).catchError((onerror) {
-
+                if (controllerLogin.email != "Sin Registro" &&
+                    controllerLogin.userRole != "")
+                  {
+                    print(controllerLogin.dataUsuario.toString()),
+                    Get.to(() => MenuModuls())
+                  }
+                else
+                  {
+                    messageController.messageWarning(
+                        "Usuario", "No te encuentras registrado"),
+                    Get.to(() => MenuModuls())
+                  }
+              })
+          .catchError((onerror) {
         if (onerror == "wrong-password") {
           mensajeNotification = "Contraseña incorrecta";
-        } else if( onerror == "user-not-found") {
+        } else if (onerror == "user-not-found") {
           mensajeNotification = "Email no existe.";
+        } else if (onerror == "network-request-failed"){
+          mensajeNotification = "No pudimos consultar tu usuario.";
         } else {
           mensajeNotification = onerror.toString();
         }
@@ -176,8 +181,7 @@ class _LoginFState extends State<LoginF> {
         messageController.messageError("Validacion", mensajeNotification);
       });
     } else {
-      messageController.messageWarning("Validacion",
-          "Compruebe los datos");
+      messageController.messageWarning("Validacion", "Compruebe los datos");
     }
   }
 
@@ -240,17 +244,7 @@ class _LoginFState extends State<LoginF> {
                   style: TextStyle(color: Colors.green),
                 ))
           ],
-        ),
-        SizedBox(height: 10),
-        Text(
-          "Inicia sesion con",
-          style: TextStyle(
-            color: Colors.grey.shade500,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 5),
-        Image.asset('assets/Icons/google.png', width: 30, height: 30)
+        )
       ],
     );
   }

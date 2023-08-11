@@ -5,14 +5,13 @@ import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
 
-
 class MyRepositoryGestionImp extends MyGestionRepository {
   final GestionDataBase _gestionDataBase = getIt();
 
   @override
-  Future<void> deleteMyGestion(GestionModel myGestion) {
+  Future<void> deleteMyGestion(String uid, String module) async {
     // TODO: implement deleteMyCultura
-    throw UnimplementedError();
+    _gestionDataBase.deleteInformation(uid, module);
   }
 
   @override

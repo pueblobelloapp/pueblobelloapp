@@ -121,7 +121,7 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
                       fillColor: Color(0xFFF5F6F9),
                       child: Icon(
                         Icons.camera_alt_outlined,
-                        color: Colors.blue,
+                        color: Colors.green,
                       ),
                       padding: EdgeInsets.all(10.0),
                       shape: CircleBorder(),
