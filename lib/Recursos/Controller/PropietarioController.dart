@@ -3,7 +3,6 @@ import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
 import 'package:app_turismo/main.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class PropietarioController extends GetxController {
   final MyPropietarioRepository _myPropietarioRepository = getIt();

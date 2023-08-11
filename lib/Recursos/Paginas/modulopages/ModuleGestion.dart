@@ -53,7 +53,6 @@ class _ModuleGestionState extends State<ModuleGestion> {
   Widget FormGestion() {
     final editController = Get.put(EditGestionController());
 
-
     _nombreInformacion.text = controllerGestion.nombre;
     _ubicacionC = controllerGestion.ubicacion;
     _descripcionInformacion.text = controllerGestion.descripcion;
@@ -166,12 +165,13 @@ class _ModuleGestionState extends State<ModuleGestion> {
                 ),
               ),
               SizedBox(width: 10),
-              idGestion != "" ?
-              ElevatedButton(
-                onPressed: () => cleanForm(),
-                child: Text("Cancelar"),
-                style: Constants.buttonCancel,
-              ) : Container()
+              idGestion != ""
+                  ? ElevatedButton(
+                      onPressed: () => cleanForm(),
+                      child: Text("Cancelar"),
+                      style: Constants.buttonCancel,
+                    )
+                  : Container()
             ]),
           ],
         ));

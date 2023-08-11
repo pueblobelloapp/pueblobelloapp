@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:app_turismo/Recursos/Models/GestionModel.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EditGestionController extends GetxController {

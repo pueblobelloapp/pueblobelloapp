@@ -1,7 +1,7 @@
-
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/material/dropdown.dart';
 import '../../../main.dart';
 import '../../DataSource/FirebaseSites.dart';
 
@@ -43,4 +43,8 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
     return _siteTuristicoDataSource.getSitesUid();
   }
 
+  @override
+  Future<List<DropdownMenuItem<String>>> getAvtivity() async {
+    return _siteTuristicoDataSource.getAvtivity();
+  }
 }

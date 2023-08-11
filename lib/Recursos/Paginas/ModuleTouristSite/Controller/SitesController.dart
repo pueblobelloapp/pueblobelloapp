@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/get.dart';
 import '../../../Repository/RepositorySiteTuristico.dart';
 
@@ -13,7 +11,6 @@ class EditSitesController extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
 
   Rx<bool> isLoading = Rx(false);
-
 
   Future<void> saveSite(SitioTuristico sitioTuristico) async {
     isLoading.value = true;
@@ -24,7 +21,7 @@ class EditSitesController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> editSite( SitioTuristico sitioTuristico) async {
+  Future<void> editSite(SitioTuristico sitioTuristico) async {
     isLoading.value = true;
     print("Actualizacion datos: " + sitioTuristico.toString());
     await _mySitesRepository.saveMySite(sitioTuristico);
@@ -33,5 +30,9 @@ class EditSitesController extends GetxController {
 
   Stream<QuerySnapshot> getSitesUser() {
     return _mySitesRepository.getSitesUid();
+  }
+
+  Future<List<DropdownMenuItem<String>>> getAvtivity() async {
+    return _mySitesRepository.getAvtivity();
   }
 }

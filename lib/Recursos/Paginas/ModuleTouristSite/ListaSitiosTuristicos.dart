@@ -63,20 +63,17 @@ class ListaSitiosTuristicos extends StatelessWidget {
         siteInformation = SitioTuristico(
             id: data['id'],
             nombre: data['nombre'],
-            estado: data['estado'],
             tipoTurismo: data['tipoTurismo'],
             descripcion: data['descripcion'],
             ubicacion: data['ubicacion'],
             contacto: data['contactos'],
-            horarios: data['horario'],
             puntuacion: data['puntuacion'],
-            servicios: data['servicios'],
-            direccion: data['direccion'],
+            actividades: data['servicios'],
             foto: data['foto'],
             userId: data['userId']);
 
         print(siteInformation.toString());
-        _controllerGetxTurismo.updateSitioTuristico(siteInformation!);
+        //_controllerGetxTurismo.updateSitioTuristico(siteInformation!);
         controllerTurismo.updateTapItem(1);
       },
     );

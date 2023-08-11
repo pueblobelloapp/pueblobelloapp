@@ -1,6 +1,5 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
-import 'package:app_turismo/Recursos/Controller/PropietarioController.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Controller/SitesController.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
@@ -34,6 +33,7 @@ void main() async {
   Get.put(ControllerLogin());
   Get.put(EditSitesController());
   Get.put(GextControllerTurismo());
+  Get.put(GetxSitioTuristico());
 
   runApp(const MyApp());
 }
@@ -44,8 +44,8 @@ Future<void> injectDependencies() async {
   getIt.registerLazySingleton(() => SiteTuristicoDataSource());
   getIt.registerLazySingleton(() => GestionDataBase());
   getIt.registerLazySingleton(() => PropietarioDataBase());
-  getIt.registerLazySingleton(() => GetxSitioTuristico());
   getIt.registerLazySingleton(() => GetxGestionInformacionController());
+  getIt.registerLazySingleton(() => EditSitesController());
   getIt.registerLazySingleton(() => GextControllerTurismo());
   getIt.registerLazySingleton(() => GetxUtils());
 
