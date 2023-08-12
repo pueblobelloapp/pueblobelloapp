@@ -158,9 +158,9 @@ class _LoginFState extends State<LoginF> {
                   }
                 else
                   {
+                    print(controllerLogin.dataUsuario.toString()),
                     messageController.messageWarning(
                         "Usuario", "No te encuentras registrado"),
-                    Get.to(() => MenuModuls())
                   }
               })
           .catchError((onerror) {

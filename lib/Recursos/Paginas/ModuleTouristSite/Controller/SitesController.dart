@@ -32,7 +32,7 @@ class EditSitesController extends GetxController {
     return _mySitesRepository.getSitesUid();
   }
 
-  Future<List<DropdownMenuItem<String>>> getAvtivity() async {
+  Stream<QuerySnapshot> getAvtivity() {
     return _mySitesRepository.getAvtivity();
   }
 }

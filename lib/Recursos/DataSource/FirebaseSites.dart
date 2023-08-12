@@ -77,13 +77,13 @@ class SiteTuristicoDataSource {
         .snapshots();
   }
 
-  Future<List<DropdownMenuItem<String>>> getAvtivity() async {
+  Stream<QuerySnapshot> getAvtivity() {
     List<DropdownMenuItem<String>> menuItems = [];
 
-    var listData = firestore.collection('actividades/').snapshots();
+    return firestore.collection('actividades/').snapshots();
     var activities;
 
-    listData.listen((snapshot) {
+    /*listData.listen((snapshot) {
       snapshot.docs.forEach((doc) {
         activities = doc.data()['activity'];
         for (var i = 0; i < activities.length; i++) {
@@ -95,6 +95,6 @@ class SiteTuristicoDataSource {
     });
 
     print("Longitud: " + menuItems.length.toString());
-    return menuItems;
+    return menuItems;*/
   }
 }

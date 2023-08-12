@@ -1,4 +1,5 @@
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Controller/SitesController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -81,12 +82,10 @@ class GetxSitioTuristico extends GetxController {
     return menuItems;
   }
 
-  Future<void> get dropdownActivity async {
+  Stream<QuerySnapshot> dropdownActivity() {
     print("inicio");
-    List<DropdownMenuItem<String>> menuItems = await
-        editSitesController.getAvtivity();
-
-    uodateActivity(menuItems);
+    Stream<QuerySnapshot> menuItems = editSitesController.getAvtivity();
+    return menuItems;
   }
 
   Future<void> validateForms() async {

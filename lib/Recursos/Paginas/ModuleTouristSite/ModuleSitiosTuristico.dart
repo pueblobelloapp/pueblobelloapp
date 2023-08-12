@@ -7,6 +7,7 @@ import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -44,7 +45,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     msgError: "Campo obligatorio.",
                     textInputType: TextInputType.text,
                     fillColor: AppBasicColors.colorTextFormField,
-                    controller: controller.nombreSitio),
+                    controller: controller.nombreSitio,
+                    valueFocus: true),
                 SizedBox(height: 15),
                 CustomTextFormField(
                     icon: const Icon(BootstrapIcons.info_circle),
@@ -61,8 +63,41 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     controller.dropdownItems, "Seleccionar"),
                 SizedBox(height: 15),
                 Text("Actividades"),
-                ListActivity(
-                    controller.tipoTurismo, controller.menuItemsActivity),
+                Container(
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: controller.dropdownActivity(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(
+                              child: Text('Lo sentimos se ha producido un error.'));
+                        }
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: Text('Cargando datos.'));
+                        }
+                        if (snapshot.data!.docs.isEmpty) {
+                          return const Center(child: Text('Registra sitios turisticos.'));
+                        }
+
+                        return DropdownButtonFormField<String>(
+                          decoration: AppBasicColors.inputDecorationText,
+                          isExpanded: true,
+                          dropdownColor: AppBasicColors.colorTextFormField,
+                          icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
+                          items: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                            document.data()! as Map<String, dynamic>;
+                            return ListActivitys(data);
+                          }).single,
+                          onChanged: (String? value) {
+                            print("Valor Activity: ${value}");
+                          },
+                          hint: Text('Seleccionar', style: TextStyle(color: Colors.black26)),
+                        );
+                      }),
+                ),
+               /* ListActivity(
+                    controller.tipoTurismo, controller.menuItemsActivity),*/
                 SizedBox(height: 15),
                 Text("Contactos"),
                 CustomTextFormField(
@@ -154,6 +189,16 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
             )));
   }
 
+  List<DropdownMenuItem<String>> ListActivitys(Map<String, dynamic> data) {
+    print("Data: " + data.toString());
+
+    List<DropdownMenuItem<String>> menuItems = [];
+    for (String actividad in data['activity']) {
+      menuItems.add(DropdownMenuItem(child: Text(actividad), value: actividad));
+    }
+    return menuItems;
+  }
+
   Widget ListInformation(TextEditingController _tipoTurismo,
       List<DropdownMenuItem<String>> listInformation, String hintextValue) {
     return DropdownButtonFormField<String>(
@@ -167,20 +212,6 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
     );
   }
 
-  Widget ListActivity(TextEditingController _tipoTurismo,
-      List<DropdownMenuItem<String>> listInformation) {
-    return DropdownButtonFormField<String>(
-      decoration: AppBasicColors.inputDecorationText,
-      isExpanded: true,
-      dropdownColor: AppBasicColors.colorTextFormField,
-      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
-      items: listInformation,
-      onChanged: (String? value) {
-        print("Valor Activity: ${value}");
-      },
-      hint: Text('Seleccionar', style: TextStyle(color: Colors.black26)),
-    );
-  }
 
   //Funciones para localizacion
   void _getCurrentLocation() async {
