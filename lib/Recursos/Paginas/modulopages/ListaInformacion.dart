@@ -11,52 +11,49 @@ import 'package:get/get.dart';
 class ListInformationGestion extends StatelessWidget {
   ListInformationGestion({Key? key}) : super(key: key);
   final GextControllerTurismo controllerTurismo =
-  Get.put(GextControllerTurismo());
+      Get.put(GextControllerTurismo());
 
-  final EditGestionController editGestionController = Get.put(EditGestionController());
+  final EditGestionController editGestionController =
+      Get.put(EditGestionController());
   final GetxGestionInformacionController controllerGestion =
-  Get.put(GetxGestionInformacionController());
+      Get.put(GetxGestionInformacionController());
 
   @override
   Widget build(BuildContext context) {
-
-
-    final Stream<QuerySnapshot> _informationStream =
-    FirebaseFirestore.instance
+    final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
         .collection('${controllerTurismo.typeInformation}')
         .snapshots();
 
     return Container(
-      color: Colors.grey.shade200,
-      child: SafeArea(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: _informationStream,
-            builder: (BuildContext context,
-                AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return const Center(
-                    child: Text('Lo sentimos se ha producido un error.'));
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text('Cargando datos.'));
-              }
-              if (snapshot.data!.docs.isEmpty) {
-                return Center(
-                    child: Text("Sin datos para mostrar",
-                        style: TextStyle(fontWeight: FontWeight.bold)));
-              }
-              //if(!snapshot.hasData) return CircularProgressIndicator();
-              return ListView(
-                children: snapshot.data!.docs
-                    .map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
-                  return listaPropietarioCard(data);
-                })
-                .toList()
-                .cast());
-            }))
-    );
+        color: Colors.grey.shade200,
+        child: SafeArea(
+            child: StreamBuilder<QuerySnapshot>(
+                stream: _informationStream,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Lo sentimos se ha producido un error.'));
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: Text('Cargando datos.'));
+                  }
+                  if (snapshot.data!.docs.isEmpty) {
+                    return Center(
+                        child: Text("Sin datos para mostrar",
+                            style: TextStyle(fontWeight: FontWeight.bold)));
+                  }
+                  //if(!snapshot.hasData) return CircularProgressIndicator();
+                  return ListView(
+                      children: snapshot.data!.docs
+                          .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            return listaPropietarioCard(data);
+                          })
+                          .toList()
+                          .cast());
+                })));
   }
 
   Widget listaPropietarioCard(Map<String, dynamic> data) {
@@ -67,26 +64,29 @@ class ListInformationGestion extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ListTile(
-            leading: TextButton.icon(onPressed: () {
-              final GextControllerTurismo controllerTurismo =
-              Get.put(GextControllerTurismo());
-              controllerGestion.updateGestionInformacion(
-                  data['id'],
-                  data['nombre'],
-                  data['descripcion'],
-                  data['foto'],
-                  data['ubicacion'],
-                  'Actualizaar'
-              );
-              controllerTurismo.updateTapItem(1);
-            },
-                icon: FaIcon(FontAwesomeIcons.pencil, color: Colors.green,),
+            leading: TextButton.icon(
+                onPressed: () {
+                  final GextControllerTurismo controllerTurismo =
+                      Get.put(GextControllerTurismo());
+                  controllerGestion.updateGestionInformacion(
+                      data['id'],
+                      data['nombre'],
+                      data['descripcion'],
+                      data['foto'],
+                      data['ubicacion'],
+                      'Actualizaar');
+                  controllerTurismo.updateTapItem(1);
+                },
+                icon: FaIcon(
+                  FontAwesomeIcons.pencil,
+                  color: Colors.green,
+                ),
                 label: Text("")),
             title: Text(data['nombre']),
-            trailing: TextButton.icon(onPressed: () {},
+            trailing: TextButton.icon(
+                onPressed: () {},
                 icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red),
                 label: Text("")),
-
           ),
         ],
       ),
@@ -96,8 +96,7 @@ class ListInformationGestion extends StatelessWidget {
   void closeSesion(BuildContext context, String uid) {
     showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(
+        builder: (context) => AlertDialog(
               title: const Text("Cerrar sesion"),
               content: const Text("Quieres cerrar sesion ?"),
               actions: <Widget>[
