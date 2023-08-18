@@ -2,18 +2,23 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
   final ImagePicker _picker = ImagePicker();
+  final GextControllerTurismo controllerTurismo =
+      Get.put(GextControllerTurismo());
 
   @override
   void onInit() {
@@ -44,7 +49,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     msgError: "Campo obligatorio.",
                     textInputType: TextInputType.text,
                     fillColor: AppBasicColors.colorTextFormField,
-                    controller: controller.nombreSitio),
+                    controller: controller.nombreSitio,
+                    valueFocus: true),
                 SizedBox(height: 15),
                 CustomTextFormField(
                     icon: const Icon(BootstrapIcons.info_circle),
@@ -53,7 +59,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     msgError: "Campo obligatorio.",
                     textInputType: TextInputType.text,
                     fillColor: AppBasicColors.colorTextFormField,
-                    controller: controller.nombreSitio,
+                    controller: controller.descripcionST,
                     maxLinesText: 4),
                 SizedBox(height: 15),
                 Text("Tipo de turismo"),
@@ -61,8 +67,48 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     controller.dropdownItems, "Seleccionar"),
                 SizedBox(height: 15),
                 Text("Actividades"),
-                ListActivity(
-                    controller.tipoTurismo, controller.menuItemsActivity),
+                Container(
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: controller.dropdownActivity(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(
+                              child: Text(
+                                  'Lo sentimos se ha producido un error.'));
+                        }
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(child: Text('Cargando datos.'));
+                        }
+                        if (snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                              child: Text('Registra sitios turisticos.'));
+                        }
+
+                        return MultiSelectDialogField(
+                          title: Text("Seleccion multiple"),
+                          confirmText: Text("CONFIRMAR"),
+                          buttonText: Text("Seleccionar"),
+                          items: snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                                document.data()! as Map<String, dynamic>;
+                            return ListActivitys(data);
+                          }).single,
+                          listType: MultiSelectListType.LIST,
+                          onConfirm: (values) {
+                            if (values.isNotEmpty) {
+                              print("Actividades lista: " + values.toString());
+                              controller.updateActivity(values);
+                            } else {
+                              print("Sin actividad");
+                            }
+                          },
+                          initialValue: [],
+                        );
+                      }),
+                ),
                 SizedBox(height: 15),
                 Text("Contactos"),
                 CustomTextFormField(
@@ -101,8 +147,17 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     fillColor: AppBasicColors.colorTextFormField,
                     controller: controller.whatsappTextController),
                 SizedBox(height: 15),
+                CustomTextFormField(
+                    icon: const Icon(BootstrapIcons.facebook),
+                    obscureText: false,
+                    textGuide: "Facebook del sitio",
+                    msgError: "",
+                    textInputType: TextInputType.text,
+                    fillColor: AppBasicColors.colorTextFormField,
+                    controller: controller.facebookTextController),
+                SizedBox(height: 15),
                 Text("Ubicacion geografica"),
-                Text(controller.ubicacionST),
+                Obx(() => Text(controller.ubicacion.value)),
                 TextButton.icon(
                     onPressed: () {
                       _getCurrentLocation();
@@ -140,7 +195,11 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        controller.validateForms();
+                        if (controllerTurismo.imageFileList.isNotEmpty) {
+                          controller.validateForms();
+                        } else {
+                          print("Agregar fotos ");
+                        }
                       },
                       style: TextButton.styleFrom(
                           foregroundColor: Colors.white,
@@ -154,6 +213,14 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
             )));
   }
 
+  List<MultiSelectItem<dynamic>> ListActivitys(Map<String, dynamic> data) {
+    List<MultiSelectItem<dynamic>> menuItems = [];
+    for (String actividad in data['activity']) {
+      menuItems.add(MultiSelectItem<dynamic>(actividad, actividad));
+    }
+    return menuItems;
+  }
+
   Widget ListInformation(TextEditingController _tipoTurismo,
       List<DropdownMenuItem<String>> listInformation, String hintextValue) {
     return DropdownButtonFormField<String>(
@@ -162,30 +229,20 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
       dropdownColor: AppBasicColors.colorTextFormField,
       icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
       items: listInformation,
-      onChanged: (String? value) {},
-      hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
-    );
-  }
-
-  Widget ListActivity(TextEditingController _tipoTurismo,
-      List<DropdownMenuItem<String>> listInformation) {
-    return DropdownButtonFormField<String>(
-      decoration: AppBasicColors.inputDecorationText,
-      isExpanded: true,
-      dropdownColor: AppBasicColors.colorTextFormField,
-      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
-      items: listInformation,
       onChanged: (String? value) {
-        print("Valor Activity: ${value}");
+        print("Valor combo: " + value.toString());
+        controller.tipoTurismo.text = value!;
       },
-      hint: Text('Seleccionar', style: TextStyle(color: Colors.black26)),
+      hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
     );
   }
 
   //Funciones para localizacion
   void _getCurrentLocation() async {
     Position position = await _determinePosition();
-    controller.ubicacionST = position.toString();
+    print("Ubicado: " + position.toString());
+    //controller.updateUbicacion(position.toString());
+    controller.ubicacion.value = position.toString();
   }
 
   Future<Position> _determinePosition() async {
@@ -198,6 +255,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
       if (permission == LocationPermission.denied) {
         return Future.error('Location Permissions are denied');
       }
+    } else {
+      print("Error: Permission denied");
     }
 
     return await Geolocator.getCurrentPosition();
@@ -205,7 +264,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
 
   selectMultPhoto() async {
     try {
-      controller.imageFileList.clear();
+      controllerTurismo.imageFileList.clear();
       final List<XFile>? selectedImages = await _picker.pickMultiImage();
 
       if (selectedImages!.isNotEmpty) {
@@ -219,7 +278,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
   }
 
   Widget caruselPhotos() {
-    List<XFile> listPhotos = controller.imageFileList;
+    List<XFile> listPhotos = controllerTurismo.imageFileList;
     return listPhotos.length == 0
         ? Image.asset(
             "assets/img/photo.png",
@@ -240,8 +299,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
       image.image.resolve(ImageConfiguration()).addListener(
         ImageStreamListener(
           (ImageInfo image, bool synchronousCall) {
-            var myImage = image.image;
-            if (myImage.width.toDouble() >= 1024 &&
+            //var myImage = image.image;
+            /*if (myImage.width.toDouble() >= 1024 &&
                 myImage.width.toDouble() <= 1080) {
               if (myImage.height.toDouble() >= 566 &&
                   myImage.height.toDouble() <= 1080) {
@@ -251,13 +310,13 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
               }
             } else {
               photos.remove(element);
-            }
+            }*/
+            controllerTurismo.addFilesImage(element);
           },
         ),
       );
     });
 
-    /*utilsController.messageInfo(
-        "Validacion", "Fotos seleccionadas y validadas.");*/
+    print("Fotos seleccionadas y validadas.");
   }
 }

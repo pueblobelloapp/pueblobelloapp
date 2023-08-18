@@ -14,6 +14,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final int? maxLinesText;
+  final bool valueFocus;
 
   const CustomTextFormField(
       {super.key,
@@ -27,7 +28,8 @@ class CustomTextFormField extends StatelessWidget {
         this.msgError,
         this.readOnly = false,
         this.onTap,
-        this.maxLinesText = 1});
+        this.maxLinesText = 1,
+        this.valueFocus = false});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class CustomTextFormField extends StatelessWidget {
       readOnly: readOnly,
       onTap: onTap,
       maxLines: maxLinesText,
+      autofocus: valueFocus,
       decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(
@@ -65,6 +68,7 @@ class CustomTextFormField extends StatelessWidget {
           hintStyle: const TextStyle(color: Colors.black26),
           errorStyle: const TextStyle(color: AppBasicColors.white)),
       validator: (value) {
+        print(value);
         if (value!.isEmpty) {
           return msgError;
         }

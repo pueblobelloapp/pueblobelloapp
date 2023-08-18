@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 class GextControllerTurismo extends GetxController {
 
   int _countTapItem = 0;
@@ -22,6 +24,10 @@ class GextControllerTurismo extends GetxController {
   int get countTapItem => _countTapItem;
   bool get rolState => _roleState;
   String get uidUser => _uidUserLogin;
+
+  
+  List<XFile> _imageFileList = [];
+  List<XFile> get imageFileList => _imageFileList;
 
   void updateUidUserLogin( uidUser ) {
     _uidUserLogin = uidUser;
@@ -46,6 +52,11 @@ class GextControllerTurismo extends GetxController {
 
   void roleState(bool estado) {
     _roleState = estado;
+    update();
+  }
+
+  void addFilesImage(XFile image) {
+    _imageFileList.add(image);
     update();
   }
 }

@@ -34,7 +34,6 @@ class ControllerLogin extends GetxController {
 
   Future<void> getLogin(String e, String p) async {
     try {
-      _dataUsuario['rool'] == 'Propietario';
       UserCredential user =
           await firebaseAuth.signInWithEmailAndPassword(email: e, password: p);
       _uid.value = user.user!.uid;
@@ -59,6 +58,9 @@ class ControllerLogin extends GetxController {
       print("Error: ? " + e.toString());
       if (e.code == 'user-not-found') {
         return Future.error('user-not-found');
+      } else if (e.code == "network-request-failed") {
+        print("Error con la red." + e.code);
+        return Future.error('network-request-failed');
       } else if (e.code == 'wrong-password') {
         print("Contraseña incorrecta" + e.code);
         return Future.error('wrong-password');

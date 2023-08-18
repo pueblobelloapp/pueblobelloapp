@@ -9,5 +9,5 @@ abstract class MySitesRepository {
   Future<void> saveMySite(SitioTuristico mySite);
   Future<void> editMySite(SitioTuristico mySite);
   Future<void> deleteMySite(SitioTuristico mySite);
-  Future<List<DropdownMenuItem<String>>> getAvtivity();
+  Stream<QuerySnapshot> getAvtivity();
 }

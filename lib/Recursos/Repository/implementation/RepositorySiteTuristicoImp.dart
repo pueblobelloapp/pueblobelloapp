@@ -44,7 +44,7 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   }
 
   @override
-  Future<List<DropdownMenuItem<String>>> getAvtivity() async {
+  Stream<QuerySnapshot> getAvtivity() {
     return _siteTuristicoDataSource.getAvtivity();
   }
 }

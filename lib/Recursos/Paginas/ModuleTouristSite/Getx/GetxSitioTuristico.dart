@@ -1,33 +1,28 @@
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Controller/SitesController.dart';
+import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
+import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
+import 'package:app_turismo/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class GetxSitioTuristico extends GetxController {
-  final EditSitesController editSitesController =
-      Get.put(EditSitesController());
+  final MySitesRepository _mySitesRepository = getIt();
   final formKey = GlobalKey<FormState>();
-
-  String _ubicacion = "Sin ubicacion";
+  
   String _buttonText = "Registrar";
   List<dynamic>? _fotoUrl = [];
 
-  String get ubicacion => _ubicacion;
+  var ubicacion = 'Sin ubicacion'.obs;
+
   String get buttonText => _buttonText;
   List<dynamic>? get fotoUrl => _fotoUrl;
 
-  List<XFile> _imageFileList = [];
-  List<XFile> get imageFileList => _imageFileList;
-
-  List<DropdownMenuItem<String>> _menuItemsActivity = [];
-  List<DropdownMenuItem<String>> get menuItemsActivity => _menuItemsActivity;
+  List<dynamic> _menuItemsActivity = [];
+  List<dynamic> get menuItemsActivity => _menuItemsActivity;
 
   final nombreSitio = TextEditingController();
   final tipoTurismo = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  final capacidadST = TextEditingController();
   final descripcionST = TextEditingController();
-  String ubicacionST = "";
 
   final facebookTextController = TextEditingController();
   final twitterTextController = TextEditingController();
@@ -38,9 +33,8 @@ class GetxSitioTuristico extends GetxController {
   late Map<String, String> _listContactos;
   Map<String, String> get listContactos => _listContactos;
 
-  void uodateActivity(List<DropdownMenuItem<String>> value) {
-    print("Actualizando lista");
-    _menuItemsActivity = value;
+  void updateActivity(List<dynamic> activitys) {
+    activitys.map((e) => _menuItemsActivity.add(e.toString()));
     update();
   }
 
@@ -53,18 +47,8 @@ class GetxSitioTuristico extends GetxController {
     update();
   }
 
-  void addFilesImage(XFile image) {
-    _imageFileList.add(image);
-    update();
-  }
-
-  void updateUbicacion(String ubicacion) {
-    _ubicacion = ubicacion;
-    update();
-  }
 
   void cleanTurismo() {
-    _ubicacion = "";
     _buttonText = "Registrar";
     update();
   }
@@ -81,20 +65,23 @@ class GetxSitioTuristico extends GetxController {
     return menuItems;
   }
 
-  Future<void> get dropdownActivity async {
-    print("inicio");
-    List<DropdownMenuItem<String>> menuItems = await
-        editSitesController.getAvtivity();
-
-    uodateActivity(menuItems);
+  Stream<QuerySnapshot> dropdownActivity() {
+    Stream<QuerySnapshot> menuItems = _mySitesRepository.getAvtivity();
+    return menuItems;
   }
 
   Future<void> validateForms() async {
-    print(facebookTextController.text);
+    /* print(nombreSitio.text);
+    print(descripcionST.text);
+    print(tipoTurismo.text);
+    print(_menuItemsActivity);
     print(twitterTextController.text);
+    print(messengerTextController.text);
+    print(instagramTextController.text);
     print(whatsappTextController.text);
+    print(facebookTextController.text); */
 
-    if (formKey.currentState!.validate()) {
+    if (validateText()) {
       print("Error campos vacios");
       Get.showSnackbar(const GetSnackBar(
         title: 'Validacion de datos',
@@ -106,22 +93,37 @@ class GetxSitioTuristico extends GetxController {
     } else {
       print("Realizando proceso de guardado.");
 
-      /*SitioTuristico sitioTuristico = SitioTuristico(
-          id: "",
+      SitioTuristico sitioTuristico = SitioTuristico(
+          id: _mySitesRepository.newId(),
           nombre: nombreSitio.text,
           tipoTurismo: tipoTurismo.text,
           descripcion: descripcionST.text,
-          ubicacion: ubicacion,
+          ubicacion: ubicacion.value,
           contacto: _listContactos,
-          actividades: null,
-          userId: "");*/
+          actividades: _menuItemsActivity,
+          userId: "");
 
-      //editSitesController.saveSite(sitioTuristico);
+
+      print("Guardando: " + sitioTuristico.toString());
+      //_mySitesRepository.saveMySite(sitioTuristico);
     }
   }
 
   Widget textFormSocialRed(TextEditingController controllerEdit) {
     return TextFormField(
         controller: controllerEdit, keyboardType: TextInputType.text);
+  }
+
+  bool validateText() {
+    if (nombreSitio.text.isNotEmpty &&
+    descripcionST.text.isNotEmpty &&
+    tipoTurismo.text.isNotEmpty &&
+    _menuItemsActivity.isNotEmpty &&
+    ubicacion.isNotEmpty) {
+      updateContactos();
+      return true;
+    } else {
+      return false;
+    }
   }
 }
