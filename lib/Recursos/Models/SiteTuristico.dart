@@ -20,7 +20,7 @@ class SitioTuristico extends Equatable {
       required this.tipoTurismo,
       required this.descripcion,
       required this.ubicacion,
-      required this.userId,
+      this.userId,
       required this.contacto,
       this.puntuacion,
       required this.actividades,

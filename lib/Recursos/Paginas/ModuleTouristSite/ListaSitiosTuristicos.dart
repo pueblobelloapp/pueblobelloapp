@@ -1,7 +1,8 @@
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Controller/SitesController.dart';
+import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
+import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,13 +12,13 @@ class ListaSitiosTuristicos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EditSitesController editController = Get.find<EditSitesController>();
+    final MySitesRepository _mySitesRepository = getIt();
 
     return Container(
       color: Colors.grey.shade100,
       child: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
-        stream: editController.getSitesUser(),
+        stream: _mySitesRepository.getSitesUid(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Center(
