@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/MapGeolocation.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -156,20 +157,23 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     fillColor: AppBasicColors.colorTextFormField,
                     controller: controller.facebookTextController),
                 SizedBox(height: 15),
-                Text("Ubicacion geografica"),
-                Obx(() => Text(controller.ubicacion.value)),
-                TextButton.icon(
-                    onPressed: () {
-                      _getCurrentLocation();
-                    },
-                    icon: Icon(
-                      Icons.location_on,
-                      color: Colors.green,
-                    ),
-                    label: Text(
-                      "Ubicar",
-                      style: TextStyle(color: Colors.green),
-                    )),
+                Row(
+                  children: [
+                    Obx(() => Text(controller.ubicacion.value)),
+                    TextButton.icon(
+                        onPressed: () {
+                          Get.to(() => MapGeolocation());
+                        },
+                        icon: Icon(
+                          Icons.location_on,
+                          color: Colors.green,
+                        ),
+                        label: Text(
+                          "Ubicar",
+                          style: TextStyle(color: Colors.green),
+                        ))
+                  ],
+                ),
                 SizedBox(height: 15),
                 GetBuilder<GetxGestionInformacionController>(
                   init: GetxGestionInformacionController(),
@@ -181,7 +185,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                             child: caruselPhotos()),
                         ElevatedButton.icon(
                           label: Text("Cargar fotos"),
-                          onPressed: () => selectMultPhoto(),
+                          onPressed: () => Get.to(() => ImageUpload()),
                           icon: Icon(Icons.image_outlined, color: Colors.white),
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green),
@@ -235,31 +239,6 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
       },
       hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
     );
-  }
-
-  //Funciones para localizacion
-  void _getCurrentLocation() async {
-    Position position = await _determinePosition();
-    print("Ubicado: " + position.toString());
-    //controller.updateUbicacion(position.toString());
-    controller.ubicacion.value = position.toString();
-  }
-
-  Future<Position> _determinePosition() async {
-    LocationPermission permission;
-
-    permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location Permissions are denied');
-      }
-    } else {
-      print("Error: Permission denied");
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 
   selectMultPhoto() async {

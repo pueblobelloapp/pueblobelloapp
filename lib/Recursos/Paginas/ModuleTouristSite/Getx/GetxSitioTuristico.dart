@@ -4,11 +4,17 @@ import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GetxSitioTuristico extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
   final formKey = GlobalKey<FormState>();
-  
+
+  List<XFile> listPickedFile = [];
+  List<CroppedFile> listCroppedFile = [];
+
   String _buttonText = "Registrar";
   List<dynamic>? _fotoUrl = [];
 
@@ -17,8 +23,8 @@ class GetxSitioTuristico extends GetxController {
   String get buttonText => _buttonText;
   List<dynamic>? get fotoUrl => _fotoUrl;
 
-  List<dynamic> _menuItemsActivity = [];
-  List<dynamic> get menuItemsActivity => _menuItemsActivity;
+  String _menuItemsActivity = "";
+  late LatLng selectedLatLng = LatLng(10.422522, -73.578462);
 
   final nombreSitio = TextEditingController();
   final tipoTurismo = TextEditingController();
@@ -30,23 +36,39 @@ class GetxSitioTuristico extends GetxController {
   final instagramTextController = TextEditingController();
   final whatsappTextController = TextEditingController();
 
-  late Map<String, String> _listContactos;
-  Map<String, String> get listContactos => _listContactos;
+  Map<String, String> _listContactos = {};
+  Map<String, String> _mapUbications = {};
+
+  void updatePosition(LatLng latLng) {
+    selectedLatLng = latLng;
+    ubicacion.value = "Ubicacion seleccionada";
+    _mapUbications = {"lat": latLng.latitude.toString(),
+      "long": latLng.longitude.toString()};
+    update();
+  }
 
   void updateActivity(List<dynamic> activitys) {
-    activitys.map((e) => _menuItemsActivity.add(e.toString()));
+    print(activitys);
+    _menuItemsActivity = "";
+    activitys.forEach((e) => _menuItemsActivity += '#${(e.toString())} ');
+    update();
+  }
+
+  void updateUbication(String longitud, String latitud) {
+    _mapUbications = {"lat": latitud, "long": longitud};
     update();
   }
 
   void updateContactos() {
-    _listContactos['facebook'] = facebookTextController.text;
-    _listContactos['twitter'] = twitterTextController.text;
-    _listContactos['messenger'] = messengerTextController.text;
-    _listContactos['instagram'] = instagramTextController.text;
-    _listContactos['whatsapp'] = whatsappTextController.text;
+    _listContactos = {
+      "facebook": facebookTextController.text,
+      "twitter": twitterTextController.text,
+      "messenger": messengerTextController.text,
+      "instagram": instagramTextController.text,
+      "whatsapp": whatsappTextController.text
+    };
     update();
   }
-
 
   void cleanTurismo() {
     _buttonText = "Registrar";
@@ -71,17 +93,21 @@ class GetxSitioTuristico extends GetxController {
   }
 
   Future<void> validateForms() async {
-    /* print(nombreSitio.text);
-    print(descripcionST.text);
-    print(tipoTurismo.text);
-    print(_menuItemsActivity);
-    print(twitterTextController.text);
-    print(messengerTextController.text);
-    print(instagramTextController.text);
-    print(whatsappTextController.text);
-    print(facebookTextController.text); */
-
     if (validateText()) {
+      print("Realizando proceso de guardado.");
+
+      SitioTuristico sitioTuristico = SitioTuristico(
+          id: _mySitesRepository.newId(),
+          nombre: nombreSitio.text,
+          tipoTurismo: tipoTurismo.text,
+          descripcion: descripcionST.text,
+          ubicacion: _mapUbications,
+          contacto: _listContactos,
+          actividades: _menuItemsActivity,
+          puntuacion: []);
+
+      _mySitesRepository.saveMySite(sitioTuristico);
+    } else {
       print("Error campos vacios");
       Get.showSnackbar(const GetSnackBar(
         title: 'Validacion de datos',
@@ -90,22 +116,6 @@ class GetxSitioTuristico extends GetxController {
         duration: Duration(seconds: 4),
         backgroundColor: Colors.red,
       ));
-    } else {
-      print("Realizando proceso de guardado.");
-
-      SitioTuristico sitioTuristico = SitioTuristico(
-          id: _mySitesRepository.newId(),
-          nombre: nombreSitio.text,
-          tipoTurismo: tipoTurismo.text,
-          descripcion: descripcionST.text,
-          ubicacion: ubicacion.value,
-          contacto: _listContactos,
-          actividades: _menuItemsActivity,
-          userId: "");
-
-
-      print("Guardando: " + sitioTuristico.toString());
-      //_mySitesRepository.saveMySite(sitioTuristico);
     }
   }
 
@@ -115,15 +125,12 @@ class GetxSitioTuristico extends GetxController {
   }
 
   bool validateText() {
-    if (nombreSitio.text.isNotEmpty &&
-    descripcionST.text.isNotEmpty &&
-    tipoTurismo.text.isNotEmpty &&
-    _menuItemsActivity.isNotEmpty &&
-    ubicacion.isNotEmpty) {
-      updateContactos();
-      return true;
-    } else {
-      return false;
-    }
+    updateContactos();
+
+    return (nombreSitio.text.isNotEmpty &&
+        descripcionST.text.isNotEmpty &&
+        tipoTurismo.text.isNotEmpty &&
+        _menuItemsActivity.isNotEmpty &&
+        ubicacion.value.isNotEmpty);
   }
 }

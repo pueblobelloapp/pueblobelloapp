@@ -7,11 +7,11 @@ class SitioTuristico extends Equatable {
   final String nombre;
   final String tipoTurismo;
   final String descripcion;
-  final String ubicacion;
+  final Map<String, String>? ubicacion;
   final String? userId;
   final Map<String, String>? contacto;
   final List<Puntuacion>? puntuacion;
-  final List<dynamic>? actividades;
+  final String? actividades;
   final List<dynamic>? foto;
 
   const SitioTuristico(
@@ -60,11 +60,11 @@ class SitioTuristico extends Equatable {
         nombre = data['nombre'] as String,
         tipoTurismo = data['tipoTurismo'] as String,
         descripcion = data['descripcion'] as String,
-        ubicacion = data['ubicacion'] as String,
+        ubicacion = data['ubicacion'] as Map<String, String>?,
         userId = data['userId'] as String?,
         contacto = data['contacto'] as Map<String, String>?,
         puntuacion = data['puntuacion'] as List<Puntuacion>?,
-        actividades = data['actividades'] as List<String>?,
+        actividades = data['actividades'] as String?,
         foto = data['foto;'] as List<String>?;
 
   SitioTuristico copyWith(
@@ -73,11 +73,11 @@ class SitioTuristico extends Equatable {
       String? tipoTurismo,
       String? tipoPropiedad,
       String? descripcion,
-      String? ubicacion,
+      Map<String, String>? ubicacion,
       String? userId,
       Map<String, String>? contacto,
       List<Puntuacion>? puntuacion,
-      List<String>? actividades,
+      String? actividades,
       List<String>? foto}) {
     return SitioTuristico(
       id: id ?? this.id,

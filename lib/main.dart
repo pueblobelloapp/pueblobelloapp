@@ -31,9 +31,6 @@ void main() async {
   Get.put(SiteTuristicoDataSource());
   Get.put(ControllerLogin());
   Get.put(GetxSitioTuristico());
-  /* Get.put(GextControllerTurismo());
-  
-   */
 
   runApp(const MyApp());
 }

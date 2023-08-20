@@ -9,8 +9,6 @@ class GextControllerTurismo extends GetxController {
 
   int _countTapItem = 0;
 
-  Position? _position;
-
   final formKey = GlobalKey<FormState>();
   var isChecked = false.obs;
 
