@@ -32,20 +32,19 @@ class SiteTuristicoDataSource {
     List<String>? urlFotografias = [];
     print("Iniciando guardado: " + sitioTuristico.toString());
 
-    /*TODO: Si no es vacio entonces selecciono fotografias, se debe borrar,
-    * tener en cuenta, borrar fotografias que ya se tenian guardadas para poder
-    * actualizar las que vienen.
-    * */
     if (controllerTurismo.imageFileList.isNotEmpty) {
       print("Busca fotos");
       urlFotografias =
           await uploadFiles(controllerTurismo.imageFileList);
       print("Resultados: " + urlFotografias.toString());
-      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias);
+      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias, userId: controllerTurismo.uidUser);
       controllerTurismo.imageFileList.clear();
+      await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
+    } else {
+      print("Notificar que no se puede guardar.");
     }
-    sitioTuristico.copyWith(userId: controllerTurismo.uidUser);
-    await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
+   // sitioTuris sitioTuristico.copyWith(userId: controllerTurismo.uidUser);
+    
   }
 
   Future<List<String>> uploadFiles(List<XFile> _images) async {
