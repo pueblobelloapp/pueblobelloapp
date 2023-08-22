@@ -6,100 +6,115 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ImageUpload extends GetView<GetxSitioTuristico> {
-  var screenWidth;
-  var screenHeight;
+class ImageUpload extends StatefulWidget {
+  const ImageUpload({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _ImageUpload createState() => _ImageUpload();
+}
+
+class _ImageUpload extends State<ImageUpload> {
+  final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
 
   @override
   Widget build(BuildContext context) {
-   screenWidth = MediaQuery.of(context).size.width;
-   screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: _body(),
-    );
+        appBar: AppBar(title: const Text("Fotografias sitio turistico")),
+        body: bodyImage());
   }
 
-  Widget _body() {
-    if (controller.listCroppedFile.length > 0) {
-      print("iF");
+  Widget bodyImage() {
+    if (sitioController.listCroppedFile.length > 0) {
       return _imageList();
     } else {
-      print("Else");
       return _uploaderCard();
     }
   }
 
   Widget _imageList() {
     return ListView.builder(
-        itemCount: controller.listCroppedFile.length,
+        itemCount: sitioController.listCroppedFile.length,
         itemBuilder: (context, int index) {
-          return cardImage(controller.listCroppedFile[index], index);
-        }
-    );
+          return cardImage(sitioController.listCroppedFile[index], index);
+        });
   }
 
-  Widget cardImage (CroppedFile _croppedFile, int indexCropped) {
-    print("_croppedFile: " + _croppedFile.path);
+  Widget cardImage(CroppedFile croppedFile, int indexCropped) {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Card(
               elevation: 4.0,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: image(_croppedFile),
-              ),
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      image(croppedFile),
+                      optionImage(indexCropped),
+                      
+                    ],
+                  )),
             ),
           ),
-          const SizedBox(height: 24.0),
-          _menu(indexCropped),
+          const SizedBox(height: 5.0),
         ],
       ),
     );
   }
 
   Widget image(CroppedFile croppedFile) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     if (croppedFile.path != "") {
-      final path = croppedFile!.path;
+      final path = croppedFile.path;
       return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 0.8 * screenWidth,
-          maxHeight: 0.7 * screenHeight,
-        ),
-        child: Image.file(File(path)),
-      );
+          constraints: BoxConstraints(
+            maxWidth: 0.8 * screenWidth,
+            maxHeight: 0.7 * screenHeight,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.file(File(path)),
+              sitioController.determineAspectRatio(croppedFile)
+                          ? Text("Cumple")
+                          : Text("No cumple"),
+            ],
+          ));
     } else {
       return const SizedBox.shrink();
     }
   }
 
-  Widget _menu(int indexCropped) {
+  Widget optionImage(int indexCropped) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        FloatingActionButton(
+        ElevatedButton.icon(
           onPressed: () {
-            controller.listCroppedFile.removeAt(indexCropped);
+            sitioController.listCroppedFile.removeAt(indexCropped);
+            setState(() {});
           },
-          backgroundColor: Colors.redAccent,
-          tooltip: 'Delete',
-          child: const Icon(Icons.delete),
+          label: const Text("Eliminar"),
+          icon: const Icon(Icons.delete),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              cropImage(indexCropped);
-            },
-            backgroundColor: const Color(0xFFBC764A),
-            tooltip: 'Crop',
-            child: const Icon(Icons.crop),
-          ),
-        )
+        SizedBox(width: 10),
+        ElevatedButton.icon(
+          onPressed: () {
+            cropImage(indexCropped).then((value) => setState(() {}));
+          },
+          label: const Text("Recortar"),
+          icon: const Icon(Icons.crop),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+        ),
       ],
     );
   }
@@ -136,7 +151,7 @@ class ImageUpload extends GetView<GetxSitioTuristico> {
                             size: 80.0,
                           ),
                           const SizedBox(height: 24.0),
-                          Text('Upload an image to start')
+                          Text('Seleccionar fotografias')
                         ],
                       ),
                     ),
@@ -148,6 +163,7 @@ class ImageUpload extends GetView<GetxSitioTuristico> {
                 child: ElevatedButton(
                   onPressed: () {
                     _uploadImage();
+                    setState(() {});
                   },
                   child: const Text('Upload'),
                 ),
@@ -160,53 +176,57 @@ class ImageUpload extends GetView<GetxSitioTuristico> {
   }
 
   Future<void> cropImage(int croppedIndex) async {
-    if (controller.listCroppedFile[croppedIndex].path != "") {
+    if (sitioController.listCroppedFile[croppedIndex].path != "") {
       final croppedFile = await ImageCropper().cropImage(
-        sourcePath: controller.listCroppedFile[croppedIndex].path,
+        sourcePath: sitioController.listCroppedFile[croppedIndex].path,
         compressFormat: ImageCompressFormat.jpg,
         compressQuality: 100,
-        maxHeight: 1080,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.ratio3x2,
+          CropAspectRatioPreset.ratio4x3,
+          CropAspectRatioPreset.ratio16x9
+        ],
         uiSettings: [
           AndroidUiSettings(
               toolbarTitle: 'Cropper',
-              toolbarColor: Colors.deepOrange,
+              toolbarColor: Colors.green,
               toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
+              initAspectRatio: CropAspectRatioPreset.square,
+              lockAspectRatio: true),
           IOSUiSettings(
-            title: 'Cropper',
+            title: 'Recorte de imagen',
           )
         ],
       );
       if (croppedFile != null) {
-        controller.listCroppedFile[croppedIndex] = croppedFile;
+        setState(() {
+          sitioController.listCroppedFile[croppedIndex] = croppedFile;
+        });
       }
     }
   }
 
   Future<void> _uploadImage() async {
     final List<XFile> pickedFileList = await ImagePicker().pickMultiImage();
-    if (pickedFileList != null) {
-      print("Setea fotos");
-
+    if (pickedFileList.isNotEmpty) {
       for (int i = 0; i < pickedFileList.length; i++) {
         CroppedFile? croppedFile = CroppedFile(pickedFileList[i].path);
-        controller.listCroppedFile.add(croppedFile);
+        sitioController.listCroppedFile.add(croppedFile);
       }
+      setState(() {});
     } else {
       print("Sin datos");
     }
   }
 
   void _clear(int index) {
-    print("Longigtud: ${controller.listCroppedFile.length}");
-    if (controller.listCroppedFile.isNotEmpty) {
-      controller.listCroppedFile.removeAt(index);
-    } else {
+    print("Longigtud: ${sitioController.listCroppedFile.length}");
+    if (sitioController.listCroppedFile.isNotEmpty) {
+      sitioController.listCroppedFile.removeAt(index);
+    } else {}
 
-    }
-
-      controller.listCroppedFile.clear();
-      controller.listPickedFile.clear();
+    sitioController.listCroppedFile.clear();
+    sitioController.listPickedFile.clear();
   }
 }

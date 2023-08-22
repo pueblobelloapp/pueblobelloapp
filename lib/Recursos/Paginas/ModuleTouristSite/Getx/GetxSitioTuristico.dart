@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
 import 'package:app_turismo/main.dart';
@@ -39,11 +41,39 @@ class GetxSitioTuristico extends GetxController {
   Map<String, String> _listContactos = {};
   Map<String, String> _mapUbications = {};
 
+  String uidUserLogin = "";
+
+  void updateUidUserLogin( uidUser ) {
+    uidUserLogin = uidUser;
+    update();
+  }
+
+  bool determineAspectRatio(CroppedFile photos) {
+    double aspectRatio = 0;
+    bool aspectBool = false;
+
+    Image image = Image.file(File(photos.path));
+    image.image.resolve(ImageConfiguration()).addListener(
+      ImageStreamListener(
+            (ImageInfo image, bool synchronousCall) {
+          var myImage = image.image;
+          aspectRatio = myImage.width.toDouble() /  myImage.height.toDouble();
+        },
+      ),
+    );
+
+    if (aspectRatio == 1 || aspectRatio == 3 / 2 ||
+        aspectRatio == 4 / 3 || aspectRatio == 16 / 9) {
+        aspectBool = true;
+    }
+
+    return aspectBool;
+  }
+
   void updatePosition(LatLng latLng) {
     selectedLatLng = latLng;
-    ubicacion.value = "Ubicacion seleccionada";
-    _mapUbications = {"lat": latLng.latitude.toString(),
-      "long": latLng.longitude.toString()};
+    ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
+    _mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
     update();
   }
 

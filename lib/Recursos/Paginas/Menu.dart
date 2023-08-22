@@ -112,19 +112,7 @@ class _MenuModulsState extends State<MenuModuls> {
           _title(
               "Cuenteros",
               FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green),
-              "GestionSites"),
-          _title(
-              "Bienestar", FaIcon(FontAwesomeIcons.peopleArrows,
-              color: Colors.green),
-              "GestionSites"),
-          _title(
-              "Eccoturismo", FaIcon(FontAwesomeIcons.peopleArrows,
-              color: Colors.green),
-              "GestionSites"),
-          _title(
-              "Rural", FaIcon(FontAwesomeIcons.peopleArrows,
-              color: Colors.green),
-              "GestionSites"),
+              "MenuGestion"),
           Align(
             heightFactor: 8.0,
             child: _btonCerrarSesion(context),

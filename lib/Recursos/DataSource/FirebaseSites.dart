@@ -1,21 +1,19 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
-class SiteTuristicoDataSource {
+class SiteTuristicoDataSource extends GetView<GetxSitioTuristico>{
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
     if (myUsers == null) throw Exception('Not authenticated exception');
     return myUsers;
   }
-
-  final GextControllerTurismo controllerTurismo =
-      Get.put(GextControllerTurismo());
 
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
   FirebaseStorage get storage => FirebaseStorage.instance;
@@ -32,28 +30,28 @@ class SiteTuristicoDataSource {
     List<String>? urlFotografias = [];
     print("Iniciando guardado: " + sitioTuristico.toString());
 
-    if (controllerTurismo.imageFileList.isNotEmpty) {
+    if (controller.listCroppedFile.isNotEmpty) {
       print("Busca fotos");
       urlFotografias =
-          await uploadFiles(controllerTurismo.imageFileList);
+          await uploadFiles(controller.listCroppedFile);
       print("Resultados: " + urlFotografias.toString());
-      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias, userId: controllerTurismo.uidUser);
-      controllerTurismo.imageFileList.clear();
+      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias, userId: controller.uidUserLogin);
+      controller.listCroppedFile.clear();
       await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
     } else {
       print("Notificar que no se puede guardar.");
     }
-   // sitioTuris sitioTuristico.copyWith(userId: controllerTurismo.uidUser);
+   // sitioTuris sitioTuristico.copyWith(userId: controller.uidUser);
     
   }
 
-  Future<List<String>> uploadFiles(List<XFile> _images) async {
+  Future<List<String>> uploadFiles(List<CroppedFile> _images) async {
     var imageUrls =
         await Future.wait(_images.map((_image) => uploadFile(_image)));
     return imageUrls;
   }
 
-  Future<String> uploadFile(XFile _image) async {
+  Future<String> uploadFile(CroppedFile _image) async {
     final storageReference = storage.ref().child('posts/${_image.path}');
     await storageReference.putFile(File(_image.path));
     return await storageReference.getDownloadURL();
@@ -65,14 +63,19 @@ class SiteTuristicoDataSource {
   }
 
   Stream<QuerySnapshot> getSitesUid() {
-    print("Uid: " + controllerTurismo.uidUser);
+    print("Uid: " + controller.uidUserLogin);
     return firestore
         .collection('sites')
-        .where("userId", isEqualTo: controllerTurismo.uidUser)
+        .where("userId", isEqualTo: controller.uidUserLogin)
         .snapshots();
   }
 
   Stream<QuerySnapshot> getAvtivity() {
     return firestore.collection('actividades/').snapshots();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
   }
 }

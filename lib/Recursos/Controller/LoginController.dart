@@ -1,5 +1,5 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -10,8 +10,8 @@ class ControllerLogin extends GetxController {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
-  final GextControllerTurismo _controllerTurismo =
-        Get.put(GextControllerTurismo());
+  final GetxSitioTuristico _controllerTurismo =
+        Get.put(GetxSitioTuristico());
   final GetxUtils messageController = Get.put(GetxUtils());
   final GextPropietarioController propietarioController=
         Get.put(GextPropietarioController());

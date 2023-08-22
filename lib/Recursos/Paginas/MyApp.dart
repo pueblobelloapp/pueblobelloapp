@@ -8,10 +8,10 @@ import 'package:app_turismo/Recursos/Paginas/Navigation/NavegacionGestion.dart';
 import 'package:app_turismo/Recursos/Paginas/Navigation/NavegacionSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/PerfilPropietario.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
+import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
-
 import 'modulopages/ModuleGestion.dart';
 
 class MyApp extends StatelessWidget {
@@ -23,19 +23,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Turismo App Administrador',
       theme: ThemeData(
-          highlightColor: const Color(0xFFD0996F),
-          canvasColor: const Color(0xFFFDF5EC),
+          highlightColor: AppBasicColors.green,
+          canvasColor: AppBasicColors.white,
           textTheme: TextTheme(
             headlineSmall: ThemeData.light()
                 .textTheme
                 .headlineSmall!
-                .copyWith(color: const Color(0xFFBC764A)),
+                .copyWith(color: AppBasicColors.green),
           ),
           iconTheme: IconThemeData(
             color: Colors.grey[600],
           ),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFFBC764A),
+          appBarTheme: AppBarTheme(
+            backgroundColor: AppBasicColors.green,
             centerTitle: false,
             foregroundColor: Colors.white,
             actionsIconTheme: IconThemeData(color: Colors.white),
@@ -43,16 +43,16 @@ class MyApp extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => const Color(0xFFBC764A)),
+                      (states) => AppBasicColors.green),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: ButtonStyle(
               foregroundColor: MaterialStateColor.resolveWith(
-                    (states) => const Color(0xFFBC764A),
+                    (states) => AppBasicColors.green,
               ),
               side: MaterialStateBorderSide.resolveWith(
-                      (states) => const BorderSide(color: Color(0xFFBC764A))),
+                      (states) => BorderSide(color:AppBasicColors.green)),
             ),
           ),
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)

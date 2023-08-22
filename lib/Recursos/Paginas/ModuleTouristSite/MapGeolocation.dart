@@ -21,7 +21,6 @@ class MapGeolocation extends GetView<GetxSitioTuristico> {
                   zoom: 15.0,
                 ),
                 onTap: (LatLng latLng) {
-                  print("Ejecutando tap");
                   controller.updatePosition(latLng);
                 },
                 markers: {
