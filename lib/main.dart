@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
+import 'Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
 import 'Recursos/Controller/GextControllers/GextUtils.dart';
 import 'Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'Recursos/DataSource/FirebaseSites.dart';
@@ -37,7 +37,7 @@ void main() async {
 
 Future<void> injectDependencies() async {
   //Controladores
-  getIt.registerLazySingleton(() => GextControllerTurismo());
+  getIt.registerLazySingleton(() => GetxMunicipioController());
   getIt.registerLazySingleton(() => GetxSitioTuristico());
   getIt.registerLazySingleton(() => GextPropietarioController());
   getIt.registerLazySingleton(() => GetxGestionInformacionController());

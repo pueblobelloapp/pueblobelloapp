@@ -1,6 +1,6 @@
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
 import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,8 +56,8 @@ class ListaSitiosTuristicos extends StatelessWidget {
       subtitle: Text(data['tipoTurismo']),
       trailing: Icon(Icons.arrow_forward_ios_outlined),
       onTap: () {
-        final GextControllerTurismo controllerTurismo =
-            Get.put(GextControllerTurismo());
+        final GetxMunicipioController controllerTurismo =
+            Get.put(GetxMunicipioController());
         final GetxSitioTuristico _controllerGetxTurismo =
             Get.put(GetxSitioTuristico());
 

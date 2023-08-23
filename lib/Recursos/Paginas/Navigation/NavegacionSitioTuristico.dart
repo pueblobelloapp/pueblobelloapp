@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ListaSitiosTuristicos.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ModuleSitiosTuristico.dart';
 import 'package:flutter/material.dart';
@@ -11,29 +11,35 @@ class NavegacionSitioTuristico extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return GetBuilder<GextControllerTurismo>(builder: (controller) {
+    final GetxMunicipioController controllerTurismo =
+    Get.put(GetxMunicipioController());
+
+    return GetBuilder<GetxMunicipioController>(builder: (controller) {
       return Scaffold(
-        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
           backgroundColor: Colors.green,
           centerTitle: true,
-          title: Text("Gestion de sitios turisticos"),
+          automaticallyImplyLeading: false,
+          title: Text("App Turismo"),
         ),
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
-            children: [ListaSitiosTuristicos(), ModuleSitiosTuristicos()],
+            children: [
+              ListaSitiosTuristicos(),
+              ModuleSitiosTuristicos()
+            ],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.barsStaggered),
+              icon: FaIcon(FontAwesomeIcons.list),
               label: 'Listado',
             ),
             BottomNavigationBarItem(
-                icon: FaIcon(FontAwesomeIcons.houseFlag), label: 'Agregar'),
+                icon: FaIcon(FontAwesomeIcons.plus), label: 'Agregar'),
           ],
           currentIndex: controller.countTapItem,
           onTap: controller.updateTapItem,

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
-import 'package:app_turismo/Recursos/Models/GestionModel.dart';
+import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,8 +13,8 @@ class GestionDataBase {
 
   final GetxUtils messageController = Get.put(GetxUtils());
 
-  final GextControllerTurismo _controllerTurismo =
-  Get.put(GextControllerTurismo());
+  final GetxMunicipioController _controllerTurismo =
+  Get.put(GetxMunicipioController());
 
   final GetxGestionInformacionController controllerGestionInformacion =
   Get.put(GetxGestionInformacionController());
@@ -29,13 +29,13 @@ class GestionDataBase {
   FirebaseStorage get storage => FirebaseStorage.instance;
 
   String newId() {
-    return firestore.collection(_controllerTurismo.typeInformation).doc().id;
+    return firestore.collection('dataTurismo').doc().id;
   }
 
   //Funcion para añadir una nueva informacion.
-  Future<void> saveGestion(GestionModel myGestionModel) async {
+  Future<void> saveGestion(InfoMunicipio myGestionModel) async {
     final ref = firestore.doc(
-        '${_controllerTurismo.typeInformation}/${myGestionModel.id}');
+        'dataTurismo/${myGestionModel.id}');
     List<String>? urlFotografias = [];
 
     if (controllerGestionInformacion.imageFileList.isNotEmpty) {
@@ -57,16 +57,16 @@ class GestionDataBase {
     return await storageReference.getDownloadURL();
   }
 
-  Stream<Iterable<GestionModel>> getAllSites() {
+  Stream<Iterable<InfoMunicipio>> getAllSites() {
     return firestore
-        .collection('${_controllerTurismo.typeInformation}/')
+        .collection('dataTurismo/')
         .snapshots()
-        .map((it) => it.docs.map((e) => GestionModel.fromFirebaseMap(e.data())));
+        .map((it) => it.docs.map((e) => InfoMunicipio.fromFirebaseMap(e.data())));
   }
 
   Future<void> deleteInformation(String uid, String module) async {
     print("Informacion: " + uid +" modulo: " + module);
-    final ref = firestore.doc('${module}/${uid}');
+    final ref = firestore.doc('dataTurismo/${uid}');
     await ref.delete().then((value) =>  {
       messageController.messageInfo("Informacion", "Se elimino correctamente"),
     })

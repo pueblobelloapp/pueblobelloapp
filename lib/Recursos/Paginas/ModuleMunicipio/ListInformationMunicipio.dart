@@ -1,27 +1,26 @@
-import 'package:app_turismo/Recursos/Constants/Constans.dart';
-import 'package:app_turismo/Recursos/Controller/GestionController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class ListInformationGestion extends StatelessWidget {
-  ListInformationGestion({Key? key}) : super(key: key);
-  final GextControllerTurismo controllerTurismo =
-      Get.put(GextControllerTurismo());
+class ListInformationMunicipio extends StatelessWidget {
+  ListInformationMunicipio({Key? key}) : super(key: key);
+  final GetxMunicipioController controllerTurismo =
+      Get.put(GetxMunicipioController());
 
-  final EditGestionController editGestionController =
-      Get.put(EditGestionController());
+  final GetxInformationMunicipio editGestionController =
+      Get.put(GetxInformationMunicipio());
+
   final GetxGestionInformacionController controllerGestion =
       Get.put(GetxGestionInformacionController());
 
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
-        .collection('${controllerTurismo.typeInformation}')
+        .collection('dataTurismo')
         .snapshots();
 
     return Container(
@@ -66,8 +65,8 @@ class ListInformationGestion extends StatelessWidget {
           ListTile(
             leading: TextButton.icon(
                 onPressed: () {
-                  final GextControllerTurismo controllerTurismo =
-                      Get.put(GextControllerTurismo());
+                  final GetxMunicipioController controllerTurismo =
+                      Get.put(GetxMunicipioController());
                   controllerGestion.updateGestionInformacion(
                       data['id'],
                       data['nombre'],
@@ -82,7 +81,7 @@ class ListInformationGestion extends StatelessWidget {
                   color: Colors.green,
                 ),
                 label: Text("")),
-            title: Text(data['nombre']),
+            title: Text(data['titulo']),
             trailing: TextButton.icon(
                 onPressed: () {},
                 icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red),
@@ -112,7 +111,7 @@ class ListInformationGestion extends StatelessWidget {
                   onPressed: () {
                     //Accion para borrar.
                     editGestionController.deleteInformation(
-                        uid, controllerTurismo.typeInformation);
+                        uid, controllerTurismo.tipoGestion);
                   },
                   child: const Text('Si'),
                   style: TextButton.styleFrom(

@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +12,8 @@ class ListaPropietario extends StatelessWidget {
     final Stream<QuerySnapshot> _propietarioStream =
         FirebaseFirestore.instance.collection('propietario').snapshots();
 
-    final GextControllerTurismo _controllerTurismo =
-        Get.put(GextControllerTurismo());
+    final GetxMunicipioController _controllerTurismo =
+        Get.put(GetxMunicipioController());
 
     return Container(
         color: Colors.grey.shade100,

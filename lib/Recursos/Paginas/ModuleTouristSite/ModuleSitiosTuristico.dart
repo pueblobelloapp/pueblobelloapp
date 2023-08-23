@@ -1,6 +1,5 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/MapGeolocation.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';

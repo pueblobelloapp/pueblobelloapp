@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
-import 'package:app_turismo/Recursos/Models/GestionModel.dart';
+import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
 
@@ -15,13 +15,13 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   }
 
   @override
-  Future<void> editMyGestion(GestionModel myGestion) {
+  Future<void> editMyGestion(InfoMunicipio myGestion) {
     // TODO: implement editMyCultura
     throw UnimplementedError();
   }
 
   @override
-  Stream<Iterable<GestionModel>> getMyGestion() {
+  Stream<Iterable<InfoMunicipio>> getMyGestion() {
     // TODO: implement getMyCulture
     throw UnimplementedError();
   }
@@ -33,7 +33,7 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   }
 
   @override
-  Future<void> saveMyGestion(GestionModel myGestion) {
+  Future<void> saveMyGestion(InfoMunicipio myGestion) {
     // TODO: implement saveMyCultura
     return _gestionDataBase.saveGestion(myGestion);
   }

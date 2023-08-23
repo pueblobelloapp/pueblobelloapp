@@ -1,5 +1,5 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextPropietarioController.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';

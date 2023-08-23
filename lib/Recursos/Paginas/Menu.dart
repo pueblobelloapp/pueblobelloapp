@@ -1,5 +1,5 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GexTurismo.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +12,8 @@ class MenuModuls extends StatefulWidget {
 }
 
 class _MenuModulsState extends State<MenuModuls> {
-  final GextControllerTurismo _controllerTurismo =
-      Get.put(GextControllerTurismo());
+  final GetxMunicipioController _controllerTurismo =
+      Get.put(GetxMunicipioController());
 
   final ControllerLogin controladorLogin = Get.put(ControllerLogin());
   bool shouldPop = false;
@@ -33,39 +33,6 @@ class _MenuModulsState extends State<MenuModuls> {
                 : _listAdmin(context)),
         onWillPop: () async => false);
   }
-
-  void closeSesion() {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Cerrar sesion"),
-            content: const Text("Quieres cerrar sesion ?"),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('No'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() => shouldPop = true);
-                  controladorLogin.signOut();
-                  Navigator.of(context).pop();
-                  Get.to(() => LoginF());
-                },
-                child: const Text('Si'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
-                ),
-              ),
-            ],
-          ));
-    }
-
 
   Widget _listPropietario(BuildContext context) {
     return ListView(
@@ -131,6 +98,7 @@ class _MenuModulsState extends State<MenuModuls> {
           color: Colors.green,
         ),
         onTap: () {
+          _controllerTurismo.tipoGestion = title;
           Get.toNamed(route);
         });
   }
@@ -144,5 +112,37 @@ class _MenuModulsState extends State<MenuModuls> {
             closeSesion();
         });
   }
+
+  void closeSesion() {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Cerrar sesion"),
+            content: const Text("Quieres cerrar sesion ?"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('No'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() => shouldPop = true);
+                  controladorLogin.signOut();
+                  Navigator.of(context).pop();
+                  Get.to(() => LoginF());
+                },
+                child: const Text('Si'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
+                ),
+              ),
+            ],
+          ));
+    }
 }
 

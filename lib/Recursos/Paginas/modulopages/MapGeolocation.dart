@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'Getx/GetxSitioTuristico.dart';
+import '../ModuleTouristSite/GetxSitioTuristico.dart';
 
 class MapGeolocation extends GetView<GetxSitioTuristico> {
   @override
@@ -17,7 +17,7 @@ class MapGeolocation extends GetView<GetxSitioTuristico> {
             return GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target:
-                      LatLng(10.422522, -73.578462), // Centro del mapa inicial
+                      LatLng(10.422522, -73.578462),
                   zoom: 15.0,
                 ),
                 onTap: (LatLng latLng) {

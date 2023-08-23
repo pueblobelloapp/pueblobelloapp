@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/Getx/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -165,7 +165,7 @@ class _ImageUpload extends State<ImageUpload> {
                     _uploadImage();
                     setState(() {});
                   },
-                  child: const Text('Upload'),
+                  child: const Text('Cargar fotos'),
                 ),
               ),
             ],
@@ -189,7 +189,7 @@ class _ImageUpload extends State<ImageUpload> {
         ],
         uiSettings: [
           AndroidUiSettings(
-              toolbarTitle: 'Cropper',
+              toolbarTitle: 'Recortar',
               toolbarColor: Colors.green,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.square,
@@ -215,8 +215,6 @@ class _ImageUpload extends State<ImageUpload> {
         sitioController.listCroppedFile.add(croppedFile);
       }
       setState(() {});
-    } else {
-      print("Sin datos");
     }
   }
 
