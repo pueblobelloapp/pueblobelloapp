@@ -43,7 +43,7 @@ class GetxSitioTuristico extends GetxController {
 
   String uidUserLogin = "";
 
-  void updateUidUserLogin( uidUser ) {
+  void updateUidUserLogin(uidUser) {
     uidUserLogin = uidUser;
     update();
   }
@@ -55,16 +55,18 @@ class GetxSitioTuristico extends GetxController {
     Image image = Image.file(File(photos.path));
     image.image.resolve(ImageConfiguration()).addListener(
       ImageStreamListener(
-            (ImageInfo image, bool synchronousCall) {
+        (ImageInfo image, bool synchronousCall) {
           var myImage = image.image;
-          aspectRatio = myImage.width.toDouble() /  myImage.height.toDouble();
+          aspectRatio = myImage.width.toDouble() / myImage.height.toDouble();
         },
       ),
     );
 
-    if (aspectRatio == 1 || aspectRatio == 3 / 2 ||
-        aspectRatio == 4 / 3 || aspectRatio == 16 / 9) {
-        aspectBool = true;
+    if (aspectRatio == 1 ||
+        aspectRatio == 3 / 2 ||
+        aspectRatio == 4 / 3 ||
+        aspectRatio == 16 / 9) {
+      aspectBool = true;
     }
 
     return aspectBool;
@@ -73,7 +75,10 @@ class GetxSitioTuristico extends GetxController {
   void updatePosition(LatLng latLng) {
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    _mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
+    _mapUbications = {
+      "lat": latLng.latitude.toString(),
+      "long": latLng.longitude.toString()
+    };
     update();
   }
 
