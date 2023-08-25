@@ -1,5 +1,5 @@
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
 import 'package:app_turismo/main.dart';

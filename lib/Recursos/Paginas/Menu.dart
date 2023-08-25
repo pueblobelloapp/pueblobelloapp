@@ -45,7 +45,8 @@ class _MenuModulsState extends State<MenuModuls> {
           _title(
               "Mi perfil",
               FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-              "Propietario"),Align(
+              "Propietario"),
+          Align(
             heightFactor: 3.5,
             child: _btonCerrarSesion(context),
           )
@@ -57,8 +58,8 @@ class _MenuModulsState extends State<MenuModuls> {
         padding: const EdgeInsets.all(5),
         children: ListTile.divideTiles(context: context, tiles: [
           _title(
-              "Culturas", FaIcon(FontAwesomeIcons.peopleArrows,
-              color: Colors.green),
+              "Culturas",
+              FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green),
               "MenuGestion"),
           _title(
               "Etnoturismo",
@@ -87,8 +88,7 @@ class _MenuModulsState extends State<MenuModuls> {
         ]).toList());
   }
 
-  Widget _title(
-      String title, FaIcon icono, String route) {
+  Widget _title(String title, FaIcon icono, String route) {
     return ListTile(
         title: Text(title,
             style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 17)),
@@ -109,40 +109,39 @@ class _MenuModulsState extends State<MenuModuls> {
         icon: FaIcon(FontAwesomeIcons.doorOpen, color: Colors.white),
         label: Text("Cerrar sesion"),
         onPressed: () {
-            closeSesion();
+          closeSesion();
         });
   }
 
   void closeSesion() {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Cerrar sesion"),
-            content: const Text("Quieres cerrar sesion ?"),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('No'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text("Cerrar sesion"),
+              content: const Text("Quieres cerrar sesion ?"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('No'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() => shouldPop = true);
-                  controladorLogin.signOut();
-                  Navigator.of(context).pop();
-                  Get.to(() => LoginF());
-                },
-                child: const Text('Si'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
+                TextButton(
+                  onPressed: () {
+                    setState(() => shouldPop = true);
+                    controladorLogin.signOut();
+                    Navigator.of(context).pop();
+                    Get.to(() => LoginF());
+                  },
+                  child: const Text('Si'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                  ),
                 ),
-              ),
-            ],
-          ));
-    }
+              ],
+            ));
+  }
 }
-

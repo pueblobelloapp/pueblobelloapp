@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GetxMunicipioController extends GetxController {
-
   int _countTapItem = 0;
 
   final formKey = GlobalKey<FormState>();
   var isChecked = false.obs;
 
   String tipoGestion = "";
-  bool  _stateTextForm = true;
+  bool _stateTextForm = true;
   bool _roleState = false;
 
   bool get stateTextForm => _stateTextForm;

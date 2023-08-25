@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,7 +8,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-class SiteTuristicoDataSource extends GetView<GetxSitioTuristico>{
+class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
+
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
     if (myUsers == null) throw Exception('Not authenticated exception');
@@ -32,17 +33,16 @@ class SiteTuristicoDataSource extends GetView<GetxSitioTuristico>{
 
     if (controller.listCroppedFile.isNotEmpty) {
       print("Busca fotos");
-      urlFotografias =
-          await uploadFiles(controller.listCroppedFile);
+      urlFotografias = await uploadFiles(controller.listCroppedFile);
       print("Resultados: " + urlFotografias.toString());
-      sitioTuristico = sitioTuristico.copyWith(foto: urlFotografias, userId: controller.uidUserLogin);
+      sitioTuristico = sitioTuristico.copyWith(
+          foto: urlFotografias, userId: controller.uidUserLogin);
       controller.listCroppedFile.clear();
+      controller.listPickedFile.clear();
       await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
     } else {
       print("Notificar que no se puede guardar.");
     }
-   // sitioTuris sitioTuristico.copyWith(userId: controller.uidUser);
-    
   }
 
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {

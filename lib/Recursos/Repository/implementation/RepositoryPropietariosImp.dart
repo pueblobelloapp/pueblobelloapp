@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
@@ -8,7 +7,6 @@ import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyPropietarioImp extends MyPropietarioRepository {
-
   final PropietarioDataBase _propietarioDataBase = getIt();
 
   @override
@@ -42,6 +40,6 @@ class MyPropietarioImp extends MyPropietarioRepository {
   @override
   Future<void> saveImageProfile() {
     // TODO: implement saveImageProfile
-   return _propietarioDataBase.saveImageProfile();
+    return _propietarioDataBase.saveImageProfile();
   }
 }

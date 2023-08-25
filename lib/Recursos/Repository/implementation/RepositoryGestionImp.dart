@@ -37,5 +37,4 @@ class MyRepositoryGestionImp extends MyGestionRepository {
     // TODO: implement saveMyCultura
     return _gestionDataBase.saveGestion(myGestion);
   }
-
 }

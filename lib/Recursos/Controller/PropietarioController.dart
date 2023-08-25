@@ -15,14 +15,14 @@ class PropietarioController extends GetxController {
   }
 
   Future<void> savePropietario(
-      String uidPropietario,
-      String nombre,
-      String rool,
-      String edad,
-      String genero,
-      String correo,
-      String contacto,
-      ) async {
+    String uidPropietario,
+    String nombre,
+    String rool,
+    String edad,
+    String genero,
+    String correo,
+    String contacto,
+  ) async {
     isLoading.value = true;
 
     _toEdit = Propietario(
@@ -32,33 +32,33 @@ class PropietarioController extends GetxController {
         edad: edad,
         genero: genero,
         correo: correo,
-        contacto : contacto,
-        foto : _toEdit?.foto);
+        contacto: contacto,
+        foto: _toEdit?.foto);
 
     await _myPropietarioRepository.saveMyPropietario(_toEdit!);
     isLoading.value = false;
   }
 
   Future<void> editSite(
-      String uid,
-      String rool,
-      String nombre,
-      String edad,
-      String genero,
-      String correo,
-      String contacto,
-      ) async {
+    String uid,
+    String rool,
+    String nombre,
+    String edad,
+    String genero,
+    String correo,
+    String contacto,
+  ) async {
     isLoading.value = true;
 
     _toEdit = Propietario(
         id: uid,
-        rool: rool ,
+        rool: rool,
         nombre: nombre,
         edad: edad,
         genero: genero,
         correo: correo,
-        contacto : contacto,
-        foto : _toEdit?.foto);
+        contacto: contacto,
+        foto: _toEdit?.foto);
 
     await _myPropietarioRepository.saveMyPropietario(_toEdit!);
     isLoading.value = false;

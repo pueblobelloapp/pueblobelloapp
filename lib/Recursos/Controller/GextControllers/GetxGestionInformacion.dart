@@ -24,7 +24,7 @@ class GetxGestionInformacionController extends GetxController {
   void cleanData() {
     _id = "";
     _nombre = "";
-    _descripcion  = "";
+    _descripcion = "";
     _ubicacion = "Sin posicion";
     _imageFileList.clear();
     update();
@@ -42,7 +42,6 @@ class GetxGestionInformacionController extends GetxController {
 
   void updateGestionInformacion(String id, String nombre, String descripcion,
       List<dynamic>? fotos, String ubicacion, String buttonTex) {
-
     _nombre = nombre;
     _descripcion = descripcion;
     _fotoUrl = fotos;

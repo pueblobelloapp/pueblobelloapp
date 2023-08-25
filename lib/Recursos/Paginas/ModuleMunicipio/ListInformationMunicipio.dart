@@ -19,9 +19,8 @@ class ListInformationMunicipio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
-        .collection('dataTurismo')
-        .snapshots();
+    final Stream<QuerySnapshot> _informationStream =
+        FirebaseFirestore.instance.collection('dataTurismo').snapshots();
 
     return Container(
         color: Colors.grey.shade200,
@@ -110,8 +109,7 @@ class ListInformationMunicipio extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     //Accion para borrar.
-                    editGestionController.deleteInformation(
-                        uid, controllerTurismo.tipoGestion);
+                    //Limpiar todos los campos y devolver al Login
                   },
                   child: const Text('Si'),
                   style: TextButton.styleFrom(

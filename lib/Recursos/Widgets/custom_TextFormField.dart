@@ -18,18 +18,18 @@ class CustomTextFormField extends StatelessWidget {
 
   const CustomTextFormField(
       {super.key,
-        this.controller,
-        required this.icon,
-        required this.textGuide,
-        required this.obscureText,
-        this.textInputType,
-        this.contentPadding = const EdgeInsets.all(16.0),
-        this.fillColor = AppBasicColors.white,
-        this.msgError,
-        this.readOnly = false,
-        this.onTap,
-        this.maxLinesText = 1,
-        this.valueFocus = false});
+      this.controller,
+      required this.icon,
+      required this.textGuide,
+      required this.obscureText,
+      this.textInputType,
+      this.contentPadding = const EdgeInsets.all(16.0),
+      this.fillColor = AppBasicColors.white,
+      this.msgError,
+      this.readOnly = false,
+      this.onTap,
+      this.maxLinesText = 1,
+      this.valueFocus = false});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CustomTextFormField extends StatelessWidget {
             child: icon,
           ),
           prefixIconConstraints:
-          const BoxConstraints(minWidth: 0, minHeight: 0),
+              const BoxConstraints(minWidth: 0, minHeight: 0),
           fillColor: fillColor,
           filled: true,
           enabledBorder: OutlineInputBorder(

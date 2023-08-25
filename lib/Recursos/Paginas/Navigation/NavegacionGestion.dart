@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class NavegacionGestion extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<GetxMunicipioController>(builder: (controller) {
@@ -20,10 +19,7 @@ class NavegacionGestion extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
-            children: [
-              ListInformationMunicipio(),
-              InformationMunicipio()
-            ],
+            children: [ListInformationMunicipio(), InformationMunicipio()],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(

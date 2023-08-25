@@ -131,17 +131,15 @@ class _RegistrarState extends State<Registrar> {
     final bool isValidEmail = EmailValidator.validate(_email.text);
     if (_formkey.currentState!.validate() && isValidEmail) {
       if (_passwordL.text == _passwordConfirmada.text) {
-        signUp(_email.text, _passwordL.text, _nombre.text,
-            _contacto.text);
-        messageController.messageInfo("Registro",
-            "Iniciando registro");
+        signUp(_email.text, _passwordL.text, _nombre.text, _contacto.text);
+        messageController.messageInfo("Registro", "Iniciando registro");
       } else {
-        messageController.messageWarning("Validacion campos",
-            "Las contraseñas no coinciden.");
+        messageController.messageWarning(
+            "Validacion campos", "Las contraseñas no coinciden.");
       }
     } else {
-      messageController.messageWarning("Validacion",
-          "Compruebe los campos del formulario.");
+      messageController.messageWarning(
+          "Validacion", "Compruebe los campos del formulario.");
     }
     _formkey.currentState?.reset();
     setState(() {
@@ -189,16 +187,16 @@ class _RegistrarState extends State<Registrar> {
   void signUp(
       String email, String password, String nombre, String contacto) async {
     CircularProgressIndicator();
-      try {
-        await _auth
-            .createUserWithEmailAndPassword(email: email, password: password)
-            .then((value) => {postDetailsToFirestore(nombre, contacto)});
-      } on FirebaseException catch (e) {
-        if (e.code == "email-already-in-use") {
-          messageController.messageError("Validacion email",
-              "Correo electronico, se encuentra registrado.");
-        }
+    try {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore(nombre, contacto)});
+    } on FirebaseException catch (e) {
+      if (e.code == "email-already-in-use") {
+        messageController.messageError(
+            "Validacion email", "Correo electronico, se encuentra registrado.");
       }
+    }
   }
 
   Future<void> postDetailsToFirestore(String nombre, String contacto) async {
@@ -215,7 +213,7 @@ class _RegistrarState extends State<Registrar> {
           'genero': 'Sin Definir',
           'correo': user.email,
           'contacto': contacto,
-          'foto' : 'assets/img/user.jpg'
+          'foto': 'assets/img/user.jpg'
         }),
         SetOptions(merge: false));
     messageController.messageInfo("Registro", "Se registro exitoso.");

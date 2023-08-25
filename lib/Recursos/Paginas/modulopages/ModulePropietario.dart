@@ -49,8 +49,7 @@ class _ModulePropietarioState extends State<ModulePropietario> {
   Widget Formulario() {
     _uiPropietario = controllerPropietario.id;
     _nombrePropietario.text = controllerPropietario.nombre;
-    _sitioTuristicoPropietario.text =
-        controllerPropietario.sitioTuristico;
+    _sitioTuristicoPropietario.text = controllerPropietario.sitioTuristico;
     _correoPropietario.text = controllerPropietario.correo;
     _edadPropietario.text = controllerPropietario.edad;
     _contactoPropietario.text = controllerPropietario.contacto;
@@ -162,12 +161,12 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                         if (_uiPropietario.isEmpty) {
                           editController.editSite(
                             _uiPropietario,
-                              "Propietario",
-                              _nombrePropietario.text,
-                              _sitioTuristicoPropietario.text,
-                              _edadPropietario.text,
-                              _tipoGenero.toString(),
-                              _correoPropietario.text,
+                            "Propietario",
+                            _nombrePropietario.text,
+                            _sitioTuristicoPropietario.text,
+                            _edadPropietario.text,
+                            _tipoGenero.toString(),
+                            _correoPropietario.text,
                           );
                         }
                         setState(() {});
@@ -180,8 +179,7 @@ class _ModulePropietarioState extends State<ModulePropietario> {
                         print("Datos Incorrectos");
                       }
                     },
-                    label: Text("Actualizar",
-                        textAlign: TextAlign.center))
+                    label: Text("Actualizar", textAlign: TextAlign.center))
               ],
             ),
           ],
@@ -222,5 +220,4 @@ class _ModulePropietarioState extends State<ModulePropietario> {
     _edadPropietario.clear();
     _sitioTuristicoPropietario.clear();
   }
-
 }

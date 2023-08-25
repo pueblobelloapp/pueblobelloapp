@@ -28,10 +28,10 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(children: [
-              HeaderImage(),
-              SizedBox(height: 100),
-              FormRegister()
-            ])));
+      HeaderImage(),
+      SizedBox(height: 100),
+      FormRegister()
+    ])));
   }
 
   Widget HeaderImage() {
@@ -115,26 +115,22 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
       controllerLogin
           .recuperarPassword(_email.text.trim())
           .then((value) => {
-        messageController.messageWarning(
-            "Recuperacion",
-            "Correo enviado para verificacion"),
-        Get.back()
-
-      }).catchError((onError) {
+                messageController.messageWarning(
+                    "Recuperacion", "Correo enviado para verificacion"),
+                Get.back()
+              })
+          .catchError((onError) {
         if (onError == "user-not-found") {
           messageController.messageWarning(
-              "Correo invalido",
-              "Este Correo no se encuentra registrado.");
-        } else if(onError == "invalid-email") {
+              "Correo invalido", "Este Correo no se encuentra registrado.");
+        } else if (onError == "invalid-email") {
           messageController.messageWarning(
-              "Correo invalido",
-              "Digita un correo valido.");
+              "Correo invalido", "Digita un correo valido.");
         }
       });
     } else {
       messageController.messageWarning(
-          "Informacion",
-          "Verifique el correo electronico.");
+          "Informacion", "Verifique el correo electronico.");
     }
     _formkey.currentState?.reset();
     setState(() {

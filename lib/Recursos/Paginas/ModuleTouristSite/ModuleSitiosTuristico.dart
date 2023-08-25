@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
-
   void onInit() {
     controller.dropdownActivity;
   }

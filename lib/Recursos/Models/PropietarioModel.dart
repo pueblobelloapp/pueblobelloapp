@@ -10,8 +10,8 @@ class Propietario extends Equatable {
   final String contacto;
   final String? foto;
 
-  const Propietario({
-      required this.id,
+  const Propietario(
+      {required this.id,
       required this.rool,
       required this.nombre,
       required this.edad,
@@ -26,13 +26,13 @@ class Propietario extends Equatable {
   Map<String, Object?> toFirebaseMap() {
     return <String, Object?>{
       'id': id,
-      'rool' : rool,
+      'rool': rool,
       'nombre': nombre,
       'edad': edad,
       'genero': genero,
       'correo': correo,
-      'contacto' : contacto,
-      'foto' : foto
+      'contacto': contacto,
+      'foto': foto
     };
   }
 
@@ -56,14 +56,14 @@ class Propietario extends Equatable {
     String? contacto,
     String? foto,
   }) {
-    return Propietario(id : id ?? this.id,
+    return Propietario(
+        id: id ?? this.id,
         rool: rool ?? this.rool,
         nombre: nombre ?? this.nombre,
-        edad : edad ?? this.edad,
-        genero : genero ?? this.genero,
-        correo : correo ?? this.correo,
-        contacto : contacto ?? this.contacto,
-        foto : foto ?? this.foto);
+        edad: edad ?? this.edad,
+        genero: genero ?? this.genero,
+        correo: correo ?? this.correo,
+        contacto: contacto ?? this.contacto,
+        foto: foto ?? this.foto);
   }
-
 }

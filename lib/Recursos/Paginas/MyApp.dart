@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
 import 'ModuleMunicipio/InformationMunicipio.dart';
+import 'Navigation/NavegacionSitioTuristico.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -42,16 +43,16 @@ class MyApp extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
               backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => AppBasicColors.green),
+                  (states) => AppBasicColors.green),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: ButtonStyle(
               foregroundColor: MaterialStateColor.resolveWith(
-                    (states) => AppBasicColors.green,
+                (states) => AppBasicColors.green,
               ),
               side: MaterialStateBorderSide.resolveWith(
-                      (states) => BorderSide(color:AppBasicColors.green)),
+                  (states) => BorderSide(color: AppBasicColors.green)),
             ),
           ),
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
@@ -64,6 +65,8 @@ class MyApp extends StatelessWidget {
         'ModuleSitios': (BuildContext context) => ModuleSitiosTuristicos(),
         'Lista': (BuildContext context) => ListInformationMunicipio(),
         'MenuGestion': (BuildContext context) => NavegacionGestion(),
+        'MenuSitioTuristico': (BuildContext context) =>
+            NavegacionSitioTuristico(),
         'Propietario': (BuildContext context) => PerfilPropietario(),
         'RecoveryPass': (BuildContext context) => RecuperarPassword(),
         'GestionSites': (BuildContext context) => InformationMunicipio(),

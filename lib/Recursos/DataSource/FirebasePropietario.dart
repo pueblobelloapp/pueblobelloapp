@@ -46,13 +46,14 @@ class PropietarioDataBase {
       final url = await storageRef.getDownloadURL();
       await ref
           .update({'foto': url})
-          .then((value) =>  {
-              messageController.messageInfo("Perfil", "Foto actualizada"),
-              propietarioController.imagePerfilUrl.value = url
-          })
-          .onError((error, stackTrace) => {messageController.messageError(
-              "Error perfil", "Error al guardar: " + error.toString())
-          });
+          .then((value) => {
+                messageController.messageInfo("Perfil", "Foto actualizada"),
+                propietarioController.imagePerfilUrl.value = url
+              })
+          .onError((error, stackTrace) => {
+                messageController.messageError(
+                    "Error perfil", "Error al guardar: " + error.toString())
+              });
       //propietario = propietario.copyWith(foto: url);
     } else {
       print("Sin imagen");

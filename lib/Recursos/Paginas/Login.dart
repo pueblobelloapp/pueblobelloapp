@@ -168,7 +168,7 @@ class _LoginFState extends State<LoginF> {
           mensajeNotification = "Contraseña incorrecta";
         } else if (onerror == "user-not-found") {
           mensajeNotification = "Email no existe.";
-        } else if (onerror == "network-request-failed"){
+        } else if (onerror == "network-request-failed") {
           mensajeNotification = "No pudimos consultar tu usuario.";
         } else {
           mensajeNotification = onerror.toString();

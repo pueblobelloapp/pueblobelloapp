@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'Recursos/Controller/GextControllers/GextUtils.dart';
 import 'Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'Recursos/DataSource/FirebaseSites.dart';
@@ -46,13 +46,15 @@ Future<void> injectDependencies() async {
   getIt.registerLazySingleton(() => GestionDataBase());
   getIt.registerLazySingleton(() => SiteTuristicoDataSource());
   getIt.registerLazySingleton(() => PropietarioDataBase());
-  
+
   getIt.registerLazySingleton(() => GetxUtils());
-  
+
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp());
-  getIt.registerLazySingleton<MyGestionRepository>(() => MyRepositoryGestionImp());
-  getIt.registerLazySingleton<MySitesRepository>(() => MyRepositorySiteTuristicoImp());
-  getIt.registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
-
+  getIt.registerLazySingleton<MyGestionRepository>(
+      () => MyRepositoryGestionImp());
+  getIt.registerLazySingleton<MySitesRepository>(
+      () => MyRepositorySiteTuristicoImp());
+  getIt
+      .registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
 }

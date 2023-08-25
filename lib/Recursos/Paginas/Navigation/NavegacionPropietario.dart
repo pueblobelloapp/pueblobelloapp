@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import '../modulopages/ModulePropietario.dart';
 
 class NavegacionPropietario extends StatelessWidget {
-
   final GextPropietarioController propietarioController =
       Get.put(GextPropietarioController());
 
@@ -24,10 +23,7 @@ class NavegacionPropietario extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
-            children: [
-              ListaPropietario(),
-              ModulePropietario()
-            ],
+            children: [ListaPropietario(), ModulePropietario()],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(

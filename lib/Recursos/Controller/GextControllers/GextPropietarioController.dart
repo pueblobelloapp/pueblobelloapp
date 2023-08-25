@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GextPropietarioController extends GetxController {
-
   int _countTapItem = 0;
   String _id = "";
   String _nombre = "";

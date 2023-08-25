@@ -39,7 +39,7 @@ class GetxSitioTuristico extends GetxController {
   final whatsappTextController = TextEditingController();
 
   Map<String, String> _listContactos = {};
-  Map<String, String> _mapUbications = {};
+  Map<String, String> mapUbications = {};
 
   String uidUserLogin = "";
 
@@ -62,10 +62,7 @@ class GetxSitioTuristico extends GetxController {
       ),
     );
 
-    if (aspectRatio == 1 ||
-        aspectRatio == 3 / 2 ||
-        aspectRatio == 4 / 3 ||
-        aspectRatio == 16 / 9) {
+    if (aspectRatio == 1 || aspectRatio == 3 / 2 || aspectRatio == 4 / 3 || aspectRatio == 16 / 9) {
       aspectBool = true;
     }
 
@@ -75,10 +72,7 @@ class GetxSitioTuristico extends GetxController {
   void updatePosition(LatLng latLng) {
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    _mapUbications = {
-      "lat": latLng.latitude.toString(),
-      "long": latLng.longitude.toString()
-    };
+    mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
     update();
   }
 
@@ -90,7 +84,7 @@ class GetxSitioTuristico extends GetxController {
   }
 
   void updateUbication(String longitud, String latitud) {
-    _mapUbications = {"lat": latitud, "long": longitud};
+    mapUbications = {"lat": latitud, "long": longitud};
     update();
   }
 
@@ -113,8 +107,7 @@ class GetxSitioTuristico extends GetxController {
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       DropdownMenuItem(child: Text("Sitio de interes"), value: "sitio_interes"),
-      DropdownMenuItem(
-          child: Text("Sitio turistico"), value: "sitio_turistico"),
+      DropdownMenuItem(child: Text("Sitio turistico"), value: "sitio_turistico"),
       DropdownMenuItem(child: Text("Bienestar"), value: "bienestar"),
       DropdownMenuItem(child: Text("Ecoturismo"), value: "ecoturismo"),
       DropdownMenuItem(child: Text("Rural"), value: "rural"),
@@ -136,7 +129,7 @@ class GetxSitioTuristico extends GetxController {
           nombre: nombreSitio.text,
           tipoTurismo: tipoTurismo.text,
           descripcion: descripcionST.text,
-          ubicacion: _mapUbications,
+          ubicacion: mapUbications,
           contacto: _listContactos,
           actividades: _menuItemsActivity,
           puntuacion: []);
@@ -155,8 +148,7 @@ class GetxSitioTuristico extends GetxController {
   }
 
   Widget textFormSocialRed(TextEditingController controllerEdit) {
-    return TextFormField(
-        controller: controllerEdit, keyboardType: TextInputType.text);
+    return TextFormField(controller: controllerEdit, keyboardType: TextInputType.text);
   }
 
   bool validateText() {

@@ -26,13 +26,12 @@ class AppBasicColors {
   static const purpFace = Color.fromRGBO(65, 91, 154, 1);
   static const blueTwit = Color.fromRGBO(28, 162, 240, 1);
 
-  static InputDecoration inputDecorationText =  InputDecoration(
+  static InputDecoration inputDecorationText = InputDecoration(
       prefixIcon: Padding(
         padding: const EdgeInsets.only(
             left: 6.0, top: 0.0, right: 12.0, bottom: 0.0),
       ),
-      prefixIconConstraints:
-      const BoxConstraints(minWidth: 0, minHeight: 0),
+      prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
       fillColor: AppBasicColors.colorTextFormField,
       filled: true,
       enabledBorder: OutlineInputBorder(

@@ -65,8 +65,10 @@ class DefaultFirebaseOptions {
     projectId: 'address-book-prod',
     databaseURL: 'https://address-book-prod.firebaseio.com',
     storageBucket: 'address-book-prod.appspot.com',
-    androidClientId: '925019682416-u7n63ba76vtdas0fbu81rebja3jmjvoe.apps.googleusercontent.com',
-    iosClientId: '925019682416-dtf9l208n0o7hv23o59ncgls4a84t4k5.apps.googleusercontent.com',
+    androidClientId:
+        '925019682416-u7n63ba76vtdas0fbu81rebja3jmjvoe.apps.googleusercontent.com',
+    iosClientId:
+        '925019682416-dtf9l208n0o7hv23o59ncgls4a84t4k5.apps.googleusercontent.com',
     iosBundleId: 'com.nopalsoft.flutterSimpleFirebaseCrudGetx',
   );
 }

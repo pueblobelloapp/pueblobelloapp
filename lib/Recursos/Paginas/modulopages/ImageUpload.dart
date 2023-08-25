@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +57,6 @@ class _ImageUpload extends State<ImageUpload> {
                     children: [
                       image(croppedFile),
                       optionImage(indexCropped),
-                      
                     ],
                   )),
             ),
@@ -83,8 +82,8 @@ class _ImageUpload extends State<ImageUpload> {
             children: [
               Image.file(File(path)),
               sitioController.determineAspectRatio(croppedFile)
-                          ? Text("Cumple")
-                          : Text("No cumple"),
+                  ? Text("Cumple")
+                  : Text("No cumple"),
             ],
           ));
     } else {
@@ -216,15 +215,5 @@ class _ImageUpload extends State<ImageUpload> {
       }
       setState(() {});
     }
-  }
-
-  void _clear(int index) {
-    print("Longigtud: ${sitioController.listCroppedFile.length}");
-    if (sitioController.listCroppedFile.isNotEmpty) {
-      sitioController.listCroppedFile.removeAt(index);
-    } else {}
-
-    sitioController.listCroppedFile.clear();
-    sitioController.listPickedFile.clear();
   }
 }
