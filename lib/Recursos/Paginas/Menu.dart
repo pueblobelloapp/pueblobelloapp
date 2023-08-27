@@ -1,5 +1,5 @@
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +12,8 @@ class MenuModuls extends StatefulWidget {
 }
 
 class _MenuModulsState extends State<MenuModuls> {
-  final GetxMunicipioController _controllerTurismo =
-      Get.put(GetxMunicipioController());
+  final GetxInformationMunicipio _controllerTurismo =
+      Get.put(GetxInformationMunicipio());
 
   final ControllerLogin controladorLogin = Get.put(ControllerLogin());
   bool shouldPop = false;

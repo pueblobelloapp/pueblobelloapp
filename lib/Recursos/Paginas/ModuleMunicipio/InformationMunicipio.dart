@@ -9,14 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-import '../../Models/SubInfoMunicipio.dart';
+import '../../Controller/GextControllers/GetxSitioTuristico.dart';
 
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
-  const InformationMunicipio({super.key});
+  final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
 
   @override
   Widget build(BuildContext context) {
-    return Formulario();
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(15),
+      reverse: true,
+      child: Formulario(),
+    );
   }
 
   Widget Formulario() {
@@ -47,6 +51,46 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         CustomTextFormField(
             icon: const Icon(BootstrapIcons.info_circle),
             obscureText: false,
+            textGuide: "Porque vistar?",
+            msgError: "Campo obligatorio.",
+            textInputType: TextInputType.text,
+            fillColor: AppBasicColors.colorTextFormField,
+            controller: controller.whyVisitControl,
+            valueFocus: false,
+            maxLinesText: 4),
+        SizedBox(height: 15),
+        ListInformation(controller.subCategoria, controller.dropdownItems, "Seleccionar"),
+        SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+                onPressed: () {
+                  Get.to(() => MapGeolocation());
+                },
+                icon: Icon(Icons.location_on, color: Colors.white),
+                label: Text("Ubicar")),
+            SizedBox(width: 10),
+            ElevatedButton.icon(
+              label: Text("Fotografias"),
+              onPressed: () async {
+                await Get.to(() => ImageUpload());
+                if (sitioController.listCroppedFile.length > 0) {
+                  controller.addPhotosGeneral(sitioController.listCroppedFile);
+                } else {
+                  print("No seleccionaste fotografias.");
+                }
+                sitioController.listCroppedFile.clear();
+              },
+              icon: Icon(Icons.image_outlined, color: Colors.white),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            )
+          ],
+        ),
+        SizedBox(height: 15),
+        CustomTextFormField(
+            icon: const Icon(BootstrapIcons.info_circle),
+            obscureText: false,
             textGuide: "Sub Titulo informativo",
             msgError: "Campo obligatorio.",
             textInputType: TextInputType.text,
@@ -65,69 +109,69 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             valueFocus: false,
             maxLinesText: 3),
         SizedBox(height: 7),
-        Row(
-          children: [
-            Text("Ubicado Mostrar Mapa"),
-            TextButton.icon(
-                onPressed: () {
-                  Get.to(() => MapGeolocation());
-                },
-                icon: Icon(
-                  Icons.location_on,
-                  color: Colors.green,
-                ),
-                label: Text(
-                  "Ubicar",
-                  style: TextStyle(color: Colors.green),
-                ))
-          ],
-        ),
-        Column(
-          children: [
-            Container(
-                alignment: Alignment.center,
-                child: Image.asset(
-                  "assets/img/photo.png",
-                  width: 60,
-                  height: 60,
-                )),
-            ElevatedButton.icon(
-              label: Text("Cargar fotos"),
-              onPressed: () => Get.to(() => ImageUpload()),
-              icon: Icon(Icons.image_outlined, color: Colors.white),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            )
-          ],
-        ),
+        ElevatedButton.icon(
+            label: Text("Cargar fotos"),
+            onPressed: () async {
+              await Get.to(() => ImageUpload());
+              if (sitioController.listCroppedFile.length > 0) {
+                controller.addPhotosSub(sitioController.listCroppedFile);
+              } else {
+                print("No seleccionaste fotografias.");
+              }
+            },
+            icon: Icon(Icons.image_outlined, color: Colors.white)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Informacion adicional : 0"),
             ElevatedButton.icon(
                 onPressed: () {
-                  SubInfoMunicipio subInfoMunicipio = SubInfoMunicipio(
+                  SubTitulo subInfoMunicipio = SubTitulo(
                       titulo: controller.subTituloControl.text,
                       descripcion: controller.subDescriptionControl.text,
-                      listPhotosFiles: [],
-                      listPhotosPath: []
-                  );
+                      listPhotosPath: controller.listPhotosSubInfo);
 
                   controller.addSubinformation(subInfoMunicipio);
+                  sitioController.listCroppedFile.clear();
                   print("agregando SUb info");
-
-                }, icon: const Icon(BootstrapIcons.save), label: Text("Agregar"))
+                },
+                icon: const Icon(BootstrapIcons.save),
+                label: Text("Añadir"))
           ],
         ),
         ElevatedButton.icon(
             onPressed: () {
-              InfoMunicipio infoMunicipio = InfoMunicipio(id: '',
+              InfoMunicipio infoMunicipio = InfoMunicipio(
+                  id: '',
                   nombre: controller.tituloControl.text,
                   descripcion: controller.descriptionControl.text,
-                  subTitulos: [], ubicacion: {});
+                  subTitulos: controller.listSubInformation,
+                  ubicacion: sitioController.mapUbications,
+                  photos: controller.listPhotosInfo,
+                  subCategoria: controller.subCategoria.text,
+                  whyVisit: controller.whyVisitControl.text);
 
               controller.saveGestion(infoMunicipio);
-            }, icon: const Icon(BootstrapIcons.upload), label: Text("Guardar"))
+            },
+            icon: const Icon(BootstrapIcons.upload),
+            label: Text("Guardar"))
       ],
     ));
+  }
+
+  Widget ListInformation(TextEditingController _tipoTurismo,
+      List<DropdownMenuItem<String>> listInformation, String hintextValue) {
+    return DropdownButtonFormField<String>(
+      decoration: AppBasicColors.inputDecorationText,
+      isExpanded: true,
+      dropdownColor: AppBasicColors.colorTextFormField,
+      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
+      items: listInformation,
+      onChanged: (String? value) {
+        print("Valor combo: " + value.toString());
+        controller.subCategoria.text = value!;
+      },
+      hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
+    );
   }
 }

@@ -10,6 +10,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../Models/InfoMunicipio.dart';
+
 class GetxSitioTuristico extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
   final formKey = GlobalKey<FormState>();
@@ -39,7 +41,7 @@ class GetxSitioTuristico extends GetxController {
   final whatsappTextController = TextEditingController();
 
   Map<String, String> _listContactos = {};
-  Map<String, String> mapUbications = {};
+  late Ubicacion mapUbications;
 
   String uidUserLogin = "";
 
@@ -72,7 +74,8 @@ class GetxSitioTuristico extends GetxController {
   void updatePosition(LatLng latLng) {
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
+    //mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
+    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
     update();
   }
 
@@ -83,10 +86,10 @@ class GetxSitioTuristico extends GetxController {
     update();
   }
 
-  void updateUbication(String longitud, String latitud) {
+  /*void updateUbication(String longitud, String latitud) {
     mapUbications = {"lat": latitud, "long": longitud};
     update();
-  }
+  }*/
 
   void updateContactos() {
     _listContactos = {

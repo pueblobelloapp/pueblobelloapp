@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleMunicipio/ListInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleMunicipio/InformationMunicipio.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class NavegacionGestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<GetxMunicipioController>(builder: (controller) {
+    return GetBuilder<GetxInformationMunicipio>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green,

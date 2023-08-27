@@ -77,15 +77,7 @@ class _ImageUpload extends State<ImageUpload> {
             maxWidth: 0.8 * screenWidth,
             maxHeight: 0.7 * screenHeight,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.file(File(path)),
-              sitioController.determineAspectRatio(croppedFile)
-                  ? Text("Cumple")
-                  : Text("No cumple"),
-            ],
-          ));
+          child: Image.file(File(path)));
     } else {
       return const SizedBox.shrink();
     }

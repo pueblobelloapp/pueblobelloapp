@@ -11,7 +11,7 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   @override
   Future<void> deleteMyGestion(String uid, String module) async {
     // TODO: implement deleteMyCultura
-    _gestionDataBase.deleteInformation(uid, module);
+    //_gestionDataBase.deleteInformation(uid, module);
   }
 
   @override
@@ -36,5 +36,6 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   Future<void> saveMyGestion(InfoMunicipio myGestion) {
     // TODO: implement saveMyCultura
     return _gestionDataBase.saveGestion(myGestion);
+
   }
 }

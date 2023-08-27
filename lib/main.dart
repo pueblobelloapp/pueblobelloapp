@@ -1,4 +1,3 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
 import 'package:app_turismo/Recursos/DataSource/FirebasePropietario.dart';
@@ -31,13 +30,13 @@ void main() async {
   Get.put(SiteTuristicoDataSource());
   Get.put(ControllerLogin());
   Get.put(GetxSitioTuristico());
+  Get.put(GetxGestionInformacionController());
 
   runApp(const MyApp());
 }
 
 Future<void> injectDependencies() async {
   //Controladores
-  getIt.registerLazySingleton(() => GetxMunicipioController());
   getIt.registerLazySingleton(() => GetxSitioTuristico());
   getIt.registerLazySingleton(() => GextPropietarioController());
   getIt.registerLazySingleton(() => GetxGestionInformacionController());
@@ -51,10 +50,7 @@ Future<void> injectDependencies() async {
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp());
-  getIt.registerLazySingleton<MyGestionRepository>(
-      () => MyRepositoryGestionImp());
-  getIt.registerLazySingleton<MySitesRepository>(
-      () => MyRepositorySiteTuristicoImp());
-  getIt
-      .registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
+  getIt.registerLazySingleton<MyGestionRepository>(() => MyRepositoryGestionImp());
+  getIt.registerLazySingleton<MySitesRepository>(() => MyRepositorySiteTuristicoImp());
+  getIt.registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
 }

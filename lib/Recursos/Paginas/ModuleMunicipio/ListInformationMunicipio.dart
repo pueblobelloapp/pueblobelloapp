@@ -1,6 +1,4 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxMunicipioController.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,14 +6,9 @@ import 'package:get/get.dart';
 
 class ListInformationMunicipio extends StatelessWidget {
   ListInformationMunicipio({Key? key}) : super(key: key);
-  final GetxMunicipioController controllerTurismo =
-      Get.put(GetxMunicipioController());
 
-  final GetxInformationMunicipio editGestionController =
+  final GetxInformationMunicipio controllerTurismo =
       Get.put(GetxInformationMunicipio());
-
-  final GetxGestionInformacionController controllerGestion =
-      Get.put(GetxGestionInformacionController());
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +57,6 @@ class ListInformationMunicipio extends StatelessWidget {
           ListTile(
             leading: TextButton.icon(
                 onPressed: () {
-                  final GetxMunicipioController controllerTurismo =
-                      Get.put(GetxMunicipioController());
-                  controllerGestion.updateGestionInformacion(
-                      data['id'],
-                      data['nombre'],
-                      data['descripcion'],
-                      data['foto'],
-                      data['ubicacion'],
-                      'Actualizaar');
                   controllerTurismo.updateTapItem(1);
                 },
                 icon: FaIcon(

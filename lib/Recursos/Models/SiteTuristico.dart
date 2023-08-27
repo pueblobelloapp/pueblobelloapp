@@ -1,3 +1,4 @@
+import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:equatable/equatable.dart';
 
 import 'Puntuacion.dart';
@@ -7,7 +8,7 @@ class SitioTuristico extends Equatable {
   final String nombre;
   final String tipoTurismo;
   final String descripcion;
-  final Map<String, String>? ubicacion;
+  final Ubicacion ubicacion;
   final String? userId;
   final Map<String, String>? contacto;
   final List<Puntuacion>? puntuacion;
@@ -60,7 +61,7 @@ class SitioTuristico extends Equatable {
         nombre = data['nombre'] as String,
         tipoTurismo = data['tipoTurismo'] as String,
         descripcion = data['descripcion'] as String,
-        ubicacion = data['ubicacion'] as Map<String, String>?,
+        ubicacion = data['ubicacion'] as Ubicacion,
         userId = data['userId'] as String?,
         contacto = data['contacto'] as Map<String, String>?,
         puntuacion = data['puntuacion'] as List<Puntuacion>?,
@@ -73,7 +74,7 @@ class SitioTuristico extends Equatable {
       String? tipoTurismo,
       String? tipoPropiedad,
       String? descripcion,
-      Map<String, String>? ubicacion,
+      Ubicacion? ubicacion,
       String? userId,
       Map<String, String>? contacto,
       List<Puntuacion>? puntuacion,
