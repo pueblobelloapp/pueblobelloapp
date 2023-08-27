@@ -64,7 +64,7 @@ class ListInformationMunicipio extends StatelessWidget {
                   color: Colors.green,
                 ),
                 label: Text("")),
-            title: Text(data['titulo']),
+            title: Text(data['nombre']),
             trailing: TextButton.icon(
                 onPressed: () {},
                 icon: FaIcon(FontAwesomeIcons.trash, color: Colors.red),

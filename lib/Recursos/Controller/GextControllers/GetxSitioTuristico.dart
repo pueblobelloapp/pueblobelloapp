@@ -74,7 +74,6 @@ class GetxSitioTuristico extends GetxController {
   void updatePosition(LatLng latLng) {
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    //mapUbications = {"lat": latLng.latitude.toString(), "long": latLng.longitude.toString()};
     mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
     update();
   }
@@ -85,11 +84,6 @@ class GetxSitioTuristico extends GetxController {
     activitys.forEach((e) => _menuItemsActivity += '#${(e.toString())} ');
     update();
   }
-
-  /*void updateUbication(String longitud, String latitud) {
-    mapUbications = {"lat": latitud, "long": longitud};
-    update();
-  }*/
 
   void updateContactos() {
     _listContactos = {

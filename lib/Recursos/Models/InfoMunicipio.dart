@@ -1,7 +1,7 @@
 import 'package:image_cropper/image_cropper.dart';
 
 class InfoMunicipio {
-  final String id;
+  late final String id;
   final String nombre;
   final String descripcion;
   final String subCategoria;
@@ -50,7 +50,7 @@ class InfoMunicipio {
       'subCategoria': subCategoria,
       'whyVisit': whyVisit,
       'ubicacion': ubicacion.toFirebaseMap(),
-      'photos': photos.map((photo) => photo.toJson()).toList(),
+      'photos': photos,
       'subTitulos': subTitulos.map((subTitulo) => subTitulo.toFirebaseMap()).toList(),
     };
   }
@@ -73,7 +73,7 @@ class InfoMunicipio {
 class SubTitulo {
   final String titulo;
   final String descripcion;
-  final List<dynamic> listPhotosPath;
+  late final List<dynamic> listPhotosPath;
 
   SubTitulo({
     required this.titulo,

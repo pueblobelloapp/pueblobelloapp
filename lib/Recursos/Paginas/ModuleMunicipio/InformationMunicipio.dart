@@ -142,14 +142,14 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         ElevatedButton.icon(
             onPressed: () {
               InfoMunicipio infoMunicipio = InfoMunicipio(
-                  id: '',
                   nombre: controller.tituloControl.text,
                   descripcion: controller.descriptionControl.text,
                   subTitulos: controller.listSubInformation,
                   ubicacion: sitioController.mapUbications,
                   photos: controller.listPhotosInfo,
                   subCategoria: controller.subCategoria.text,
-                  whyVisit: controller.whyVisitControl.text);
+                  whyVisit: controller.whyVisitControl.text,
+                  id: controller.uidGenerate());
 
               controller.saveGestion(infoMunicipio);
             },

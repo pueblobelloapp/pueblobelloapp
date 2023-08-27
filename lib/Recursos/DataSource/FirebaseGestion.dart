@@ -45,7 +45,15 @@ class GestionDataBase {
     */
     //Preguntamos si hay imagenes validar y notificar.. Fotos generales obligatorias
     if (infoMunicipio.photos.length > 0) {
-      urlFotografias = await uploadFiles(infoMunicipio.photos);
+      List<CroppedFile> cropFiles = infoMunicipio.photos.map((dynamic element) {
+        if (element is CroppedFile) {
+          return element; // Si el elemento ya es un CroppedFile, simplemente lo devolvemos
+        }
+      }).whereType<CroppedFile>().toList();
+
+      urlFotografias = await uploadFiles(cropFiles);
+      print("Completando carga de fotos 1");
+      infoMunicipio.photos.clear();
       infoMunicipio = infoMunicipio.copyWith(photos: urlFotografias);
     } else {
       print("Error debes seleccionar fotografias.");
@@ -56,26 +64,32 @@ class GestionDataBase {
     //Y validar si tiene las fotografias.
 
     for (var item in infoMunicipio.subTitulos) {
-      for (var photos in item.listPhotosPath) {
-        if (!photos.isBlank && item is CroppedFile) {
-          urlFotografias = await uploadFiles(photos);
-          item.listPhotosPath.clear();
-          item.listPhotosPath.addAll(urlFotografias);
-        }
-      }
+        List<CroppedFile> cropFiles = item.listPhotosPath.map((dynamic element) {
+          if (element is CroppedFile) {
+            return element; // Si el elemento ya es un CroppedFile, simplemente lo devolvemos
+          }
+        }).whereType<CroppedFile>().toList();
+
+        urlFotografias = await uploadFiles(cropFiles);
+        item.listPhotosPath.clear();
+        item = item.copyWith(listPhotosPath: urlFotografias);
+        /*urlFotografias.map((e) => {
+          item.listPhotosPath.add(e.toString())
+        });*/
+        //item.listPhotosPath.ad(urlFotografias);
     }
 
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  Future<List<String>> uploadFiles(List<dynamic> _images) async {
+  Future<List<String>> uploadFiles(List<CroppedFile> _images) async {
     var imageUrls =
         await Future.wait(_images.map((_image) => uploadFile(_image)));
     return imageUrls;
   }
 
   Future<String> uploadFile(CroppedFile _image) async {
-    final storageReference = storage.ref().child('posts/${_image.path}');
+    final storageReference = storage.ref().child('municipio/${_image.path}');
     await storageReference.putFile(File(_image.path));
     return await storageReference.getDownloadURL();
   }

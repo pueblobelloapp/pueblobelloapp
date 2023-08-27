@@ -43,13 +43,15 @@ class GetxInformationMunicipio extends GetxController {
       update();
   }
 
+  String uidGenerate() {
+    final uid = _myCulturaRepository.newId();
+    return uid;
+  }
+
   // This function will be called from the presentation layer
   // when the user has to be saved
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = true;
-
-    final uid = _myCulturaRepository.newId();
-    infoMunicipio.copyWith(id: uid);
 
     print(infoMunicipio.toString());
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
