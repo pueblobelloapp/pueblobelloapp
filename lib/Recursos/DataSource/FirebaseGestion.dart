@@ -11,9 +11,7 @@ import 'package:image_cropper/image_cropper.dart';
 
 class GestionDataBase {
   final GetxUtils messageController = Get.put(GetxUtils());
-/*
-  final GetxSitioTuristico getxSitioTuristico = Get.put(GetxSitioTuristico());
-*/
+
   List<dynamic> urlFotografias = [];
 
   final GetxGestionInformacionController controllerGestionInformacion =
@@ -38,47 +36,33 @@ class GestionDataBase {
   //Funcion para añadir una nueva informacion.
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
+    List<SubTitulo> listSubInformation = [];
 
-    //1. Proceso para guardar las  fotos del sitio en general
-    /*TODO: Crear una funcion para cargar independiente mente las fotos
-       de las dos listas, mandar dos parametros 1. lista de fotos, 2. ubicacion de las fotos
-    */
-    //Preguntamos si hay imagenes validar y notificar.. Fotos generales obligatorias
-    if (infoMunicipio.photos.length > 0) {
-      List<CroppedFile> cropFiles = infoMunicipio.photos.map((dynamic element) {
+    if (infoMunicipio.photos!.length > 0) {
+      List<CroppedFile>? cropFiles = infoMunicipio.photos?.map((dynamic element) {
         if (element is CroppedFile) {
-          return element; // Si el elemento ya es un CroppedFile, simplemente lo devolvemos
+          return element;
         }
       }).whereType<CroppedFile>().toList();
 
-      urlFotografias = await uploadFiles(cropFiles);
+      urlFotografias = await uploadFiles(cropFiles!);
       print("Completando carga de fotos 1");
-      infoMunicipio.photos.clear();
+      infoMunicipio.photos?.clear();
       infoMunicipio = infoMunicipio.copyWith(photos: urlFotografias);
-    } else {
-      print("Error debes seleccionar fotografias.");
     }
-
-    //2. Proceso para guardar las fotos de los subtitulos si tiene.
-    //Hacer una funcion para que recorra los diferentes subtitulso que tiene
-    //Y validar si tiene las fotografias.
 
     for (var item in infoMunicipio.subTitulos) {
-        List<CroppedFile> cropFiles = item.listPhotosPath.map((dynamic element) {
-          if (element is CroppedFile) {
-            return element; // Si el elemento ya es un CroppedFile, simplemente lo devolvemos
-          }
+        List<CroppedFile>? cropFiles = item.listPhotosPath?.map((dynamic element) {
+          if (element is CroppedFile) return element;
         }).whereType<CroppedFile>().toList();
 
-        urlFotografias = await uploadFiles(cropFiles);
-        item.listPhotosPath.clear();
+        urlFotografias = await uploadFiles(cropFiles!);
+        item.listPhotosPath?.clear();
         item = item.copyWith(listPhotosPath: urlFotografias);
-        /*urlFotografias.map((e) => {
-          item.listPhotosPath.add(e.toString())
-        });*/
-        //item.listPhotosPath.ad(urlFotografias);
+        listSubInformation.add(item);
     }
 
+    infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 

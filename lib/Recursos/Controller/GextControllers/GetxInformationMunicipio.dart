@@ -28,8 +28,15 @@ class GetxInformationMunicipio extends GetxController {
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
 
-  addSubinformation(SubTitulo infoMunicipio) {
-    listSubInformation.add(infoMunicipio);
+  addSubinformation() {
+    SubTitulo subInfoMunicipio = SubTitulo(
+        titulo: subTituloControl.text,
+        descripcion: subDescriptionControl.text,
+        listPhotosPath: List.from(listPhotosSubInfo));
+
+    print("Info fotos " + subInfoMunicipio.listPhotosPath!.length.toString());
+    listSubInformation.add(subInfoMunicipio);
+    listPhotosSubInfo.clear();
     update();
   }
 
@@ -43,10 +50,7 @@ class GetxInformationMunicipio extends GetxController {
       update();
   }
 
-  String uidGenerate() {
-    final uid = _myCulturaRepository.newId();
-    return uid;
-  }
+  String uidGenerate() => _myCulturaRepository.newId();
 
   // This function will be called from the presentation layer
   // when the user has to be saved

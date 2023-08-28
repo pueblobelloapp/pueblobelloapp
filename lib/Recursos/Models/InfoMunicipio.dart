@@ -6,8 +6,8 @@ class InfoMunicipio {
   final String descripcion;
   final String subCategoria;
   final String whyVisit;
-  final Ubicacion ubicacion;
-  late final List<dynamic> photos;
+  late Ubicacion? ubicacion;
+  late List<dynamic>? photos;
   final List<SubTitulo> subTitulos;
 
   InfoMunicipio({
@@ -16,8 +16,8 @@ class InfoMunicipio {
     required this.descripcion,
     required this.subCategoria,
     required this.whyVisit,
-    required this.ubicacion,
-    required this.photos,
+    this.ubicacion,
+    this.photos,
     required this.subTitulos,
   });
 
@@ -49,7 +49,7 @@ class InfoMunicipio {
       'descripcion': descripcion,
       'subCategoria': subCategoria,
       'whyVisit': whyVisit,
-      'ubicacion': ubicacion.toFirebaseMap(),
+      'ubicacion': ubicacion?.toFirebaseMap(),
       'photos': photos,
       'subTitulos': subTitulos.map((subTitulo) => subTitulo.toFirebaseMap()).toList(),
     };
@@ -73,12 +73,12 @@ class InfoMunicipio {
 class SubTitulo {
   final String titulo;
   final String descripcion;
-  late final List<dynamic> listPhotosPath;
+  late List<dynamic>? listPhotosPath;
 
   SubTitulo({
     required this.titulo,
     required this.descripcion,
-    required this.listPhotosPath,
+    this.listPhotosPath,
   });
 
   SubTitulo copyWith({
@@ -96,7 +96,7 @@ class SubTitulo {
     return <String, Object?>{
       'titulo': titulo,
       'descripcion': descripcion,
-      'listPhotosPath': listPhotosPath,
+      'listPhotos': listPhotosPath,
     };
   }
 
@@ -104,8 +104,7 @@ class SubTitulo {
     return SubTitulo(
       titulo: data['titulo'] as String,
       descripcion: data['descripcion'] as String,
-      listPhotosPath: data['listPhotosPath'] as List<dynamic>,
-    );
+      listPhotosPath: data['listPhotos'] as List<dynamic>);
   }
 }
 

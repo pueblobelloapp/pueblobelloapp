@@ -118,6 +118,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               } else {
                 print("No seleccionaste fotografias.");
               }
+              sitioController.listCroppedFile.clear();
             },
             icon: Icon(Icons.image_outlined, color: Colors.white)),
         Row(
@@ -126,12 +127,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             Text("Informacion adicional : 0"),
             ElevatedButton.icon(
                 onPressed: () {
-                  SubTitulo subInfoMunicipio = SubTitulo(
-                      titulo: controller.subTituloControl.text,
-                      descripcion: controller.subDescriptionControl.text,
-                      listPhotosPath: controller.listPhotosSubInfo);
-
-                  controller.addSubinformation(subInfoMunicipio);
+                  controller.addSubinformation();
                   sitioController.listCroppedFile.clear();
                   print("agregando SUb info");
                 },
