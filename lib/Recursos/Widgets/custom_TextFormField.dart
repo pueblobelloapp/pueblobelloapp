@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
-  final Icon icon;
+  final Icon? icon;
   final String textGuide;
   final bool obscureText;
   final String? msgError;
@@ -19,7 +19,7 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
       {super.key,
       this.controller,
-      required this.icon,
+      this.icon,
       required this.textGuide,
       required this.obscureText,
       this.textInputType,
@@ -44,7 +44,7 @@ class CustomTextFormField extends StatelessWidget {
       decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(
-                left: 6.0, top: 0.0, right: 12.0, bottom: 0.0),
+                /*left: 6.0,*/ top: 0.0, right: 12.0, bottom: 0.0),
             child: icon,
           ),
           prefixIconConstraints:

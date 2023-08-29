@@ -40,14 +40,14 @@ class GetxInformationMunicipio extends GetxController {
     update();
   }
 
-  addPhotosGeneral(List<CroppedFile> listPothos ) {
-      listPhotosInfo.addAll(listPothos);
-      update();
+  addPhotosGeneral(List<CroppedFile> listPothos) {
+    listPhotosInfo.addAll(listPothos);
+    update();
   }
 
-  addPhotosSub(List<CroppedFile> listPothos ) {
-      listPhotosSubInfo.addAll(listPothos);
-      update();
+  addPhotosSub(List<CroppedFile> listPothos) {
+    listPhotosSubInfo.addAll(listPothos);
+    update();
   }
 
   String uidGenerate() => _myCulturaRepository.newId();
@@ -66,16 +66,16 @@ class GetxInformationMunicipio extends GetxController {
       String ubicacion, List<SubInfoMunicipio> subTitulos) async {
     isLoading.value = true;
 
-    *//*InfoMunicipio _toEdit = InfoMunicipio(
+    */ /*InfoMunicipio _toEdit = InfoMunicipio(
         id: uid,
         nombre: nombre,
         descripcion: descripcion,
         ubicacion: getxSitioTuristico.mapUbications,
         subTitulos: subTitulos,
-        listPhotos: []);*//*
+        listPhotos: []);*/ /*
 
-    *//*await _myCulturaRepository.saveMyGestion(_toEdit!);
-    isLoading.value = false;*//*
+    */ /*await _myCulturaRepository.saveMyGestion(_toEdit!);
+    isLoading.value = false;*/ /*
   }*/
 
   List<DropdownMenuItem<String>> get dropdownItems {
@@ -86,10 +86,13 @@ class GetxInformationMunicipio extends GetxController {
       DropdownMenuItem(child: Text("Festividades"), value: "fiestas"),
       DropdownMenuItem(child: Text("Religiones"), value: "religion"),
       DropdownMenuItem(child: Text("Cuenteros"), value: "cuentos"),
+      DropdownMenuItem(
+        child: Text("Municipio"),
+        value: "municipio",
+      )
     ];
     return menuItems;
   }
-
 
   //Funcion para determinar la posicion del tapIndex
   void updateTapItem(int posicion) {

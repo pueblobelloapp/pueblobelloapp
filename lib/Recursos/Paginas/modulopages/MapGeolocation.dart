@@ -9,7 +9,7 @@ class MapGeolocation extends GetView<GetxSitioTuristico> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ubicacion sitio'),
+        title: Text('Ubicación sitio'),
       ),
       body: Stack(
         children: [
