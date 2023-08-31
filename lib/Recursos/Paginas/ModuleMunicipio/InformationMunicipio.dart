@@ -7,10 +7,10 @@ import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../Controller/GextControllers/GetxSitioTuristico.dart';
 import '../../Controller/GextControllers/PhotoLoad.dart';
@@ -32,16 +32,13 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   Widget Formulario() {
     return Form(
         child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _containerPhoto(photoLoad: photoLoad1),
         SizedBox(height: 15),
-        Row(
-          children: [
-            Text(
-              'Título informativo',
-              style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-            ),
-          ],
+        Text(
+          'Título informativo',
+          style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
         ),
         SizedBox(height: 3),
         CustomTextFormField(
@@ -54,33 +51,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             controller: controller.tituloControl,
             valueFocus: false),
         SizedBox(height: 10),
-        Row(
-          children: [
-            Text(
-              'Subtítulo informativo',
-              style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-            ),
-          ],
+        Text(
+          'Descripción informativa',
+          style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
         ),
-        SizedBox(height: 3),
-        CustomTextFormField(
-            //icon: const Icon(BootstrapIcons.info_circle),
-            obscureText: false,
-            textGuide: "Ingrese el subtítulo informativo",
-            msgError: "Campo obligatorio.",
-            textInputType: TextInputType.text,
-            fillColor: AppBasicColors.colorTextFormField,
-            controller: controller.tituloControl,
-            valueFocus: false),
-        SizedBox(height: 10),
-        Row(
-          children: [
-            Text(
-              'Descripción informativa',
-              style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-            ),
-          ],
-        ),
+
         SizedBox(height: 3),
         CustomTextFormField(
             //icon: const Icon(BootstrapIcons.info_circle),
@@ -93,19 +68,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             valueFocus: false,
             maxLinesText: 6),
         SizedBox(height: 10),
-        /*CustomTextFormField(
-            //icon: const Icon(BootstrapIcons.info_circle),
-            obscureText: false,
-            textGuide: "Porque vistar?",
-            msgError: "Campo obligatorio.",
-            textInputType: TextInputType.text,
-            fillColor: AppBasicColors.colorTextFormField,
-            controller: controller.whyVisitControl,
-            valueFocus: false,
-            maxLinesText: 4),*/
-        //SizedBox(height: 15),
-        /*ListInformation(controller.subCategoria, controller.dropdownItems, "Seleccionar"),*/
-        //SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -163,22 +125,15 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _containerPhoto(
-                    photoLoad: photoLoad2,
-                    backgroundColor: AppBasicColors.white,
-                    height: 250),
+                    photoLoad: photoLoad2, backgroundColor: AppBasicColors.white, height: 250),
                 SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text(
-                      'Título',
-                      style: TextStyle(
-                          color: AppBasicColors.green,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                Text(
+                  'Subtítulo',
+                  style: TextStyle(
+                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
@@ -196,9 +151,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     Text(
                       'Descripción',
                       style: TextStyle(
-                          color: AppBasicColors.green,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold),
+                          color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -272,23 +225,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
           ],
         ),*/
         SizedBox(height: 15),
-        /*ElevatedButton.icon(
-            onPressed: () {
-              InfoMunicipio infoMunicipio = InfoMunicipio(
-                  nombre: controller.tituloControl.text,
-                  descripcion: controller.descriptionControl.text,
-                  subTitulos: controller.listSubInformation,
-                  ubicacion: sitioController.mapUbications,
-                  photos: controller.listPhotosInfo,
-                  subCategoria: controller.subCategoria.text,
-                  whyVisit: controller.whyVisitControl.text,
-                  id: controller.uidGenerate());
-
-              controller.saveGestion(infoMunicipio);
-            },
-            icon: const Icon(BootstrapIcons.upload),
-            label: Text("Guardar")),
-        SizedBox(height: 5),*/
         SizedBox(
             width: double.infinity,
             height: 50.0,
@@ -314,53 +250,68 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     ));
   }
 
+  Widget carruselPhotos() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 400, // Altura del carrusel
+        enableInfiniteScroll: true, // Habilitar desplazamiento infinito
+        autoPlay: true, // Reproducción automática
+        autoPlayInterval: Duration(seconds: 3), // Intervalo entre imágenes
+        autoPlayAnimationDuration: Duration(milliseconds: 800), // Duración de la animación
+        viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
+        enlargeCenterPage: true, // Enfocar la imagen en el centro
+      ),
+      items: controller.listPhotosInfo.map((image) {
+        final path = image.path;
+        return Builder(
+          builder: (BuildContext context) {
+            return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width,
+                  maxHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Image.file(File(path)) // Mostrar la imagen CroppedFile
+                );
+          },
+        );
+      }).toList(),
+    );
+  }
+
   Widget _containerPhoto({
     required PhotoLoad photoLoad,
     Color? backgroundColor,
     double? height,
   }) {
     return GestureDetector(
-      onTap: () {
-        photoLoad.selectPhoto();
+      onTap: () async {
+        //photoLoad.selectPhoto();
+        await Get.to(() => ImageUpload());
+        if (sitioController.listCroppedFile.length > 0) {
+          print("Fotos select");
+          controller.addPhotosGeneral(sitioController.listCroppedFile);
+        } else {
+          print("No seleccionaste fotografias.");
+        }
+        sitioController.listCroppedFile.clear();
       },
-      child: Obx(() => Container(
-            width: double.infinity,
-            height: height ?? 350,
-            decoration: BoxDecoration(
-                color: backgroundColor ??
-                    (photoLoad.selectedPhoto.value.path == ""
-                        ? AppBasicColors.colorTextFormField
-                        : AppBasicColors.transparent),
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Center(
-                child: photoLoad.selectedPhoto.value.path != ""
-                    ? Image.memory(
-                        File(photoLoad.selectedPhoto.value.path)
-                            .readAsBytesSync(),
-                        fit: BoxFit.cover,
-                      )
-                    : const Icon(
-                        BootstrapIcons.image_alt,
-                        size: 100,
-                        color: Colors.green,
-                      )),
-          )),
-    );
-  }
-
-  Widget ListInformation(TextEditingController _tipoTurismo,
-      List<DropdownMenuItem<String>> listInformation, String hintextValue) {
-    return DropdownButtonFormField<String>(
-      decoration: AppBasicColors.inputDecorationText,
-      isExpanded: true,
-      dropdownColor: AppBasicColors.colorTextFormField,
-      icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
-      items: listInformation,
-      onChanged: (String? value) {
-        print("Valor combo: " + value.toString());
-        controller.subCategoria.text = value!;
-      },
-      hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
+      child: Container(
+          width: double.infinity,
+          height: height ?? 350,
+          decoration: BoxDecoration(
+              color: backgroundColor ??
+                  (controller.listPhotosInfo.length == 0
+                      ? AppBasicColors.colorTextFormField
+                      : AppBasicColors.transparent),
+              borderRadius: BorderRadius.circular(10.0)),
+          child: Center(
+              child: controller.listPhotosInfo.length > 0
+                  ? carruselPhotos()
+                  : const Icon(
+                      BootstrapIcons.image_alt,
+                      size: 100,
+                      color: Colors.green,
+                    ))),
     );
   }
 }
