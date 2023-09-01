@@ -62,8 +62,12 @@ class GestionDataBase {
         listSubInformation.add(item);
     }
 
+    getxSitioTuristico.mapUbications = new Ubicacion(
+        lat: "10.422522",
+        long: "-73.578462");
     infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
+
   }
 
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {

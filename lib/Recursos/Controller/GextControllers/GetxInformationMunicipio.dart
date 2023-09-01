@@ -11,12 +11,11 @@ import 'GetxSitioTuristico.dart';
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
 
+  final formKey = GlobalKey<FormState>();
   final tituloControl = TextEditingController();
   final descriptionControl = TextEditingController();
   final subTituloControl = TextEditingController();
   final subDescriptionControl = TextEditingController();
-  final whyVisitControl = TextEditingController();
-  final subCategoria = TextEditingController();
 
   Rx<bool> isLoading = Rx(false);
 
@@ -34,10 +33,23 @@ class GetxInformationMunicipio extends GetxController {
         descripcion: subDescriptionControl.text,
         listPhotosPath: List.from(listPhotosSubInfo));
 
-    print("Info fotos " + subInfoMunicipio.listPhotosPath!.length.toString());
     listSubInformation.add(subInfoMunicipio);
-    listPhotosSubInfo.clear();
+    cleanSubInfo();
     update();
+  }
+
+  cleanSubInfo() {
+    subTituloControl.text = "";
+    subDescriptionControl.text = "";
+    listPhotosSubInfo.clear();
+  }
+
+  cleanForm() {
+    cleanSubInfo();
+    descriptionControl.text = "";
+    tituloControl.text = "";
+    listPhotosInfo.clear();
+
   }
 
   addPhotosGeneral(List<CroppedFile> listPothos) {
@@ -57,8 +69,8 @@ class GetxInformationMunicipio extends GetxController {
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = true;
 
-    print(infoMunicipio.toString());
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
+
     isLoading.value = false;
   }
 

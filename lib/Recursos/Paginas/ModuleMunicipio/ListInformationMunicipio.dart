@@ -1,8 +1,9 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:flutter/material.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ListInformationMunicipio extends StatelessWidget {
   ListInformationMunicipio({Key? key}) : super(key: key);
@@ -12,8 +13,10 @@ class ListInformationMunicipio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> _informationStream =
-        FirebaseFirestore.instance.collection('dataTurismo').snapshots();
+    final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
+        .collection('dataTurismo')
+        .where('subCategoria', isEqualTo: controllerTurismo.tipoGestion)
+        .snapshots();
 
     return Container(
         color: Colors.grey.shade200,
@@ -27,7 +30,17 @@ class ListInformationMunicipio extends StatelessWidget {
                         child: Text('Lo sentimos se ha producido un error.'));
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: Text('Cargando datos.'));
+                    return Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Cargando datos"),
+                        LoadingAnimationWidget.discreteCircle(
+                            color: Colors.white,
+                            size: 50,
+                            secondRingColor: Colors.green,
+                            thirdRingColor: Colors.white)
+                      ],
+                    ));
                   }
                   if (snapshot.data!.docs.isEmpty) {
                     return Center(

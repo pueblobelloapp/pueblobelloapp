@@ -11,14 +11,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../../Controller/GextControllers/GetxSitioTuristico.dart';
 import '../../Controller/GextControllers/PhotoLoad.dart';
 
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
-  final PhotoLoad photoLoad1 = Get.put(PhotoLoad());
-  final PhotoLoad photoLoad2 = Get.put(PhotoLoad());
 
   @override
   Widget build(BuildContext context) {
@@ -31,226 +30,179 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   Widget Formulario() {
     return Form(
+        key: controller.formKey,
         child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _containerPhoto(photoLoad: photoLoad1),
-        SizedBox(height: 15),
-        Text(
-          'Título informativo',
-          style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-        ),
-        SizedBox(height: 3),
-        CustomTextFormField(
-            //icon: const Icon(BootstrapIcons.info_circle),
-            obscureText: false,
-            textGuide: "Ingrese el título",
-            msgError: "Campo obligatorio.",
-            textInputType: TextInputType.text,
-            fillColor: AppBasicColors.colorTextFormField,
-            controller: controller.tituloControl,
-            valueFocus: false),
-        SizedBox(height: 10),
-        Text(
-          'Descripción informativa',
-          style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-        ),
-
-        SizedBox(height: 3),
-        CustomTextFormField(
-            //icon: const Icon(BootstrapIcons.info_circle),
-            obscureText: false,
-            textGuide: "Ingrese la descripción",
-            msgError: "Campo obligatorio.",
-            textInputType: TextInputType.text,
-            fillColor: AppBasicColors.colorTextFormField,
-            controller: controller.descriptionControl,
-            valueFocus: false,
-            maxLinesText: 6),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _containerPhoto(imageLocation: "titulo"),
+            SizedBox(height: 15),
             Text(
-              'Ubicación',
+              'Título informativo',
               style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
             ),
-            ElevatedButton.icon(
-                onPressed: () {
-                  Get.to(() => MapGeolocation());
-                },
-                icon: Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
-                label: Text("Obtener la ubicación actual")),
-          ],
-        ),
-        SizedBox(height: 10),
-        Container(
-          width: double.infinity,
-          height: 250,
-          color: AppBasicColors.colorTextFormField,
-          child: Center(
-            child: Text('Aquí se ilustra la ubicación'),
-          ),
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+            SizedBox(height: 3),
+            CustomTextFormField(
+                //icon: const Icon(BootstrapIcons.info_circle),
+                obscureText: false,
+                textGuide: "Ingrese el título",
+                msgError: "Campo obligatorio.",
+                textInputType: TextInputType.text,
+                fillColor: AppBasicColors.colorTextFormField,
+                controller: controller.tituloControl,
+                valueFocus: false),
+            SizedBox(height: 10),
             Text(
-              'Información adicional',
+              'Descripción informativa',
               style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
             ),
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  BootstrapIcons.plus_square_fill,
-                  size: 30.0,
-                  color: AppBasicColors.green,
-                ))
-          ],
-        ),
-        SizedBox(height: 10),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-              color: AppBasicColors.colorTextFormField,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 3,
-                    blurRadius: 5,
-                    offset: Offset(0, 3))
-              ]),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            SizedBox(height: 3),
+            CustomTextFormField(
+                //icon: const Icon(BootstrapIcons.info_circle),
+                obscureText: false,
+                textGuide: "Ingrese la descripción",
+                msgError: "Campo obligatorio.",
+                textInputType: TextInputType.text,
+                fillColor: AppBasicColors.colorTextFormField,
+                controller: controller.descriptionControl,
+                valueFocus: false,
+                maxLinesText: 6),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _containerPhoto(
-                    photoLoad: photoLoad2, backgroundColor: AppBasicColors.white, height: 250),
-                SizedBox(height: 10),
                 Text(
-                  'Subtítulo',
-                  style: TextStyle(
-                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
+                  'Ubicación',
+                  style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
                 ),
-                SizedBox(height: 3),
-                CustomTextFormField(
-                    //icon: const Icon(BootstrapIcons.info_circle),
-                    obscureText: false,
-                    textGuide: "Título",
-                    msgError: "Campo obligatorio.",
-                    textInputType: TextInputType.text,
-                    fillColor: AppBasicColors.white,
-                    controller: controller.subTituloControl,
-                    valueFocus: false),
-                SizedBox(height: 10),
-                Row(
+                ElevatedButton.icon(
+                    onPressed: () {
+                      Get.to(() => MapGeolocation());
+                    },
+                    icon: Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
+                    label: Text("Obtener la ubicación actual")),
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              height: 250,
+              color: AppBasicColors.colorTextFormField,
+              child: Center(
+                child: Text('Aquí se ilustra la ubicación'),
+              ),
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Información adicional',
+                  style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
+                ),
+                IconButton(
+                    onPressed: () {
+                      //Logica para agregar sub iformacion.
+                      controller.addSubinformation();
+                      print("agregando SUb info");
+                    },
+                    icon: Icon(
+                      BootstrapIcons.plus_square_fill,
+                      size: 30.0,
+                      color: AppBasicColors.green,
+                    ))
+              ],
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: AppBasicColors.colorTextFormField,
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: Offset(0, 3))
+                  ]),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _containerPhoto(
+                        backgroundColor: AppBasicColors.white, imageLocation: "subtitulo"),
+                    SizedBox(height: 10),
                     Text(
-                      'Descripción',
+                      'Subtítulo',
                       style: TextStyle(
                           color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(height: 3),
+                    CustomTextFormField(
+                        //icon: const Icon(BootstrapIcons.info_circle),
+                        obscureText: false,
+                        textGuide: "Título",
+                        msgError: "Campo obligatorio.",
+                        textInputType: TextInputType.text,
+                        fillColor: AppBasicColors.white,
+                        controller: controller.subTituloControl,
+                        valueFocus: false),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text(
+                          'Descripción',
+                          style: TextStyle(
+                              color: AppBasicColors.green,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                    CustomTextFormField(
+                        //icon: const Icon(BootstrapIcons.info_circle),
+                        obscureText: false,
+                        textGuide: "Ingrese la descripción",
+                        msgError: "Campo obligatorio.",
+                        textInputType: TextInputType.text,
+                        fillColor: AppBasicColors.white,
+                        controller: controller.subDescriptionControl,
+                        valueFocus: false,
+                        maxLinesText: 6),
                   ],
                 ),
-                SizedBox(height: 3),
-                CustomTextFormField(
-                    //icon: const Icon(BootstrapIcons.info_circle),
-                    obscureText: false,
-                    textGuide: "Ingrese la descripción",
-                    msgError: "Campo obligatorio.",
-                    textInputType: TextInputType.text,
-                    fillColor: AppBasicColors.white,
-                    controller: controller.subDescriptionControl,
-                    valueFocus: false,
-                    maxLinesText: 6),
-              ],
+              ),
             ),
-          ),
-        ),
-        /*Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-                onPressed: () {
-                  Get.to(() => MapGeolocation());
-                },
-                icon: Icon(Icons.location_on, color: Colors.white),
-                label: Text("Ubicar")),
-            SizedBox(width: 10),
-            ElevatedButton.icon(
-              label: Text("Fotografias"),
-              onPressed: () async {
-                await Get.to(() => ImageUpload());
-                if (sitioController.listCroppedFile.length > 0) {
-                  controller.addPhotosGeneral(sitioController.listCroppedFile);
-                } else {
-                  print("No seleccionaste fotografias.");
-                }
-                sitioController.listCroppedFile.clear();
-              },
-              icon: Icon(Icons.image_outlined, color: Colors.white),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            )
-          ],
-        ),*/
+            SizedBox(height: 15),
+            SizedBox(
+                width: double.infinity,
+                height: 50.0,
+                child: ElevatedButton(
+                    onPressed: () {
+                      if (controller.formKey.currentState!.validate()) {
+                        InfoMunicipio infoMunicipio = InfoMunicipio(
+                            nombre: controller.tituloControl.text,
+                            descripcion: controller.descriptionControl.text,
+                            subTitulos: controller.listSubInformation,
+                            ubicacion: sitioController.mapUbications,
+                            photos: controller.listPhotosInfo,
+                            subCategoria: controller.tipoGestion.toString(),
+                            id: controller.uidGenerate());
 
-        //SizedBox(height: 7),
-        /*ElevatedButton.icon(
-            label: Text("Cargar fotos"),
-            onPressed: () async {
-              await Get.to(() => ImageUpload());
-              if (sitioController.listCroppedFile.length > 0) {
-                controller.addPhotosSub(sitioController.listCroppedFile);
-              } else {
-                print("No seleccionaste fotografias.");
-              }
-              sitioController.listCroppedFile.clear();
-            },
-            icon: Icon(Icons.image_outlined, color: Colors.white)),*/
-        /*Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Informacion adicional : 0"),
-            ElevatedButton.icon(
-                onPressed: () {
-                  controller.addSubinformation();
-                  sitioController.listCroppedFile.clear();
-                  print("agregando SUb info");
-                },
-                icon: const Icon(BootstrapIcons.save),
-                label: Text("Añadir"))
+                        controller.saveGestion(infoMunicipio);
+                      }
+                    },
+                    child: Text(
+                      'Guardar',
+                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    )))
           ],
-        ),*/
-        SizedBox(height: 15),
-        SizedBox(
-            width: double.infinity,
-            height: 50.0,
-            child: ElevatedButton(
-                onPressed: () {
-                  InfoMunicipio infoMunicipio = InfoMunicipio(
-                      nombre: controller.tituloControl.text,
-                      descripcion: controller.descriptionControl.text,
-                      subTitulos: controller.listSubInformation,
-                      ubicacion: sitioController.mapUbications,
-                      photos: controller.listPhotosInfo,
-                      subCategoria: controller.subCategoria.text,
-                      whyVisit: controller.whyVisitControl.text,
-                      id: controller.uidGenerate());
-
-                  controller.saveGestion(infoMunicipio);
-                },
-                child: Text(
-                  'Guardar',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                )))
-      ],
-    ));
+        ));
   }
 
-  Widget carruselPhotos() {
+  Widget carruselPhotos(List<CroppedFile> listPhotos) {
     return CarouselSlider(
       options: CarouselOptions(
         height: 400, // Altura del carrusel
@@ -261,7 +213,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
         enlargeCenterPage: true, // Enfocar la imagen en el centro
       ),
-      items: controller.listPhotosInfo.map((image) {
+      items: listPhotos.map((image) {
         final path = image.path;
         return Builder(
           builder: (BuildContext context) {
@@ -278,40 +230,47 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     );
   }
 
-  Widget _containerPhoto({
-    required PhotoLoad photoLoad,
-    Color? backgroundColor,
-    double? height,
-  }) {
+  Widget _containerPhoto({Color? backgroundColor, required String imageLocation}) {
     return GestureDetector(
       onTap: () async {
-        //photoLoad.selectPhoto();
         await Get.to(() => ImageUpload());
         if (sitioController.listCroppedFile.length > 0) {
           print("Fotos select");
-          controller.addPhotosGeneral(sitioController.listCroppedFile);
+          //Pregunto a donde se va nostrar la imagen:
+          if (imageLocation == "titulo") {
+            controller.listPhotosInfo.clear();
+            controller.addPhotosGeneral(sitioController.listCroppedFile);
+          } else {
+            controller.listPhotosSubInfo.clear();
+            controller.addPhotosSub(sitioController.listCroppedFile);
+          }
         } else {
           print("No seleccionaste fotografias.");
         }
         sitioController.listCroppedFile.clear();
       },
-      child: Container(
-          width: double.infinity,
-          height: height ?? 350,
-          decoration: BoxDecoration(
-              color: backgroundColor ??
-                  (controller.listPhotosInfo.length == 0
-                      ? AppBasicColors.colorTextFormField
-                      : AppBasicColors.transparent),
-              borderRadius: BorderRadius.circular(10.0)),
-          child: Center(
-              child: controller.listPhotosInfo.length > 0
-                  ? carruselPhotos()
-                  : const Icon(
-                      BootstrapIcons.image_alt,
-                      size: 100,
-                      color: Colors.green,
-                    ))),
+      child: containerPhoto(backgroundColor,
+          imageLocation == "titulo" ? controller.listPhotosInfo : controller.listPhotosSubInfo),
     );
+  }
+
+  Widget containerPhoto(Color? backgroundColor, List<CroppedFile> listPhotos) {
+    return Container(
+        width: double.infinity,
+        height: 350,
+        decoration: BoxDecoration(
+            color: backgroundColor ??
+                (listPhotos.length == 0
+                    ? AppBasicColors.colorTextFormField
+                    : AppBasicColors.transparent),
+            borderRadius: BorderRadius.circular(10.0)),
+        child: Center(
+            child: controller.listPhotosInfo.length > 0
+                ? carruselPhotos(listPhotos)
+                : const Icon(
+                    BootstrapIcons.image_alt,
+                    size: 100,
+                    color: Colors.green,
+                  )));
   }
 }
