@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../Controller/GextControllers/GetxSitioTuristico.dart';
 import '../../Controller/GextControllers/PhotoLoad.dart';
@@ -24,11 +25,66 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       reverse: true,
-      child: Formulario(),
+      child: FormData(),
     );
   }
 
-  Widget Formulario() {
+  Widget FormData() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        formInformationGeneral(),
+        formSubInformation(),
+        SizedBox(
+          height: 10,
+        ),
+        buttonSaveInformation()
+      ],
+    );
+  }
+
+  Widget buttonSaveInformation() {
+    return SizedBox(
+        width: double.infinity,
+        height: 50.0,
+        child: ElevatedButton(
+            onPressed: () {
+              if (controller.formKey.currentState!.validate()) {
+                InfoMunicipio infoMunicipio = InfoMunicipio(
+                    nombre: controller.tituloControl.text,
+                    descripcion: controller.descriptionControl.text,
+                    subTitulos: controller.listSubInformation,
+                    ubicacion: sitioController.mapUbications,
+                    photos: controller.listPhotosInfo,
+                    subCategoria: controller.tipoGestion.toString(),
+                    id: controller.uidGenerate());
+
+                controller.saveGestion(infoMunicipio);
+              }
+            },
+            child: Obx(() => controller.isLoading.value
+                ? Text(
+                    'Guardar',
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LoadingAnimationWidget.discreteCircle(
+                          color: Colors.white,
+                          size: 20,
+                          secondRingColor: Colors.green,
+                          thirdRingColor: Colors.white),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Guardando",
+                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
+                    ],
+                  ))));
+  }
+
+  Widget formInformationGeneral() {
     return Form(
         key: controller.formKey,
         child: Column(
@@ -102,8 +158,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 IconButton(
                     onPressed: () {
                       //Logica para agregar sub iformacion.
-                      controller.addSubinformation();
-                      print("agregando SUb info");
+                      if (controller.formKeySub.currentState!.validate()) {
+                        controller.addSubinformation();
+                      }
                     },
                     icon: Icon(
                       BootstrapIcons.plus_square_fill,
@@ -111,95 +168,69 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                       color: AppBasicColors.green,
                     ))
               ],
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: AppBasicColors.colorTextFormField,
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 3,
-                        blurRadius: 5,
-                        offset: Offset(0, 3))
-                  ]),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _containerPhoto(
-                        backgroundColor: AppBasicColors.white, imageLocation: "subtitulo"),
-                    SizedBox(height: 10),
-                    Text(
-                      'Subtítulo',
-                      style: TextStyle(
-                          color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 3),
-                    CustomTextFormField(
-                        //icon: const Icon(BootstrapIcons.info_circle),
-                        obscureText: false,
-                        textGuide: "Título",
-                        msgError: "Campo obligatorio.",
-                        textInputType: TextInputType.text,
-                        fillColor: AppBasicColors.white,
-                        controller: controller.subTituloControl,
-                        valueFocus: false),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Text(
-                          'Descripción',
-                          style: TextStyle(
-                              color: AppBasicColors.green,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 3),
-                    CustomTextFormField(
-                        //icon: const Icon(BootstrapIcons.info_circle),
-                        obscureText: false,
-                        textGuide: "Ingrese la descripción",
-                        msgError: "Campo obligatorio.",
-                        textInputType: TextInputType.text,
-                        fillColor: AppBasicColors.white,
-                        controller: controller.subDescriptionControl,
-                        valueFocus: false,
-                        maxLinesText: 6),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 15),
-            SizedBox(
-                width: double.infinity,
-                height: 50.0,
-                child: ElevatedButton(
-                    onPressed: () {
-                      if (controller.formKey.currentState!.validate()) {
-                        InfoMunicipio infoMunicipio = InfoMunicipio(
-                            nombre: controller.tituloControl.text,
-                            descripcion: controller.descriptionControl.text,
-                            subTitulos: controller.listSubInformation,
-                            ubicacion: sitioController.mapUbications,
-                            photos: controller.listPhotosInfo,
-                            subCategoria: controller.tipoGestion.toString(),
-                            id: controller.uidGenerate());
-
-                        controller.saveGestion(infoMunicipio);
-                      }
-                    },
-                    child: Text(
-                      'Guardar',
-                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                    )))
+            )
           ],
         ));
+  }
+
+  Widget formSubInformation() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: AppBasicColors.colorTextFormField,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 3,
+                blurRadius: 5,
+                offset: Offset(0, 3))
+          ]),
+      child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: controller.formKeySub,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _containerPhoto(imageLocation: "subtitulo"),
+                SizedBox(height: 10),
+                Text(
+                  'Subtítulo',
+                  style: TextStyle(
+                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 3),
+                CustomTextFormField(
+                    //icon: const Icon(BootstrapIcons.info_circle),
+                    obscureText: false,
+                    textGuide: "Título",
+                    msgError: "Campo obligatorio.",
+                    textInputType: TextInputType.text,
+                    fillColor: AppBasicColors.white,
+                    controller: controller.subTituloControl,
+                    valueFocus: false),
+                SizedBox(height: 10),
+                Text(
+                  'Descripción',
+                  style: TextStyle(
+                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 3),
+                CustomTextFormField(
+                    //icon: const Icon(BootstrapIcons.info_circle),
+                    obscureText: false,
+                    textGuide: "Ingrese la descripción",
+                    msgError: "Campo obligatorio.",
+                    textInputType: TextInputType.text,
+                    fillColor: AppBasicColors.white,
+                    controller: controller.subDescriptionControl,
+                    valueFocus: false,
+                    maxLinesText: 6)
+              ],
+            ),
+          )),
+    );
   }
 
   Widget carruselPhotos(List<CroppedFile> listPhotos) {
@@ -236,7 +267,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         await Get.to(() => ImageUpload());
         if (sitioController.listCroppedFile.length > 0) {
           print("Fotos select");
-          //Pregunto a donde se va nostrar la imagen:
           if (imageLocation == "titulo") {
             controller.listPhotosInfo.clear();
             controller.addPhotosGeneral(sitioController.listCroppedFile);
@@ -244,26 +274,22 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             controller.listPhotosSubInfo.clear();
             controller.addPhotosSub(sitioController.listCroppedFile);
           }
-        } else {
-          print("No seleccionaste fotografias.");
         }
         sitioController.listCroppedFile.clear();
       },
-      child: containerPhoto(backgroundColor,
-          imageLocation == "titulo" ? controller.listPhotosInfo : controller.listPhotosSubInfo),
+      child: containerPhoto(
+          imageLocation == "titulo" ?
+          controller.listPhotosInfo :
+          controller.listPhotosSubInfo)
     );
   }
 
-  Widget containerPhoto(Color? backgroundColor, List<CroppedFile> listPhotos) {
+  Widget containerPhoto(List<CroppedFile> listPhotos) {
     return Container(
         width: double.infinity,
         height: 350,
         decoration: BoxDecoration(
-            color: backgroundColor ??
-                (listPhotos.length == 0
-                    ? AppBasicColors.colorTextFormField
-                    : AppBasicColors.transparent),
-            borderRadius: BorderRadius.circular(10.0)),
+            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
         child: Center(
             child: controller.listPhotosInfo.length > 0
                 ? carruselPhotos(listPhotos)

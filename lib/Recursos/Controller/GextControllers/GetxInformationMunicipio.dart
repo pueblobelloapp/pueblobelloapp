@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-import 'GetxSitioTuristico.dart';
+import 'GextUtils.dart';
 
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   final formKey = GlobalKey<FormState>();
+  final formKeySub = GlobalKey<FormState>();
+
   final tituloControl = TextEditingController();
   final descriptionControl = TextEditingController();
   final subTituloControl = TextEditingController();
@@ -67,11 +70,10 @@ class GetxInformationMunicipio extends GetxController {
   // This function will be called from the presentation layer
   // when the user has to be saved
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
-    isLoading.value = true;
-
-    await _myCulturaRepository.saveMyGestion(infoMunicipio);
-
     isLoading.value = false;
+    await _myCulturaRepository.saveMyGestion(infoMunicipio);
+    cleanForm();
+    isLoading.value = true;
   }
 
   /*Future<void> editGestion(String uid, String nombre, String descripcion,

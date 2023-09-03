@@ -44,7 +44,7 @@ class CustomTextFormField extends StatelessWidget {
       decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(
-                /*left: 6.0,*/ top: 0.0, right: 12.0, bottom: 0.0),
+                top: 0.0, right: 12.0, bottom: 0.0),
             child: icon,
           ),
           prefixIconConstraints:
@@ -66,7 +66,7 @@ class CustomTextFormField extends StatelessWidget {
           contentPadding: contentPadding,
           isCollapsed: true,
           hintStyle: const TextStyle(color: Colors.black26),
-          errorStyle: const TextStyle(color: AppBasicColors.white)),
+          errorStyle: const TextStyle(color: AppBasicColors.redInst)),
       validator: (value) {
         print(value);
         if (value!.isEmpty) {
