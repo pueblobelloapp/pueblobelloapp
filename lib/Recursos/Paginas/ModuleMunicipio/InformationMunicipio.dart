@@ -233,7 +233,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     );
   }
 
-  Widget carruselPhotos(List<CroppedFile> listPhotos) {
+  Widget? carruselPhotos(List<CroppedFile> listPhotos) {
+    if (listPhotos == null) {
+      return null;
+    }
+
     return CarouselSlider(
       options: CarouselOptions(
         height: 400, // Altura del carrusel
@@ -261,7 +265,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     );
   }
 
-  Widget _containerPhoto({Color? backgroundColor, required String imageLocation}) {
+  Widget _containerPhoto({required String imageLocation}) {
     return GestureDetector(
       onTap: () async {
         await Get.to(() => ImageUpload());
@@ -291,7 +295,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         decoration: BoxDecoration(
             color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
         child: Center(
-            child: controller.listPhotosInfo.length > 0
+            child: listPhotos.length > 0
                 ? carruselPhotos(listPhotos)
                 : const Icon(
                     BootstrapIcons.image_alt,

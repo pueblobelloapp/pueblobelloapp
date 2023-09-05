@@ -52,7 +52,7 @@ class GetxInformationMunicipio extends GetxController {
     descriptionControl.text = "";
     tituloControl.text = "";
     listPhotosInfo.clear();
-
+    listPhotosSubInfo.clear();
   }
 
   addPhotosGeneral(List<CroppedFile> listPothos) {
