@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,7 +11,8 @@ import 'GextUtils.dart';
 
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
-  final GetxUtils messageController = Get.put(GetxUtils());
+
+  late Stream<QuerySnapshot> informationStream;
 
   final formKey = GlobalKey<FormState>();
   final formKeySub = GlobalKey<FormState>();
@@ -25,6 +27,8 @@ class GetxInformationMunicipio extends GetxController {
   List<CroppedFile> listPhotosInfo = [];
   List<CroppedFile> listPhotosSubInfo = [];
   List<SubTitulo> listSubInformation = [];
+  List<dynamic> listPhotosUrls = [];
+  List<dynamic> listPhotosSubUrls = [];
 
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
@@ -76,21 +80,14 @@ class GetxInformationMunicipio extends GetxController {
     isLoading.value = true;
   }
 
-  /*Future<void> editGestion(String uid, String nombre, String descripcion,
-      String ubicacion, List<SubInfoMunicipio> subTitulos) async {
-    isLoading.value = true;
+  Stream<QuerySnapshot> listInfo() {
+    final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
+        .collection('dataTurismo')
+        .where('subCategoria', isEqualTo: tipoGestion)
+        .snapshots();
 
-    */ /*InfoMunicipio _toEdit = InfoMunicipio(
-        id: uid,
-        nombre: nombre,
-        descripcion: descripcion,
-        ubicacion: getxSitioTuristico.mapUbications,
-        subTitulos: subTitulos,
-        listPhotos: []);*/ /*
-
-    */ /*await _myCulturaRepository.saveMyGestion(_toEdit!);
-    isLoading.value = false;*/ /*
-  }*/
+    return _informationStream;
+  }
 
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
@@ -112,5 +109,26 @@ class GetxInformationMunicipio extends GetxController {
   void updateTapItem(int posicion) {
     _countTapItem = posicion;
     update();
+  }
+
+  void getDataInformation() {
+    this.informationStream = listInfo();
+    informationStream.listen((QuerySnapshot snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        // El stream ha emitido datos, puedes procesarlos aquí.
+        final List<DocumentSnapshot> documents = snapshot.docs;
+        for (var document in documents) {
+          final data = document.data() as Map<String, dynamic>;
+          tituloControl.text = data['nombre'];
+          descriptionControl.text = data['descripcion'];
+          listPhotosUrls = data['photos'].where((element) => element is String)
+              .map((element) => element.toString())
+              .toList();
+        }
+      }
+    }, onError: (error) {
+      // Maneja los errores si ocurren durante la escucha del stream.
+      print('Error en el stream: $error');
+    });
   }
 }

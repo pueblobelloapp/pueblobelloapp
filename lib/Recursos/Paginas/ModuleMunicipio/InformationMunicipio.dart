@@ -8,6 +8,7 @@ import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -15,13 +16,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../Controller/GextControllers/GetxSitioTuristico.dart';
-import '../../Controller/GextControllers/PhotoLoad.dart';
 
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
 
   @override
   Widget build(BuildContext context) {
+    controller.getDataInformation();
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       reverse: true,
@@ -60,9 +61,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     id: controller.uidGenerate());
 
                 controller.saveGestion(infoMunicipio);
+                _containerPhoto(imageLocation: "titulo");
+                _containerPhoto(imageLocation: "subtitulo");
               }
             },
-            child: Obx(() => controller.isLoading.value
+            child: Obx(() => controller.isLoading.value == false
                 ? Text(
                     'Guardar',
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -90,7 +93,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _containerPhoto(imageLocation: "titulo"),
+            controller.listPhotosUrls.isEmpty ?
+              _containerPhoto(imageLocation: "titulo") :
+              _containerPhotoUrl(imageLocation: 'titulo'),
             SizedBox(height: 15),
             Text(
               'Título informativo',
@@ -302,5 +307,73 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     size: 100,
                     color: Colors.green,
                   )));
+  }
+
+  Widget _containerPhotoUrl({required String imageLocation}) {
+    return GestureDetector(
+        onTap: () async {
+          await Get.to(() => ImageUpload());
+          if (sitioController.listCroppedFile.length > 0) {
+            if (imageLocation == "titulo") {
+              controller.listPhotosUrls.clear();
+              controller.addPhotosGeneral(sitioController.listCroppedFile);
+            } else {
+              controller.listPhotosSubUrls.clear();
+              controller.addPhotosSub(sitioController.listCroppedFile);
+            }
+          }
+        },
+        child: containerPhotoUrl(
+            imageLocation == "titulo" ?
+            controller.listPhotosUrls :
+            controller.listPhotosSubUrls)
+    );
+  }
+
+  Widget containerPhotoUrl(List<dynamic> listPhotos) {
+    return Container(
+        width: double.infinity,
+        height: 350,
+        decoration: BoxDecoration(
+            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
+        child: Center(
+            child: listPhotos.length > 0
+                ? carruselPhotosUrl(listPhotos)
+                : const Icon(
+              BootstrapIcons.image_alt,
+              size: 100,
+              color: Colors.green,
+            )));
+  }
+
+  Widget? carruselPhotosUrl(List<dynamic> listPhotos) {
+    if (listPhotos == null) {
+      return null;
+    }
+
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 400, // Altura del carrusel
+        enableInfiniteScroll: true, // Habilitar desplazamiento infinito
+        autoPlay: true, // Reproducción automática
+        autoPlayInterval: Duration(seconds: 3), // Intervalo entre imágenes
+        autoPlayAnimationDuration: Duration(milliseconds: 800), // Duración de la animación
+        viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
+        enlargeCenterPage: true, // Enfocar la imagen en el centro
+      ),
+      items: listPhotos.map((image) {
+        return Builder(
+          builder: (BuildContext context) {
+            return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width,
+                  maxHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Image.network(image)
+            );
+          },
+        );
+      }).toList(),
+    );
   }
 }
