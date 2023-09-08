@@ -93,9 +93,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            controller.listPhotosUrls.isEmpty ?
-              _containerPhoto(imageLocation: "titulo") :
-              _containerPhotoUrl(imageLocation: 'titulo'),
+            controller.listPhotosUrls.isEmpty
+                ? _containerPhoto(imageLocation: "titulo")
+                : _containerPhotoUrl(imageLocation: 'titulo'),
             SizedBox(height: 15),
             Text(
               'Título informativo',
@@ -272,25 +272,22 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   Widget _containerPhoto({required String imageLocation}) {
     return GestureDetector(
-      onTap: () async {
-        await Get.to(() => ImageUpload());
-        if (sitioController.listCroppedFile.length > 0) {
-          print("Fotos select");
-          if (imageLocation == "titulo") {
-            controller.listPhotosInfo.clear();
-            controller.addPhotosGeneral(sitioController.listCroppedFile);
-          } else {
-            controller.listPhotosSubInfo.clear();
-            controller.addPhotosSub(sitioController.listCroppedFile);
+        onTap: () async {
+          await Get.to(() => ImageUpload());
+          if (sitioController.listCroppedFile.length > 0) {
+            print("Fotos select");
+            if (imageLocation == "titulo") {
+              controller.listPhotosInfo.clear();
+              controller.addPhotosGeneral(sitioController.listCroppedFile);
+            } else {
+              controller.listPhotosSubInfo.clear();
+              controller.addPhotosSub(sitioController.listCroppedFile);
+            }
           }
-        }
-        sitioController.listCroppedFile.clear();
-      },
-      child: containerPhoto(
-          imageLocation == "titulo" ?
-          controller.listPhotosInfo :
-          controller.listPhotosSubInfo)
-    );
+          sitioController.listCroppedFile.clear();
+        },
+        child: containerPhoto(
+            imageLocation == "titulo" ? controller.listPhotosInfo : controller.listPhotosSubInfo));
   }
 
   Widget containerPhoto(List<CroppedFile> listPhotos) {
@@ -324,10 +321,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
           }
         },
         child: containerPhotoUrl(
-            imageLocation == "titulo" ?
-            controller.listPhotosUrls :
-            controller.listPhotosSubUrls)
-    );
+            imageLocation == "titulo" ? controller.listPhotosUrls : controller.listPhotosSubUrls));
   }
 
   Widget containerPhotoUrl(List<dynamic> listPhotos) {
@@ -340,10 +334,10 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             child: listPhotos.length > 0
                 ? carruselPhotosUrl(listPhotos)
                 : const Icon(
-              BootstrapIcons.image_alt,
-              size: 100,
-              color: Colors.green,
-            )));
+                    BootstrapIcons.image_alt,
+                    size: 100,
+                    color: Colors.green,
+                  )));
   }
 
   Widget? carruselPhotosUrl(List<dynamic> listPhotos) {
@@ -364,12 +358,21 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
       items: listPhotos.map((image) {
         return Builder(
           builder: (BuildContext context) {
-            return ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width,
-                  maxHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Image.network(image)
+            return Column(
+              children: [
+                ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width,
+                      maxHeight: MediaQuery.of(context).size.height,
+                    ),
+                    child: Image.network(image)),
+                ElevatedButton(
+                  onPressed: () {
+                    // Elimina la foto de la lista
+                  },
+                  child: Text("Eliminar Foto"),
+                )
+              ],
             );
           },
         );
