@@ -1,4 +1,5 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
+  final GetxUtils messageController = Get.put(GetxUtils());
   void onInit() {
     controller.dropdownActivity;
   }
@@ -52,46 +54,34 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     maxLinesText: 4),
                 SizedBox(height: 15),
                 Text("Tipo de turismo"),
-                ListInformation(controller.tipoTurismo,
-                    controller.dropdownItems, "Seleccionar"),
+                ListInformation(controller.tipoTurismo, controller.dropdownItems, "Seleccionar"),
                 SizedBox(height: 15),
                 Text("Actividades"),
                 Container(
                   child: StreamBuilder<QuerySnapshot>(
                       stream: controller.dropdownActivity(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {
-                          return const Center(
-                              child: Text(
-                                  'Lo sentimos se ha producido un error.'));
+                          return const Center(child: Text('Lo sentimos se ha producido un error.'));
                         }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: Text('Cargando datos.'));
                         }
                         if (snapshot.data!.docs.isEmpty) {
-                          return const Center(
-                              child: Text('Registra sitios turisticos.'));
+                          return const Center(child: Text('Registra sitios turisticos.'));
                         }
-
                         return MultiSelectDialogField(
                           title: Text("Seleccion multiple"),
                           confirmText: Text("CONFIRMAR"),
                           buttonText: Text("Seleccionar"),
-                          items: snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data()! as Map<String, dynamic>;
+                          items: snapshot.data!.docs.map((DocumentSnapshot document) {
+                            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
                             return ListActivitys(data);
                           }).single,
                           listType: MultiSelectListType.LIST,
                           onConfirm: (values) {
                             if (values.isNotEmpty) {
-                              print("Actividades lista: " + values.toString());
                               controller.updateActivity(values);
-                            } else {
-                              print("Sin actividad");
                             }
                           },
                           initialValue: [],
@@ -176,8 +166,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                       label: Text("Cargar fotos"),
                       onPressed: () => Get.to(() => ImageUpload()),
                       icon: Icon(Icons.image_outlined, color: Colors.white),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     )
                   ],
                 ),
@@ -191,6 +180,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                           controller.validateForms();
                         } else {
                           print("Agregar fotos ");
+                          messageController.messageWarning(
+                              "Fotos", "Selecciona fotografias para continuar");
                         }
                       },
                       style: TextButton.styleFrom(

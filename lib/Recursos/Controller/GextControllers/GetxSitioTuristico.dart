@@ -11,9 +11,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../Models/InfoMunicipio.dart';
+import 'GextUtils.dart';
 
 class GetxSitioTuristico extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
+  final GetxUtils messageController = Get.put(GetxUtils());
   final formKey = GlobalKey<FormState>();
 
   List<XFile> listPickedFile = [];
@@ -136,6 +138,7 @@ class GetxSitioTuristico extends GetxController {
           puntuacion: []);
 
       _mySitesRepository.saveMySite(sitioTuristico);
+      cleanForm();
     } else {
       print("Error campos vacios");
       Get.showSnackbar(const GetSnackBar(
@@ -148,8 +151,17 @@ class GetxSitioTuristico extends GetxController {
     }
   }
 
-  Widget textFormSocialRed(TextEditingController controllerEdit) {
-    return TextFormField(controller: controllerEdit, keyboardType: TextInputType.text);
+  void cleanForm() {
+    nombreSitio.text = "";
+    tipoTurismo.text = "";
+    descripcionST.text = "";
+    twitterTextController.text = "";
+    facebookTextController.text = "";
+    messengerTextController.text = "";
+    instagramTextController.text = "";
+    whatsappTextController.text = "";
+    ubicacion.value = "Sin ubicacion";
+    _listContactos.clear();
   }
 
   bool validateText() {
