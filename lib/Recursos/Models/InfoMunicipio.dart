@@ -5,6 +5,7 @@ class InfoMunicipio {
   final String nombre;
   final String descripcion;
   final String subCategoria;
+  final String whyVisit;
   late Ubicacion? ubicacion;
   late List<dynamic>? photos;
   final List<SubTitulo> subTitulos;
@@ -14,6 +15,7 @@ class InfoMunicipio {
     required this.nombre,
     required this.descripcion,
     required this.subCategoria,
+    required this.whyVisit,
     this.ubicacion,
     this.photos,
     required this.subTitulos,
@@ -24,6 +26,7 @@ class InfoMunicipio {
     String? nombre,
     String? descripcion,
     String? subCategoria,
+    String? descripVisita,
     Ubicacion? ubicacion,
     List<dynamic>? photos,
     List<SubTitulo>? subTitulos,
@@ -33,6 +36,7 @@ class InfoMunicipio {
         nombre: nombre ?? this.nombre,
         descripcion: descripcion ?? this.descripcion,
         subCategoria: subCategoria ?? this.subCategoria,
+        whyVisit: descripVisita ?? this.whyVisit,
         ubicacion: ubicacion ?? this.ubicacion,
         photos: photos ?? this.photos,
         subTitulos: subTitulos ?? this.subTitulos,
@@ -44,6 +48,7 @@ class InfoMunicipio {
       'nombre': nombre,
       'descripcion': descripcion,
       'subCategoria': subCategoria,
+      'whyVisit': whyVisit,
       'ubicacion': ubicacion?.toFirebaseMap(),
       'photos': photos,
       'subTitulos': subTitulos.map((subTitulo) => subTitulo.toFirebaseMap()).toList(),
@@ -56,6 +61,7 @@ class InfoMunicipio {
       nombre: data['nombre'] as String,
       descripcion: data['descripcion'] as String,
       subCategoria: data['subCategoria'] as String,
+      whyVisit: data['whyVisit'] as String,
       ubicacion: Ubicacion.fromFirebaseMap(data['ubicacion'] as Map<String, Object?>),
       photos: (data['photos'] as List<dynamic>),
       subTitulos: (data['subTitulos'] as List<dynamic>).map((subTituloData) => SubTitulo.fromFirebaseMap(subTituloData as Map<String, Object?>)).toList(),

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Turismo App Administrador',
+      title: 'IKU App Administrador',
       theme: ThemeData(
           highlightColor: AppBasicColors.green,
           canvasColor: AppBasicColors.white,

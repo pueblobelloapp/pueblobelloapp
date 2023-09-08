@@ -74,13 +74,9 @@ class GetxSitioTuristico extends GetxController {
   }
 
   void updatePosition(LatLng latLng) {
-    print("Actualizando ubicacion");
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    mapUbications = Ubicacion(
-        lat: latLng.latitude.toString(),
-        long:  latLng.longitude.toString());
-
+    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
     update();
   }
 

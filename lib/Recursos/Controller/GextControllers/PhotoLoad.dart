@@ -17,7 +17,7 @@ class PhotoLoad extends GetxController {
     }
   }
 
-  // Método para capturar fotografia.
+  // Método para seleccionar una foto galeria
   void takePhoto() async {
     final imagePicker = ImagePicker();
     final XFile? takenImage =
