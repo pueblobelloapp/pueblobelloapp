@@ -41,9 +41,7 @@ class GetxSitioTuristico extends GetxController {
   final whatsappTextController = TextEditingController();
 
   Map<String, String> _listContactos = {};
-  late Ubicacion mapUbications = new Ubicacion(
-      lat: "10.422522",
-      long: "-73.578462");
+  late Ubicacion mapUbications;
 
   String uidUserLogin = "";
 
@@ -74,9 +72,13 @@ class GetxSitioTuristico extends GetxController {
   }
 
   void updatePosition(LatLng latLng) {
+    print("Actualizando ubicacion");
     selectedLatLng = latLng;
     ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
+    mapUbications = Ubicacion(
+        lat: latLng.latitude.toString(),
+        long:  latLng.longitude.toString());
+
     update();
   }
 

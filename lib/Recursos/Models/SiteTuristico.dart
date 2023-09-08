@@ -3,31 +3,31 @@ import 'package:equatable/equatable.dart';
 
 import 'Puntuacion.dart';
 
-class SitioTuristico extends Equatable {
+class SitioTuristico {
   final String id;
   final String nombre;
   final String tipoTurismo;
   final String descripcion;
-  final Ubicacion ubicacion;
+  late Ubicacion? ubicacion;
   final String? userId;
   final Map<String, String>? contacto;
   final List<Puntuacion>? puntuacion;
   final String? actividades;
   final List<dynamic>? foto;
 
-  const SitioTuristico(
+  SitioTuristico(
       {required this.id,
       required this.nombre,
       required this.tipoTurismo,
       required this.descripcion,
-      required this.ubicacion,
+      this.ubicacion,
       this.userId,
       required this.contacto,
       this.puntuacion,
       required this.actividades,
       this.foto});
 
-  @override
+  /* @override
   List<Object?> get props => [
         id,
         nombre,
@@ -39,7 +39,7 @@ class SitioTuristico extends Equatable {
         puntuacion,
         actividades,
         foto
-      ];
+      ];*/
 
   Map<String, Object?> toFirebaseMap() {
     return <String, Object?>{
@@ -47,7 +47,7 @@ class SitioTuristico extends Equatable {
       'nombre': nombre,
       'tipoTurismo': tipoTurismo,
       'descripcion': descripcion,
-      'ubicacion': ubicacion,
+      'ubicacion': ubicacion?.toFirebaseMap(),
       'userId': userId,
       'contacto': contacto,
       'puntuacion': puntuacion,
@@ -56,17 +56,19 @@ class SitioTuristico extends Equatable {
     };
   }
 
-  SitioTuristico.fromFirebaseMap(Map<String, Object?> data)
-      : id = data['id'] as String,
-        nombre = data['nombre'] as String,
-        tipoTurismo = data['tipoTurismo'] as String,
-        descripcion = data['descripcion'] as String,
-        ubicacion = data['ubicacion'] as Ubicacion,
-        userId = data['userId'] as String?,
-        contacto = data['contacto'] as Map<String, String>?,
-        puntuacion = data['puntuacion'] as List<Puntuacion>?,
-        actividades = data['actividades'] as String?,
-        foto = data['foto;'] as List<String>?;
+  factory SitioTuristico.fromFirebaseMap(Map<String, Object?> data) {
+    return SitioTuristico(
+        id: data['id'] as String,
+        nombre: data['nombre'] as String,
+        tipoTurismo: data['tipoTurismo'] as String,
+        descripcion: data['descripcion'] as String,
+        ubicacion: data['ubicacion'] as Ubicacion,
+        userId: data['userId'] as String?,
+        contacto: data['contacto'] as Map<String, String>?,
+        puntuacion: data['puntuacion'] as List<Puntuacion>?,
+        actividades: data['actividades'] as String?,
+        foto: data['foto;'] as List<String>?);
+  }
 
   SitioTuristico copyWith(
       {String? id,

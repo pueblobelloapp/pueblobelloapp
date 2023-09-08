@@ -26,7 +26,6 @@ class MapGeolocation extends GetView<GetxSitioTuristico> {
                   zoom: 15.0,
                 ),
                 myLocationEnabled: true,
-                myLocationButtonEnabled: true,
                 onTap: (LatLng latLng) {
                   controller.updatePosition(latLng);
                 },

@@ -187,6 +187,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     TextButton(
                       onPressed: () {
                         if (controller.listCroppedFile.isNotEmpty) {
+                          print(controller.mapUbications.toFirebaseMap());
                           controller.validateForms();
                         } else {
                           print("Agregar fotos ");
