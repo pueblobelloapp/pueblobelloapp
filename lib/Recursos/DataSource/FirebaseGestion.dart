@@ -52,6 +52,7 @@ class GestionDataBase {
     }
 
     for (var item in infoMunicipio.subTitulos) {
+      if (item.listPhotosPath!.isNotEmpty) {
         List<CroppedFile>? cropFiles = item.listPhotosPath?.map((dynamic element) {
           if (element is CroppedFile) return element;
         }).whereType<CroppedFile>().toList();
@@ -60,10 +61,19 @@ class GestionDataBase {
         item.listPhotosPath?.clear();
         item = item.copyWith(listPhotosPath: urlFotografias);
         listSubInformation.add(item);
+      } else {
+        listSubInformation.add(item);
+      }
+
     }
+
+    getxSitioTuristico.mapUbications = new Ubicacion(
+        lat: "10.422522",
+        long: "-73.578462");
 
     infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
+
   }
 
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {

@@ -26,7 +26,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
 
   Widget Formulario() {
     return Container(
-        padding: EdgeInsets.all(40.0),
+        padding: EdgeInsets.all(20.0),
         child: Form(
             key: controller.formKey,
             child: Column(
@@ -176,6 +176,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     TextButton(
                       onPressed: () {
                         if (controller.listCroppedFile.isNotEmpty) {
+                          print(controller.mapUbications.toFirebaseMap());
                           controller.validateForms();
                         } else {
                           print("Agregar fotos ");

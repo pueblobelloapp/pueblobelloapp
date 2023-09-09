@@ -8,8 +8,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
+import '../Controller/GextControllers/GextUtils.dart';
 
+class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
+  final GetxUtils messageController = Get.put(GetxUtils());
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
     if (myUsers == null) throw Exception('Not authenticated exception');
@@ -32,15 +34,17 @@ class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
     print("Iniciando guardado: " + sitioTuristico.toString());
 
     if (controller.listCroppedFile.isNotEmpty) {
-      print("Busca fotos");
       urlFotografias = await uploadFiles(controller.listCroppedFile);
-      print("Resultados: " + urlFotografias.toString());
       sitioTuristico = sitioTuristico.copyWith(
           foto: urlFotografias, userId: controller.uidUserLogin);
       controller.listCroppedFile.clear();
       controller.listPickedFile.clear();
-      await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: true));
+
+      print("Sitio:" + sitioTuristico.toFirebaseMap().toString());
+      await ref.set(sitioTuristico.toFirebaseMap(), SetOptions(merge: false));
+      messageController.messageInfo("Registro Sitio", "Sitio registrado");
     } else {
+      messageController.messageError("Registro Sitio", "Error al guardar");
       print("Notificar que no se puede guardar.");
     }
   }

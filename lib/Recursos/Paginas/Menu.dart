@@ -12,8 +12,7 @@ class MenuModuls extends StatefulWidget {
 }
 
 class _MenuModulsState extends State<MenuModuls> {
-  final GetxInformationMunicipio _controllerTurismo =
-      Get.put(GetxInformationMunicipio());
+  final GetxInformationMunicipio _controllerTurismo = Get.put(GetxInformationMunicipio());
 
   final ControllerLogin controladorLogin = Get.put(ControllerLogin());
   bool shouldPop = false;
@@ -38,14 +37,10 @@ class _MenuModulsState extends State<MenuModuls> {
     return ListView(
         padding: const EdgeInsets.all(8),
         children: ListTile.divideTiles(context: context, tiles: [
+          _title("Mis sitios turisticos",
+              FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green), "MenuSitioTuristico"),
           _title(
-              "Mis sitios turisticos",
-              FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green),
-              "MenuSitioTuristico"),
-          _title(
-              "Mi perfil",
-              FaIcon(FontAwesomeIcons.userGear, color: Colors.green),
-              "Propietario"),
+              "Mi perfil", FaIcon(FontAwesomeIcons.userGear, color: Colors.green), "Propietario"),
           Align(
             heightFactor: 3.5,
             child: _btonCerrarSesion(context),
@@ -57,30 +52,12 @@ class _MenuModulsState extends State<MenuModuls> {
     return ListView(
         padding: const EdgeInsets.all(5),
         children: ListTile.divideTiles(context: context, tiles: [
-          _title(
-              "Culturas",
-              FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green),
-              "MenuGestion"),
-          _title(
-              "Etnoturismo",
-              FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green),
-              "MenuGestion"),
-          _title(
-              "Gastronomias",
-              FaIcon(FontAwesomeIcons.plateWheat, color: Colors.green),
-              "MenuGestion"),
-          _title(
-              "Festividades",
-              FaIcon(FontAwesomeIcons.calendar, color: Colors.green),
-              "MenuGestion"),
-          _title(
-              "Religiones",
-              FaIcon(FontAwesomeIcons.church, color: Colors.green),
-              "MenuGestion"),
-          _title(
-              "Cuenteros",
-              FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green),
-              "MenuGestion"),
+          _title("Culturas", FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green), "MenuGestion"),
+          _title("Etnoturismo", FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green), "MenuGestion"),
+          _title("Gastronomias", FaIcon(FontAwesomeIcons.plateWheat, color: Colors.green), "MenuGestion"),
+          _title("Festividades", FaIcon(FontAwesomeIcons.calendar, color: Colors.green), "MenuGestion"),
+          _title("Religiones", FaIcon(FontAwesomeIcons.church, color: Colors.green), "MenuGestion"),
+          _title("Cuenteros", FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green), "MenuGestion"),
           Align(
             heightFactor: 8.0,
             child: _btonCerrarSesion(context),
@@ -90,8 +67,7 @@ class _MenuModulsState extends State<MenuModuls> {
 
   Widget _title(String title, FaIcon icono, String route) {
     return ListTile(
-        title: Text(title,
-            style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 17)),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 17)),
         leading: icono,
         trailing: Icon(
           Icons.keyboard_arrow_right_rounded,
