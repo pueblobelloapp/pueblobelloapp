@@ -28,7 +28,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget FormData() {
-    photosCarrusel();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -180,12 +179,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         ));
   }
 
-  Widget photosCarrusel() {
-   return controller.listPhotosInfo.isNotEmpty
-        ? _containerPhoto(imageLocation: "titulo")
-        : _containerPhotoUrl(imageLocation: 'titulo');
-  }
-
   Widget formSubInformation() {
     return Container(
       width: double.infinity,
@@ -206,7 +199,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _containerPhoto(imageLocation: "subtitulo"),
+                controller.listPhotosSubInfo.isNotEmpty
+                    ? _containerPhoto(imageLocation: "subtitulo")
+                    : _containerPhotoUrl(imageLocation: 'subtitulo'),
                 SizedBox(height: 10),
                 Text(
                   'Subtítulo',
@@ -247,10 +242,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget? carruselPhotos(List<CroppedFile> listPhotos) {
-    if (listPhotos == null) {
-      return null;
-    }
-
     return CarouselSlider(
       options: CarouselOptions(
         height: 400, // Altura del carrusel
@@ -321,18 +312,24 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
 //Logica para mostrar fotos cargadas de firebase
   Widget _containerPhotoUrl({required String imageLocation}) {
+    print("Udpdate fotos subtitulo");
     return GestureDetector(
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
             if (imageLocation == "titulo") {
-              controller.listPhotosUrls.clear();
+              controller.listPhotosInfo.clear();
               controller.addPhotosGeneral(sitioController.listCroppedFile);
             } else {
-              controller.listPhotosSubUrls.clear();
+              controller.listPhotosSubInfo.clear();
               controller.addPhotosSub(sitioController.listCroppedFile);
             }
+          } else {
+            print("Else");
+            controller.listPhotosInfo.clear();
+            controller.listPhotosSubInfo.clear();
           }
+          controller.update();
         },
         child: containerPhotoUrl(
             imageLocation == "titulo" ? controller.listPhotosUrls : controller.listPhotosSubUrls));
