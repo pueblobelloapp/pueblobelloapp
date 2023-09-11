@@ -29,8 +29,7 @@ class NavegacionGestion extends StatelessWidget {
               icon: FaIcon(FontAwesomeIcons.list),
               label: 'Listado',
             ),
-            BottomNavigationBarItem(
-                icon: FaIcon(FontAwesomeIcons.plus), label: 'Agregar'),
+            BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.plus), label: 'Agregar'),
           ],
           currentIndex: controller.countTapItem,
           onTap: controller.updateTapItem,

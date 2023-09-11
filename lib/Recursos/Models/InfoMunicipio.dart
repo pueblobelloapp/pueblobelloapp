@@ -1,5 +1,3 @@
-import 'package:image_cropper/image_cropper.dart';
-
 class InfoMunicipio {
   late final String id;
   final String nombre;

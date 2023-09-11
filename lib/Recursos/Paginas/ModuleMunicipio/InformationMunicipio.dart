@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
@@ -8,21 +9,17 @@ import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-import '../../Controller/GextControllers/GetxSitioTuristico.dart';
 
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
 
   @override
   Widget build(BuildContext context) {
-    controller.getDataInformation();
+    updateCarrusel();
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       reverse: true,
@@ -31,14 +28,13 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget FormData() {
+    photosCarrusel();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         formInformationGeneral(),
         formSubInformation(),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 10),
         buttonSaveInformation()
       ],
     );
@@ -60,7 +56,13 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     subCategoria: controller.tipoGestion.toString(),
                     id: controller.uidGenerate());
 
-                controller.saveGestion(infoMunicipio);
+                //todo: Is true save
+                if (controller.isSaveOrUpdate) {
+                  controller.saveGestion(infoMunicipio);  
+                } else {
+                  controller.updateGestion(infoMunicipio);
+                }
+
                 _containerPhoto(imageLocation: "titulo");
                 _containerPhoto(imageLocation: "subtitulo");
               }
@@ -93,7 +95,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            controller.listPhotosUrls.isEmpty
+            controller.listPhotosInfo.isNotEmpty
                 ? _containerPhoto(imageLocation: "titulo")
                 : _containerPhotoUrl(imageLocation: 'titulo'),
             SizedBox(height: 15),
@@ -176,6 +178,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             )
           ],
         ));
+  }
+
+  Widget photosCarrusel() {
+   return controller.listPhotosInfo.isNotEmpty
+        ? _containerPhoto(imageLocation: "titulo")
+        : _containerPhotoUrl(imageLocation: 'titulo');
   }
 
   Widget formSubInformation() {
@@ -271,11 +279,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget _containerPhoto({required String imageLocation}) {
+    print("COntenedor: " + imageLocation);
     return GestureDetector(
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
-            print("Fotos select");
             if (imageLocation == "titulo") {
               controller.listPhotosInfo.clear();
               controller.addPhotosGeneral(sitioController.listCroppedFile);
@@ -283,8 +291,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               controller.listPhotosSubInfo.clear();
               controller.addPhotosSub(sitioController.listCroppedFile);
             }
+          } else {
+            print("Else");
+            controller.listPhotosInfo.clear();
+            controller.listPhotosSubInfo.clear();
           }
-          sitioController.listCroppedFile.clear();
+          controller.update();
         },
         child: containerPhoto(
             imageLocation == "titulo" ? controller.listPhotosInfo : controller.listPhotosSubInfo));
@@ -306,6 +318,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                   )));
   }
 
+
+//Logica para mostrar fotos cargadas de firebase
   Widget _containerPhotoUrl({required String imageLocation}) {
     return GestureDetector(
         onTap: () async {
@@ -341,10 +355,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget? carruselPhotosUrl(List<dynamic> listPhotos) {
-    if (listPhotos == null) {
-      return null;
-    }
-
     return CarouselSlider(
       options: CarouselOptions(
         height: 400, // Altura del carrusel
@@ -355,7 +365,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
         enlargeCenterPage: true, // Enfocar la imagen en el centro
       ),
-      items: listPhotos.map((image) {
+      items: listPhotos.map((urlImage) {
         return Builder(
           builder: (BuildContext context) {
             return Column(
@@ -365,12 +375,14 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                       maxWidth: MediaQuery.of(context).size.width,
                       maxHeight: MediaQuery.of(context).size.height,
                     ),
-                    child: Image.network(image)),
+                    child: Image.network(urlImage)),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
                     // Elimina la foto de la lista
                   },
-                  child: Text("Eliminar Foto"),
+                  child: Text("Eliminar Foto",
+                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                 )
               ],
             );
@@ -378,5 +390,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         );
       }).toList(),
     );
+  }
+
+  void updateCarrusel() {
+    _containerPhotoUrl(imageLocation: "subtitulo");
   }
 }

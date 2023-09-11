@@ -13,13 +13,13 @@ class ListInformationMunicipio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> subTitulosList = [];
-    final Stream<QuerySnapshot> _informationStream = controllerTurismo.listInfo();
+    late InfoMunicipio infoMunicipio;
+
     return Container(
         color: Colors.grey.shade200,
         child: SafeArea(
             child: StreamBuilder<QuerySnapshot>(
-                stream: _informationStream,
+                stream: controllerTurismo.listInfo(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return const Center(child: Text('Lo sentimos se ha producido un error.'));
@@ -46,13 +46,13 @@ class ListInformationMunicipio extends StatelessWidget {
 
                   snapshot.data!.docs.forEach((document) {
                     final data = document.data() as Map<String, dynamic>;
-                    subTitulosList = data['subTitulos'];
+                    infoMunicipio = InfoMunicipio.fromFirebaseMap(data);
                   });
 
                   return ListView.builder(
-                      itemCount: subTitulosList.length,
+                      itemCount: infoMunicipio.subTitulos.length,
                       itemBuilder: (context, index) {
-                        SubTitulo subTitulo = SubTitulo.fromFirebaseMap(subTitulosList[index]);
+                        SubTitulo subTitulo = infoMunicipio.subTitulos[index];
                         return Card(
                           elevation: 3.5,
                           margin: const EdgeInsets.fromLTRB(25, 25, 25, 5),
@@ -66,6 +66,8 @@ class ListInformationMunicipio extends StatelessWidget {
                                       color: Colors.green), // Reemplaza 'your_icon' con el icono que desees
                                   onPressed: () {
                                     // Agrega la lógica que deseas ejecutar cuando se presiona el botón.
+                                    controllerTurismo.updateInforMunicipio(infoMunicipio, index);
+                                    controllerTurismo.updateTapItem(1);
                                   },
                                 ),
                               ),

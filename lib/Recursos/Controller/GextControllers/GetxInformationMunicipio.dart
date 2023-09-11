@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-import 'GextUtils.dart';
-
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
 
@@ -30,9 +28,30 @@ class GetxInformationMunicipio extends GetxController {
   List<dynamic> listPhotosUrls = [];
   List<dynamic> listPhotosSubUrls = [];
 
+  late InfoMunicipio infoMunicipioUpdate;
+  int indexUpdateMunicipio = 0;
+
+  bool isSaveOrUpdate = false;
+
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
+
+  updateInforMunicipio(InfoMunicipio infoMunicipio, int indexSubtitulo) {
+    print("Index Actualizar: ${indexSubtitulo}");
+    infoMunicipioUpdate = infoMunicipio;
+    indexUpdateMunicipio = indexSubtitulo;
+
+    subTituloControl.text = infoMunicipio.subTitulos[indexSubtitulo].titulo;
+    subDescriptionControl.text = infoMunicipio.subTitulos[indexSubtitulo].descripcion;
+    listPhotosSubUrls = infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!
+        .where((element) => element is String)
+        .map((element) => element.toString())
+        .toList();
+
+    print("Fotos actualizar: ${listPhotosSubUrls.length}");
+    update();
+  }
 
   addSubinformation() {
     SubTitulo subInfoMunicipio = SubTitulo(
@@ -57,6 +76,7 @@ class GetxInformationMunicipio extends GetxController {
     tituloControl.text = "";
     listPhotosInfo.clear();
     listPhotosSubInfo.clear();
+    update();
   }
 
   addPhotosGeneral(List<CroppedFile> listPothos) {
@@ -71,11 +91,16 @@ class GetxInformationMunicipio extends GetxController {
 
   String uidGenerate() => _myCulturaRepository.newId();
 
-  // This function will be called from the presentation layer
-  // when the user has to be saved
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = false;
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
+    cleanForm();
+    isLoading.value = true;
+  }
+  
+  Future<void> updateGestion(InfoMunicipio infoMunicipio) async {
+    isLoading.value = false;
+    await _myCulturaRepository.editMyGestion(infoMunicipio);
     cleanForm();
     isLoading.value = true;
   }
@@ -85,6 +110,25 @@ class GetxInformationMunicipio extends GetxController {
         .collection('dataTurismo')
         .where('subCategoria', isEqualTo: tipoGestion)
         .snapshots();
+
+    this.informationStream = _informationStream;
+    informationStream.listen((QuerySnapshot snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        final List<DocumentSnapshot> documents = snapshot.docs;
+        for (var document in documents) {
+          final data = document.data() as Map<String, dynamic>;
+          tituloControl.text = data['nombre'];
+          descriptionControl.text = data['descripcion'];
+          listPhotosUrls = data['photos'].where((element) => element is String)
+              .map((element) => element.toString())
+              .toList();
+        }
+      } else {
+        cleanForm();
+      }
+    }, onError: (error) {
+      print('Error en el stream: $error');
+    });
 
     return _informationStream;
   }
@@ -109,26 +153,5 @@ class GetxInformationMunicipio extends GetxController {
   void updateTapItem(int posicion) {
     _countTapItem = posicion;
     update();
-  }
-
-  void getDataInformation() {
-    this.informationStream = listInfo();
-    informationStream.listen((QuerySnapshot snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        // El stream ha emitido datos, puedes procesarlos aquí.
-        final List<DocumentSnapshot> documents = snapshot.docs;
-        for (var document in documents) {
-          final data = document.data() as Map<String, dynamic>;
-          tituloControl.text = data['nombre'];
-          descriptionControl.text = data['descripcion'];
-          listPhotosUrls = data['photos'].where((element) => element is String)
-              .map((element) => element.toString())
-              .toList();
-        }
-      }
-    }, onError: (error) {
-      // Maneja los errores si ocurren durante la escucha del stream.
-      print('Error en el stream: $error');
-    });
   }
 }
