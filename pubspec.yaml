@@ -39,6 +39,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   flutter_launcher_icons: ^0.13.1
   loading_animation_widget: ^1.2.0+4
+  webviewx: ^0.2.2
 
 dev_dependencies:
   flutter_test:

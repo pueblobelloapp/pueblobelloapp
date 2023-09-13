@@ -25,7 +25,8 @@ class GetxInformationMunicipio extends GetxController {
   List<CroppedFile> listPhotosInfo = [];
   List<CroppedFile> listPhotosSubInfo = [];
   List<SubTitulo> listSubInformation = [];
-  List<dynamic> listPhotosUrls = [];
+  //RxList<String> listPhotosUrls = [].obs;
+  List<String> listPhotosUrls = <String>[].obs;
   List<dynamic> listPhotosSubUrls = [];
 
   late InfoMunicipio infoMunicipioUpdate;
@@ -36,6 +37,10 @@ class GetxInformationMunicipio extends GetxController {
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
+
+  void updateList(List<String> newData) {
+    listPhotosUrls.assignAll(newData);
+  }
 
   updateInforMunicipio(InfoMunicipio infoMunicipio, int indexSubtitulo) {
     print("Index Actualizar: ${indexSubtitulo}");
@@ -119,9 +124,8 @@ class GetxInformationMunicipio extends GetxController {
           final data = document.data() as Map<String, dynamic>;
           tituloControl.text = data['nombre'];
           descriptionControl.text = data['descripcion'];
-          listPhotosUrls = data['photos'].where((element) => element is String)
-              .map((element) => element.toString())
-              .toList();
+          List<String> newData = (data['photos'] as List?)?.whereType<String>().toList() ?? [];
+          updateList(newData);
         }
       } else {
         cleanForm();

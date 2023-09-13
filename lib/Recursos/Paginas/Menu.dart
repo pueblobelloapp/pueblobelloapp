@@ -58,7 +58,7 @@ class _MenuModulsState extends State<MenuModuls> {
           _title("Festividades", FaIcon(FontAwesomeIcons.calendar, color: Colors.green), "MenuGestion"),
           _title("Religiones", FaIcon(FontAwesomeIcons.church, color: Colors.green), "MenuGestion"),
           _title("Cuenteros", FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green), "MenuGestion"),
-          _title("Municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
+          _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
           Align(
             heightFactor: 8.0,
             child: _btonCerrarSesion(context),

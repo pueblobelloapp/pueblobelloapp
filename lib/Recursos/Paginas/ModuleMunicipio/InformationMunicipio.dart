@@ -13,13 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:webviewx/webviewx.dart';
 
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
 
   @override
   Widget build(BuildContext context) {
-    updateCarrusel();
     return SingleChildScrollView(
       padding: EdgeInsets.all(10),
       reverse: true,
@@ -57,13 +57,10 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
                 //todo: Is true save
                 if (controller.isSaveOrUpdate) {
-                  controller.saveGestion(infoMunicipio);  
+                  controller.saveGestion(infoMunicipio);
                 } else {
                   controller.updateGestion(infoMunicipio);
                 }
-
-                _containerPhoto(imageLocation: "titulo");
-                _containerPhoto(imageLocation: "subtitulo");
               }
             },
             child: Obx(() => controller.isLoading.value == false
@@ -94,9 +91,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            controller.listPhotosInfo.isNotEmpty
-                ? _containerPhoto(imageLocation: "titulo")
-                : _containerPhotoUrl(imageLocation: 'titulo'),
+            Obx(() => mainPhotos()),
             SizedBox(height: 15),
             Text(
               'Título informativo',
@@ -199,9 +194,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                controller.listPhotosSubInfo.isNotEmpty
-                    ? _containerPhoto(imageLocation: "subtitulo")
-                    : _containerPhotoUrl(imageLocation: 'subtitulo'),
+                //_containerPhoto(imageLocation: "subtitulo"),
                 SizedBox(height: 10),
                 Text(
                   'Subtítulo',
@@ -241,59 +234,57 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     );
   }
 
-  Widget? carruselPhotos(List<CroppedFile> listPhotos) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 400, // Altura del carrusel
-        enableInfiniteScroll: true, // Habilitar desplazamiento infinito
-        autoPlay: true, // Reproducción automática
-        autoPlayInterval: Duration(seconds: 3), // Intervalo entre imágenes
-        autoPlayAnimationDuration: Duration(milliseconds: 800), // Duración de la animación
-        viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
-        enlargeCenterPage: true, // Enfocar la imagen en el centro
-      ),
-      items: listPhotos.map((image) {
-        final path = image.path;
-        return Builder(
-          builder: (BuildContext context) {
-            return ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width,
-                  maxHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Image.file(File(path)) // Mostrar la imagen CroppedFile
-                );
-          },
-        );
-      }).toList(),
-    );
-  }
+  Widget mainPhotos() {
+    print("Mainphotos");
+    List<Widget> listWidget = listPhotosWidget();
 
-  Widget _containerPhoto({required String imageLocation}) {
-    print("COntenedor: " + imageLocation);
     return GestureDetector(
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
-            if (imageLocation == "titulo") {
-              controller.listPhotosInfo.clear();
-              controller.addPhotosGeneral(sitioController.listCroppedFile);
-            } else {
-              controller.listPhotosSubInfo.clear();
-              controller.addPhotosSub(sitioController.listCroppedFile);
-            }
-          } else {
-            print("Else");
             controller.listPhotosInfo.clear();
-            controller.listPhotosSubInfo.clear();
+            controller.addPhotosGeneral(sitioController.listCroppedFile);
           }
           controller.update();
         },
-        child: containerPhoto(
-            imageLocation == "titulo" ? controller.listPhotosInfo : controller.listPhotosSubInfo));
+        child: containerPhoto(listWidget));
   }
 
-  Widget containerPhoto(List<CroppedFile> listPhotos) {
+  List<Widget> listPhotosWidget() {
+    final List<Widget> photoWidgets = [];
+    //print("controller.listPhotosUrls: ${controller.listPhotosUrls.length}");
+    //print("listPhotos: ${controller.listPhotosInfo.length}");
+
+    // Agregar imágenes desde URLs
+    for (final url in controller.listPhotosUrls) {
+      photoWidgets.add(
+        Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            controller.listPhotosUrls.remove(url);
+          },
+          child: Image.network(url),
+        ),
+      );
+    }
+
+    for (final croppedFile in controller.listPhotosInfo) {
+      photoWidgets.add(
+        Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            // Eliminar la foto seleccionada por el usuario
+            controller.listPhotosInfo.remove(croppedFile);
+          },
+          child: Image.file(File(croppedFile.path)),
+        ),
+      );
+    }
+    
+    return photoWidgets;
+  }
+
+  Widget containerPhoto(List<Widget> listPhotos) {
     return Container(
         width: double.infinity,
         height: 350,
@@ -309,87 +300,29 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                   )));
   }
 
-
-//Logica para mostrar fotos cargadas de firebase
-  Widget _containerPhotoUrl({required String imageLocation}) {
-    print("Udpdate fotos subtitulo");
-    return GestureDetector(
-        onTap: () async {
-          await Get.to(() => ImageUpload());
-          if (sitioController.listCroppedFile.length > 0) {
-            if (imageLocation == "titulo") {
-              controller.listPhotosInfo.clear();
-              controller.addPhotosGeneral(sitioController.listCroppedFile);
-            } else {
-              controller.listPhotosSubInfo.clear();
-              controller.addPhotosSub(sitioController.listCroppedFile);
-            }
-          } else {
-            print("Else");
-            controller.listPhotosInfo.clear();
-            controller.listPhotosSubInfo.clear();
-          }
-          controller.update();
-        },
-        child: containerPhotoUrl(
-            imageLocation == "titulo" ? controller.listPhotosUrls : controller.listPhotosSubUrls));
-  }
-
-  Widget containerPhotoUrl(List<dynamic> listPhotos) {
-    return Container(
-        width: double.infinity,
-        height: 350,
-        decoration: BoxDecoration(
-            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
-        child: Center(
-            child: listPhotos.length > 0
-                ? carruselPhotosUrl(listPhotos)
-                : const Icon(
-                    BootstrapIcons.image_alt,
-                    size: 100,
-                    color: Colors.green,
-                  )));
-  }
-
-  Widget? carruselPhotosUrl(List<dynamic> listPhotos) {
+  Widget? carruselPhotos(List<Widget> listPhotos) {
     return CarouselSlider(
       options: CarouselOptions(
         height: 400, // Altura del carrusel
         enableInfiniteScroll: true, // Habilitar desplazamiento infinito
         autoPlay: true, // Reproducción automática
-        autoPlayInterval: Duration(seconds: 3), // Intervalo entre imágenes
-        autoPlayAnimationDuration: Duration(milliseconds: 800), // Duración de la animación
-        viewportFraction: 0.8, // Porcentaje del ancho de la pantalla para mostrar
-        enlargeCenterPage: true, // Enfocar la imagen en el centro
+        autoPlayAnimationDuration: Duration(milliseconds: 1200), // Duración de la animación
+        viewportFraction: 1.3, // Porcentaje del ancho de la pantalla para mostrar
+        enlargeCenterPage: false, // Enfocar la imagen en el centro
       ),
-      items: listPhotos.map((urlImage) {
+      items: listPhotos.map((image) {
+        //final path = image.path;
         return Builder(
           builder: (BuildContext context) {
-            return Column(
-              children: [
-                ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width,
-                      maxHeight: MediaQuery.of(context).size.height,
-                    ),
-                    child: Image.network(urlImage)),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  onPressed: () {
-                    // Elimina la foto de la lista
-                  },
-                  child: Text("Eliminar Foto",
-                   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                )
-              ],
-            );
+            return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width,
+                  maxHeight: MediaQuery.of(context).size.height,
+                ),
+                child: image);
           },
         );
       }).toList(),
     );
-  }
-
-  void updateCarrusel() {
-    _containerPhotoUrl(imageLocation: "subtitulo");
   }
 }
