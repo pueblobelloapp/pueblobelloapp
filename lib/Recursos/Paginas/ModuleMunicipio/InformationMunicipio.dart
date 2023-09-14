@@ -56,7 +56,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     id: controller.uidGenerate());
 
                 //todo: Is true save
-                if (controller.isSaveOrUpdate) {
+                if (controller.isSaveOrUpdate.value) {
                   controller.saveGestion(infoMunicipio);
                 } else {
                   controller.updateGestion(infoMunicipio);
@@ -64,8 +64,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               }
             },
             child: Obx(() => controller.isLoading.value == false
-                ? Text(
-                    'Guardar',
+                ? Text(controller.buttonTextSave.value,
                     style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   )
                 : Row(
@@ -252,8 +251,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   List<Widget> listPhotosWidget() {
     final List<Widget> photoWidgets = [];
-    //print("controller.listPhotosUrls: ${controller.listPhotosUrls.length}");
-    //print("listPhotos: ${controller.listPhotosInfo.length}");
 
     // Agregar imágenes desde URLs
     for (final url in controller.listPhotosUrls) {

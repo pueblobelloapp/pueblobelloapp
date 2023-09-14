@@ -65,7 +65,6 @@ class ListInformationMunicipio extends StatelessWidget {
                                   icon: FaIcon(FontAwesomeIcons.pen,
                                       color: Colors.green), // Reemplaza 'your_icon' con el icono que desees
                                   onPressed: () {
-                                    // Agrega la lógica que deseas ejecutar cuando se presiona el botón.
                                     controllerTurismo.updateInforMunicipio(infoMunicipio, index);
                                     controllerTurismo.updateTapItem(1);
                                   },

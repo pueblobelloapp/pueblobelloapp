@@ -21,18 +21,18 @@ class GetxInformationMunicipio extends GetxController {
   final subDescriptionControl = TextEditingController();
 
   Rx<bool> isLoading = Rx(false);
+  Rx<bool> isSaveOrUpdate = Rx(true);
 
   List<CroppedFile> listPhotosInfo = [];
   List<CroppedFile> listPhotosSubInfo = [];
   List<SubTitulo> listSubInformation = [];
-  //RxList<String> listPhotosUrls = [].obs;
   List<String> listPhotosUrls = <String>[].obs;
   List<dynamic> listPhotosSubUrls = [];
 
+  var buttonTextSave = "Guardar".obs;
+
   late InfoMunicipio infoMunicipioUpdate;
   int indexUpdateMunicipio = 0;
-
-  bool isSaveOrUpdate = false;
 
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
@@ -54,7 +54,7 @@ class GetxInformationMunicipio extends GetxController {
         .map((element) => element.toString())
         .toList();
 
-    print("Fotos actualizar: ${listPhotosSubUrls.length}");
+    buttonTextSave.value = "Actualizar";
     update();
   }
 
