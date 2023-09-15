@@ -170,6 +170,8 @@ class _LoginFState extends State<LoginF> {
           mensajeNotification = "Email no existe.";
         } else if (onerror == "network-request-failed") {
           mensajeNotification = "No pudimos consultar tu usuario.";
+        } else if (onerror == "not-privilegio") {
+          mensajeNotification = "No tienes los privilegios suficientes.";
         } else {
           mensajeNotification = onerror.toString();
         }

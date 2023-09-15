@@ -46,13 +46,21 @@ class ControllerLogin extends GetxController {
           .get()
           .then((value) {
         _dataUsuario = value.data()!;
+        
+        final bool estado = _dataUsuario['estado'] ?? false;
+        if (!estado && (_dataUsuario['rool'] == 'Propietario')) {
+          throw "not-privilegio";
+        }
+
         _dataUsuario['rool'] == 'Propietario'
             ? _userRole = "true"
             : _userRole = "false";
+
         propietarioController.imagePerfilUrl.value = _dataUsuario["foto"];
         update();
       }).catchError((onError) {
         print("Se genero un error: " + onError);
+        throw "not-privilegio";
       });
     } on FirebaseException catch (e) {
       print("Error: ? " + e.toString());

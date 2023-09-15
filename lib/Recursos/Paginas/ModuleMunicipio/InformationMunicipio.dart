@@ -64,8 +64,10 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               }
             },
             child: Obx(() => controller.isLoading.value == false
-                ? Text(controller.buttonTextSave.value,
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ? Text(
+                    controller.buttonTextSave.value,
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +81,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                         width: 10,
                       ),
                       Text("Guardando",
-                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.bold))
                     ],
                   ))));
   }
@@ -134,7 +137,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     onPressed: () {
                       Get.to(() => MapGeolocation());
                     },
-                    icon: Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
+                    icon:
+                        Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
                     label: Text("Obtener la ubicación actual")),
               ],
             ),
@@ -147,28 +151,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 child: Text('Aquí se ilustra la ubicación'),
               ),
             ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Información adicional',
-                  style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-                ),
-                IconButton(
-                    onPressed: () {
-                      //Logica para agregar sub iformacion.
-                      if (controller.formKeySub.currentState!.validate()) {
-                        controller.addSubinformation();
-                      }
-                    },
-                    icon: Icon(
-                      BootstrapIcons.plus_square_fill,
-                      size: 30.0,
-                      color: AppBasicColors.green,
-                    ))
-              ],
-            )
+            SizedBox(height: 15)
           ],
         ));
   }
@@ -193,12 +176,36 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Información adicional',
+                      style: TextStyle(
+                          color: AppBasicColors.green, fontSize: 16.0),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          //Logica para agregar sub iformacion.
+                          if (controller.formKeySub.currentState!.validate()) {
+                            controller.addSubinformation();
+                          }
+                        },
+                        icon: Icon(
+                          BootstrapIcons.plus_square_fill,
+                          size: 30.0,
+                          color: AppBasicColors.green,
+                        ))
+                  ],
+                ),
                 //_containerPhoto(imageLocation: "subtitulo"),
                 SizedBox(height: 10),
                 Text(
                   'Subtítulo',
                   style: TextStyle(
-                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
+                      color: AppBasicColors.green,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
@@ -214,7 +221,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 Text(
                   'Descripción',
                   style: TextStyle(
-                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
+                      color: AppBasicColors.green,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
@@ -252,7 +261,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   List<Widget> listPhotosWidget() {
     final List<Widget> photoWidgets = [];
 
-    // Agregar imágenes desde URLs
     for (final url in controller.listPhotosUrls) {
       photoWidgets.add(
         Dismissible(
@@ -270,14 +278,13 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         Dismissible(
           key: UniqueKey(),
           onDismissed: (direction) {
-            // Eliminar la foto seleccionada por el usuario
             controller.listPhotosInfo.remove(croppedFile);
           },
           child: Image.file(File(croppedFile.path)),
         ),
       );
     }
-    
+
     return photoWidgets;
   }
 
@@ -286,7 +293,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         width: double.infinity,
         height: 350,
         decoration: BoxDecoration(
-            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
+            color: AppBasicColors.transparent,
+            borderRadius: BorderRadius.circular(10.0)),
         child: Center(
             child: listPhotos.length > 0
                 ? carruselPhotos(listPhotos)
@@ -303,8 +311,10 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         height: 400, // Altura del carrusel
         enableInfiniteScroll: true, // Habilitar desplazamiento infinito
         autoPlay: true, // Reproducción automática
-        autoPlayAnimationDuration: Duration(milliseconds: 1200), // Duración de la animación
-        viewportFraction: 1.3, // Porcentaje del ancho de la pantalla para mostrar
+        autoPlayAnimationDuration:
+            Duration(milliseconds: 1200), // Duración de la animación
+        viewportFraction:
+            1.3, // Porcentaje del ancho de la pantalla para mostrar
         enlargeCenterPage: false, // Enfocar la imagen en el centro
       ),
       items: listPhotos.map((image) {
