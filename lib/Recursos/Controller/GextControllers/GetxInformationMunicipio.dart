@@ -27,7 +27,7 @@ class GetxInformationMunicipio extends GetxController {
   List<CroppedFile> listPhotosSubInfo = [];
   List<SubTitulo> listSubInformation = [];
   List<String> listPhotosUrls = <String>[].obs;
-  List<dynamic> listPhotosSubUrls = [];
+  List<String> listPhotosSubUrls = <String>[].obs;
 
   var buttonTextSave = "Guardar".obs;
 
@@ -111,6 +111,7 @@ class GetxInformationMunicipio extends GetxController {
   }
 
   Stream<QuerySnapshot> listInfo() {
+    print("Consulta a la BD");
     final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
         .collection('dataTurismo')
         .where('subCategoria', isEqualTo: tipoGestion)

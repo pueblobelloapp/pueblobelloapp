@@ -106,8 +106,6 @@ class GestionDataBase {
     return listSubInformation;
   }
 
-  
-
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {
     var imageUrls =
         await Future.wait(_images.map((_image) => uploadFile(_image)));

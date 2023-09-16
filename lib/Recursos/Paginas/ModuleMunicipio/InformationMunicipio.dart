@@ -198,6 +198,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                         ))
                   ],
                 ),
+                SizedBox(height: 10),
+                Obx(() => mainSubPhotos()),
                 //_containerPhoto(imageLocation: "subtitulo"),
                 SizedBox(height: 10),
                 Text(
@@ -258,6 +260,22 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: containerPhoto(listWidget));
   }
 
+  Widget mainSubPhotos() {
+    print("MainSubphotos");
+    List<Widget> listSubWidget = listPhotosSubWidget();
+
+    return GestureDetector(
+        onTap: () async {
+          await Get.to(() => ImageUpload());
+          if (sitioController.listCroppedFile.length > 0) {
+            controller.listPhotosSubInfo.clear();
+            controller.addPhotosSub(sitioController.listCroppedFile);
+          }
+          controller.update();
+        },
+        child: containerPhoto(listSubWidget));
+  }
+
   List<Widget> listPhotosWidget() {
     final List<Widget> photoWidgets = [];
 
@@ -286,6 +304,36 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     }
 
     return photoWidgets;
+  }
+
+  List<Widget> listPhotosSubWidget() {
+    final List<Widget> photoSubWidgets = [];
+
+    for (final url in controller.listPhotosSubUrls) {
+      photoSubWidgets.add(
+        Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            controller.listPhotosSubUrls.remove(url);
+          },
+          child: Image.network(url),
+        ),
+      );
+    }
+
+    for (final croppedFile in controller.listPhotosSubInfo) {
+      photoSubWidgets.add(
+        Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            controller.listPhotosSubInfo.remove(croppedFile);
+          },
+          child: Image.file(File(croppedFile.path)),
+        ),
+      );
+    }
+
+    return photoSubWidgets;
   }
 
   Widget containerPhoto(List<Widget> listPhotos) {
