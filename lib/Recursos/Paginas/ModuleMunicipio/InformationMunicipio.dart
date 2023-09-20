@@ -40,51 +40,71 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget buttonSaveInformation() {
-    return SizedBox(
-        width: double.infinity,
-        height: 50.0,
-        child: ElevatedButton(
-            onPressed: () {
-              if (controller.formKey.currentState!.validate()) {
-                InfoMunicipio infoMunicipio = InfoMunicipio(
-                    nombre: controller.tituloControl.text,
-                    descripcion: controller.descriptionControl.text,
-                    subTitulos: controller.listSubInformation,
-                    ubicacion: sitioController.mapUbications,
-                    photos: controller.listPhotosInfo,
-                    subCategoria: controller.tipoGestion.toString(),
-                    id: controller.uidGenerate());
+    return Row(children: [
+      Expanded(
+          child: SizedBox(
+              height: 50.0,
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (controller.formKey.currentState!.validate()) {
+                      InfoMunicipio infoMunicipio = InfoMunicipio(
+                          nombre: controller.tituloControl.text,
+                          descripcion: controller.descriptionControl.text,
+                          subTitulos: controller.listSubInformation,
+                          ubicacion: sitioController.mapUbications,
+                          photos: controller.listPhotosInfo,
+                          subCategoria: controller.tipoGestion.toString(),
+                          id: controller.uidGenerate());
 
-                //todo: Is true save
-                if (controller.isSaveOrUpdate.value) {
-                  controller.saveGestion(infoMunicipio);
-                } else {
-                  controller.updateGestion(infoMunicipio);
-                }
-              }
-            },
-            child: Obx(() => controller.isLoading.value == false
-                ? Text(
-                    controller.buttonTextSave.value,
-                    style:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      LoadingAnimationWidget.discreteCircle(
-                          color: Colors.white,
-                          size: 20,
-                          secondRingColor: Colors.green,
-                          thirdRingColor: Colors.white),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("Guardando",
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.bold))
-                    ],
-                  ))));
+                      if (controller.isSaveOrUpdate.value) {
+                        print("Save information");
+                        controller.saveGestion(infoMunicipio);
+                      } else {
+                        print("Update information");
+                        controller.updateGestion();
+                      }
+                    }
+                  },
+                  child: Obx(() => controller.isLoading.value == false
+                      ? Text(
+                          controller.buttonTextSave.value,
+                          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LoadingAnimationWidget.discreteCircle(
+                                color: Colors.white,
+                                size: 20,
+                                secondRingColor: Colors.green,
+                                thirdRingColor: Colors.white),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text("Guardando",
+                                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
+                          ],
+                        ))))),
+      SizedBox(width: 15),
+      Visibility(
+          visible: !controller.isSaveOrUpdate.value,
+          child: Expanded(
+              child: SizedBox(
+            height: 50.0,
+            child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.red), // Cambia "Colors.blue" al color que desees
+                ),
+                onPressed: () {
+                  controller.updateButtonAddSubInfo("Agregar informacion", true);
+                  controller.cleanSubInfo();
+                  controller.update();
+                },
+                child: Text("Cancelar",
+                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
+          )))
+    ]);
   }
 
   Widget formInformationGeneral() {
@@ -137,8 +157,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                     onPressed: () {
                       Get.to(() => MapGeolocation());
                     },
-                    icon:
-                        Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
+                    icon: Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
                     label: Text("Obtener la ubicación actual")),
               ],
             ),
@@ -179,14 +198,14 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Información adicional',
-                      style: TextStyle(
-                          color: AppBasicColors.green, fontSize: 16.0),
-                    ),
-                    IconButton(
+                    Obx(() => Text(
+                          controller.subInfoAdd.value,
+                          style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
+                        )),
+                    Visibility(
+                      visible: controller.isSaveOrUpdate.value,
+                      child: IconButton(
                         onPressed: () {
-                          //Logica para agregar sub iformacion.
                           if (controller.formKeySub.currentState!.validate()) {
                             controller.addSubinformation();
                           }
@@ -195,7 +214,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           BootstrapIcons.plus_square_fill,
                           size: 30.0,
                           color: AppBasicColors.green,
-                        ))
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 SizedBox(height: 10),
@@ -205,9 +226,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 Text(
                   'Subtítulo',
                   style: TextStyle(
-                      color: AppBasicColors.green,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
+                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
@@ -223,9 +242,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 Text(
                   'Descripción',
                   style: TextStyle(
-                      color: AppBasicColors.green,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
+                      color: AppBasicColors.green, fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
@@ -302,6 +319,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         ),
       );
     }
+    sitioController.listCroppedFile.clear();
 
     return photoWidgets;
   }
@@ -309,29 +327,34 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   List<Widget> listPhotosSubWidget() {
     final List<Widget> photoSubWidgets = [];
 
-    for (final url in controller.listPhotosSubUrls) {
-      photoSubWidgets.add(
-        Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            controller.listPhotosSubUrls.remove(url);
-          },
-          child: Image.network(url),
-        ),
-      );
+    if (controller.listPhotosSubUrls.isNotEmpty) {
+      for (final url in controller.listPhotosSubUrls) {
+        photoSubWidgets.add(
+          Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              controller.listPhotosSubUrls.remove(url);
+            },
+            child: Image.network(url),
+          ),
+        );
+      }
     }
 
-    for (final croppedFile in controller.listPhotosSubInfo) {
-      photoSubWidgets.add(
-        Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            controller.listPhotosSubInfo.remove(croppedFile);
-          },
-          child: Image.file(File(croppedFile.path)),
-        ),
-      );
+    if (controller.listPhotosSubInfo.isNotEmpty) {
+      for (final croppedFile in controller.listPhotosSubInfo) {
+        photoSubWidgets.add(
+          Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              controller.listPhotosSubInfo.remove(croppedFile);
+            },
+            child: Image.file(File(croppedFile.path)),
+          ),
+        );
+      }
     }
+    sitioController.listCroppedFile.clear();
 
     return photoSubWidgets;
   }
@@ -341,8 +364,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         width: double.infinity,
         height: 350,
         decoration: BoxDecoration(
-            color: AppBasicColors.transparent,
-            borderRadius: BorderRadius.circular(10.0)),
+            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
         child: Center(
             child: listPhotos.length > 0
                 ? carruselPhotos(listPhotos)
@@ -359,10 +381,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         height: 400, // Altura del carrusel
         enableInfiniteScroll: true, // Habilitar desplazamiento infinito
         autoPlay: true, // Reproducción automática
-        autoPlayAnimationDuration:
-            Duration(milliseconds: 1200), // Duración de la animación
-        viewportFraction:
-            1.3, // Porcentaje del ancho de la pantalla para mostrar
+        autoPlayAnimationDuration: Duration(milliseconds: 1200), // Duración de la animación
+        viewportFraction: 1.3, // Porcentaje del ancho de la pantalla para mostrar
         enlargeCenterPage: false, // Enfocar la imagen en el centro
       ),
       items: listPhotos.map((image) {

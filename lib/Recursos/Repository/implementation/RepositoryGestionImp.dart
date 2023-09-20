@@ -10,32 +10,27 @@ class MyRepositoryGestionImp extends MyGestionRepository {
 
   @override
   Future<void> deleteMyGestion(String uid, String module) async {
-    // TODO: implement deleteMyCultura
     //_gestionDataBase.deleteInformation(uid, module);
   }
 
   @override
-  Future<void> editMyGestion(InfoMunicipio myGestion) {
-    // TODO: implement editMyCultura
-    throw UnimplementedError();
+  Future<void> editMyGestion(
+      InfoMunicipio myGestion, int index, List<String> photosSub, List<String> photosMain) {
+    return _gestionDataBase.editGestion(myGestion, index, photosSub, photosMain);
   }
 
   @override
   Stream<Iterable<InfoMunicipio>> getMyGestion() {
-    // TODO: implement getMyCulture
     throw UnimplementedError();
   }
 
   @override
   String newId() {
-    // TODO: implement newId
     return _gestionDataBase.newId();
   }
 
   @override
   Future<void> saveMyGestion(InfoMunicipio myGestion) {
-    // TODO: implement saveMyCultura
     return _gestionDataBase.saveGestion(myGestion);
-
   }
 }

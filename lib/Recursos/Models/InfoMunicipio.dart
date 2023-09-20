@@ -1,11 +1,11 @@
 class InfoMunicipio {
   late final String id;
   final String nombre;
-  final String descripcion;
+  late final String descripcion;
   final String subCategoria;
   late Ubicacion? ubicacion;
   late List<dynamic>? photos;
-  final List<SubTitulo> subTitulos;
+  late final List<SubTitulo> subTitulos;
 
   InfoMunicipio({
     required this.id,
@@ -63,8 +63,8 @@ class InfoMunicipio {
 }
 
 class SubTitulo {
-  final String titulo;
-  final String descripcion;
+  late String titulo;
+  late String descripcion;
   late List<dynamic>? listPhotosPath;
 
   SubTitulo({

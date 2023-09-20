@@ -23,13 +23,14 @@ class GetxInformationMunicipio extends GetxController {
   Rx<bool> isLoading = Rx(false);
   Rx<bool> isSaveOrUpdate = Rx(true);
 
-  List<CroppedFile> listPhotosInfo = [];
-  List<CroppedFile> listPhotosSubInfo = [];
+  List<CroppedFile> listPhotosInfo = <CroppedFile>[].obs;
+  List<CroppedFile> listPhotosSubInfo = <CroppedFile>[].obs;
   List<SubTitulo> listSubInformation = [];
   List<String> listPhotosUrls = <String>[].obs;
   List<String> listPhotosSubUrls = <String>[].obs;
 
   var buttonTextSave = "Guardar".obs;
+  var subInfoAdd = "Agregar informacion".obs;
 
   late InfoMunicipio infoMunicipioUpdate;
   int indexUpdateMunicipio = 0;
@@ -38,12 +39,20 @@ class GetxInformationMunicipio extends GetxController {
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
 
+  void updateButtonAddSubInfo(String value, bool state) {
+    subInfoAdd.value = value;
+    isSaveOrUpdate.value = state;
+    buttonTextSave.value = "Agregar";
+    update();
+  }
+
   void updateList(List<String> newData) {
     listPhotosUrls.assignAll(newData);
   }
 
   updateInforMunicipio(InfoMunicipio infoMunicipio, int indexSubtitulo) {
     print("Index Actualizar: ${indexSubtitulo}");
+    isSaveOrUpdate.value = false;
     infoMunicipioUpdate = infoMunicipio;
     indexUpdateMunicipio = indexSubtitulo;
 
@@ -55,6 +64,7 @@ class GetxInformationMunicipio extends GetxController {
         .toList();
 
     buttonTextSave.value = "Actualizar";
+    subInfoAdd.value = "Actualizar informacion";
     update();
   }
 
@@ -101,17 +111,30 @@ class GetxInformationMunicipio extends GetxController {
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
     cleanForm();
     isLoading.value = true;
+    buttonTextSave.value = "Agregar";
+    subInfoAdd.value = "Agregar informacion";
   }
-  
-  Future<void> updateGestion(InfoMunicipio infoMunicipio) async {
+
+  Future<void> updateGestion() async {
     isLoading.value = false;
-    await _myCulturaRepository.editMyGestion(infoMunicipio);
+
+    if (listPhotosInfo.isNotEmpty) {
+      infoMunicipioUpdate.photos = listPhotosInfo;
+    }
+
+    if (listPhotosSubInfo.isNotEmpty) {
+      infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].listPhotosPath = listPhotosSubInfo;
+    }
+
+    infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].titulo = subTituloControl.text;
+    infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].descripcion = subDescriptionControl.text;
+    await _myCulturaRepository.editMyGestion(
+        infoMunicipioUpdate, indexUpdateMunicipio, listPhotosSubUrls, listPhotosUrls);
     cleanForm();
     isLoading.value = true;
   }
 
   Stream<QuerySnapshot> listInfo() {
-    print("Consulta a la BD");
     final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
         .collection('dataTurismo')
         .where('subCategoria', isEqualTo: tipoGestion)
@@ -129,7 +152,10 @@ class GetxInformationMunicipio extends GetxController {
           updateList(newData);
         }
       } else {
-        cleanForm();
+        print("Sin datos");
+        tituloControl.text = "";
+        descriptionControl.text = "";
+        updateList([]);
       }
     }, onError: (error) {
       print('Error en el stream: $error');

@@ -63,7 +63,8 @@ class ListInformationMunicipio extends StatelessWidget {
                                 title: Text(subTitulo.titulo),
                                 trailing: IconButton(
                                   icon: FaIcon(FontAwesomeIcons.pen,
-                                      color: Colors.green), // Reemplaza 'your_icon' con el icono que desees
+                                      color: Colors
+                                          .green), // Reemplaza 'your_icon' con el icono que desees
                                   onPressed: () {
                                     controllerTurismo.updateInforMunicipio(infoMunicipio, index);
                                     controllerTurismo.updateTapItem(1);

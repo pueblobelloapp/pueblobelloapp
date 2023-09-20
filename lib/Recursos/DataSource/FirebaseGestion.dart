@@ -39,24 +39,54 @@ class GestionDataBase {
     infoMunicipio = await uploadPhotosMain(infoMunicipio);
     listSubInformation = await uploadPhotosSubMain(infoMunicipio);
 
-    getxSitioTuristico.mapUbications =
-        new Ubicacion(lat: "10.422522", long: "-73.578462");
+    getxSitioTuristico.mapUbications = new Ubicacion(lat: "10.422522", long: "-73.578462");
 
     infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
   //Funcion para añadir una nueva informacion.
-  Future<void> editGestion(InfoMunicipio infoMunicipio) async {
-    //1. Validar si hay fotos nuevas que agregar de la pricipal
+  Future<void> editGestion(InfoMunicipio infoMunicipio, int index, List<String> photosSub,
+      List<String> photosMain) async {
+    List<String> listPhotosUrlsMain = [];
+    final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
+    List<String> listPhotosUrlsSub = infoMunicipio.subTitulos[index].listPhotosPath!
+        .where((element) => element is String)
+        .map((element) => element.toString())
+        .toList();
 
+    SubTitulo listSubInformation;
+
+    //1. Validar si hay fotos nuevas que agregar de la pricipal
     //1.1 Si existe: Recorrer y agregar a lista con las existentes.
+    infoMunicipio = await uploadPhotosMain(infoMunicipio);
+    if (infoMunicipio.photos!.isNotEmpty) {
+      listPhotosUrlsMain = infoMunicipio.photos!
+          .where((element) => element is String)
+          .map((element) => element.toString())
+          .toList();
+
+      infoMunicipio.photos!.addAll(listPhotosUrlsMain);
+    } else if (photosMain.isNotEmpty){
+      infoMunicipio.photos = photosMain;
+    } else {
+      print("Sin fotografias");
+    }
 
     //2. Validar si hay fotos del subtitulo especifico para actualizar.
     //2.2 Si existe: Recorrer y agregar a la lista con los existente
+    if (infoMunicipio.subTitulos[index].listPhotosPath!.isNotEmpty) {
+      listSubInformation = await uploadPhotosIndex(infoMunicipio.subTitulos[index]);
+    } else {
+      infoMunicipio.subTitulos[index].listPhotosPath = listPhotosUrlsSub;
+    }
 
     //3 Realizar merge entre lo nuevo y lo existente
+    //infoMunicipio.subTitulos[index] = listSubInformation;
+
     //4 Guardar datos.
+    infoMunicipio = infoMunicipio.copyWith(subTitulos: infoMunicipio.subTitulos);
+    await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
 //Validar en el for si tambien viene un string que es la URL de las fotografias.
@@ -66,13 +96,12 @@ class GestionDataBase {
           ?.map((dynamic element) {
             if (element is CroppedFile) {
               return element;
-            } //ELSE entonces es fotografia de la nube
+            }
           })
           .whereType<CroppedFile>()
           .toList();
 
       urlFotografias = await uploadFiles(cropFiles!);
-      print("Completando carga de fotos 1");
       infoMunicipio.photos?.clear();
       infoMunicipio = infoMunicipio.copyWith(photos: urlFotografias);
 
@@ -83,8 +112,7 @@ class GestionDataBase {
   }
 
 //Validar en el for si tambien viene un string que es la URL de las fotografias.
-  Future<List<SubTitulo>> uploadPhotosSubMain(
-      InfoMunicipio infoMunicipio) async {
+  Future<List<SubTitulo>> uploadPhotosSubMain(InfoMunicipio infoMunicipio) async {
     List<SubTitulo> listSubInformation = [];
     for (var item in infoMunicipio.subTitulos) {
       if (item.listPhotosPath!.isNotEmpty) {
@@ -106,20 +134,30 @@ class GestionDataBase {
     return listSubInformation;
   }
 
+  Future<SubTitulo> uploadPhotosIndex(SubTitulo subTitulo) async {
+    if (subTitulo.listPhotosPath!.isNotEmpty) {
+      List<CroppedFile>? cropFiles = subTitulo.listPhotosPath
+          ?.map((dynamic element) {
+            if (element is CroppedFile) return element;
+          })
+          .whereType<CroppedFile>()
+          .toList();
+
+      urlFotografias = await uploadFiles(cropFiles!);
+      subTitulo.listPhotosPath?.clear();
+      subTitulo = subTitulo.copyWith(listPhotosPath: urlFotografias);
+    }
+    return subTitulo;
+  }
+
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {
-    var imageUrls =
-        await Future.wait(_images.map((_image) => uploadFile(_image)));
+    var imageUrls = await Future.wait(_images.map((_image) => uploadFile(_image)));
     return imageUrls;
   }
 
   Future<String> uploadFile(CroppedFile _image) async {
-    final storageReference = storage.ref().child('municipio/${_image.path}');
+    final storageReference = storage.ref().child('test/${_image.path}');
     await storageReference.putFile(File(_image.path));
     return await storageReference.getDownloadURL();
   }
-
-/*  Stream<Iterable<InfoMunicipio>> getAllSites() {
-    return firestore.collection('dataTurismo/').snapshots().map(
-        (it) => it.docs.map((e) => InfoMunicipio.fromFirebaseMap(e.data())));
-  }*/
 }
