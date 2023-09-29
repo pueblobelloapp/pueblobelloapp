@@ -12,8 +12,6 @@ import 'package:image_cropper/image_cropper.dart';
 class GestionDataBase {
   final GetxUtils messageController = Get.put(GetxUtils());
 
-  List<dynamic> urlFotografias = [];
-
   final GetxGestionInformacionController controllerGestionInformacion =
       Get.put(GetxGestionInformacionController());
 
@@ -45,74 +43,47 @@ class GestionDataBase {
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  //Funcion para añadir una nueva informacion.
   Future<void> editGestion(InfoMunicipio infoMunicipio, int index, List<String> photosSub,
       List<String> photosMain) async {
-    List<String> listPhotosUrlsMain = [];
+
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
-    List<String> listPhotosUrlsSub = infoMunicipio.subTitulos[index].listPhotosPath!
-        .where((element) => element is String)
-        .map((element) => element.toString())
-        .toList();
 
-    SubTitulo listSubInformation;
-
-    //1. Validar si hay fotos nuevas que agregar de la pricipal
-    //1.1 Si existe: Recorrer y agregar a lista con las existentes.
     infoMunicipio = await uploadPhotosMain(infoMunicipio);
-    if (infoMunicipio.photos!.isNotEmpty) {
-      listPhotosUrlsMain = infoMunicipio.photos!
-          .where((element) => element is String)
-          .map((element) => element.toString())
-          .toList();
-
-      infoMunicipio.photos!.addAll(listPhotosUrlsMain);
-    } else if (photosMain.isNotEmpty){
-      infoMunicipio.photos = photosMain;
-    } else {
-      print("Sin fotografias");
+    if (photosMain.length > 0) {
+      infoMunicipio.photos!.addAll(photosMain);
     }
 
-    //2. Validar si hay fotos del subtitulo especifico para actualizar.
-    //2.2 Si existe: Recorrer y agregar a la lista con los existente
-    if (infoMunicipio.subTitulos[index].listPhotosPath!.isNotEmpty) {
-      listSubInformation = await uploadPhotosIndex(infoMunicipio.subTitulos[index]);
-    } else {
-      infoMunicipio.subTitulos[index].listPhotosPath = listPhotosUrlsSub;
-    }
+    SubTitulo subTitulo = await uploadPhotosIndex(infoMunicipio.subTitulos[index], photosSub);
 
-    //3 Realizar merge entre lo nuevo y lo existente
-    //infoMunicipio.subTitulos[index] = listSubInformation;
-
-    //4 Guardar datos.
-    infoMunicipio = infoMunicipio.copyWith(subTitulos: infoMunicipio.subTitulos);
+    infoMunicipio.subTitulos[index] = subTitulo;
+    getxSitioTuristico.mapUbications = new Ubicacion(lat: "10.422522", long: "-73.578462");
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
-//Validar en el for si tambien viene un string que es la URL de las fotografias.
   Future<InfoMunicipio> uploadPhotosMain(InfoMunicipio infoMunicipio) async {
-    if (infoMunicipio.photos!.length > 0) {
-      List<CroppedFile>? cropFiles = infoMunicipio.photos
-          ?.map((dynamic element) {
-            if (element is CroppedFile) {
-              return element;
-            }
-          })
-          .whereType<CroppedFile>()
-          .toList();
+    List<dynamic> urlFotografias = [];
+    List<CroppedFile>? cropFiles = infoMunicipio.photos
+        ?.map((dynamic element) {
+          if (element is CroppedFile) {
+            print("Captura elemento");
+            return element;
+          }
+        })
+        .whereType<CroppedFile>()
+        .toList();
 
-      urlFotografias = await uploadFiles(cropFiles!);
-      infoMunicipio.photos?.clear();
-      infoMunicipio = infoMunicipio.copyWith(photos: urlFotografias);
+   if (cropFiles!.length >= 1) {
+     print("Hace cargue de foto sprincipal");
+     infoMunicipio.photos!.clear();
+     urlFotografias = await uploadFiles(cropFiles!);
+     infoMunicipio = infoMunicipio.copyWith(photos: urlFotografias);
+   }
 
-      return infoMunicipio;
-    } else {
-      return infoMunicipio;
-    }
+    return infoMunicipio;
   }
 
-//Validar en el for si tambien viene un string que es la URL de las fotografias.
   Future<List<SubTitulo>> uploadPhotosSubMain(InfoMunicipio infoMunicipio) async {
+    List<dynamic> urlFotografias = [];
     List<SubTitulo> listSubInformation = [];
     for (var item in infoMunicipio.subTitulos) {
       if (item.listPhotosPath!.isNotEmpty) {
@@ -134,8 +105,8 @@ class GestionDataBase {
     return listSubInformation;
   }
 
-  Future<SubTitulo> uploadPhotosIndex(SubTitulo subTitulo) async {
-    if (subTitulo.listPhotosPath!.isNotEmpty) {
+  Future<SubTitulo> uploadPhotosIndex(SubTitulo subTitulo, List<String> photos) async {
+      List<dynamic> urlFotografias = [];
       List<CroppedFile>? cropFiles = subTitulo.listPhotosPath
           ?.map((dynamic element) {
             if (element is CroppedFile) return element;
@@ -143,10 +114,15 @@ class GestionDataBase {
           .whereType<CroppedFile>()
           .toList();
 
-      urlFotografias = await uploadFiles(cropFiles!);
-      subTitulo.listPhotosPath?.clear();
-      subTitulo = subTitulo.copyWith(listPhotosPath: urlFotografias);
-    }
+
+      if (cropFiles!.length >= 1) {
+        print("Gaurdando fotos de sub");
+        subTitulo.listPhotosPath?.clear();
+        urlFotografias = await uploadFiles(cropFiles!);
+        urlFotografias.addAll(photos);
+        subTitulo = subTitulo.copyWith(listPhotosPath: urlFotografias);
+      }
+
     return subTitulo;
   }
 

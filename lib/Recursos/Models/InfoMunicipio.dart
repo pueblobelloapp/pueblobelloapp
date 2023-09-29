@@ -51,15 +51,17 @@ class InfoMunicipio {
   factory InfoMunicipio.fromFirebaseMap(Map<String, Object?> data) {
     return InfoMunicipio(
       id: data['id'] as String,
-      nombre: data['nombre'] as String,
-      descripcion: data['descripcion'] as String,
-      subCategoria: data['subCategoria'] as String,
-      ubicacion: Ubicacion.fromFirebaseMap(data['ubicacion'] as Map<String, Object?>),
-      photos: (data['photos'] as List<dynamic>),
-      subTitulos: (data['subTitulos'] as List<dynamic>).map((subTituloData) => SubTitulo.fromFirebaseMap(subTituloData as Map<String, Object?>)).toList(),
+      nombre: data['nombre'] as String? ?? 'Sin identificar',
+      descripcion: data['descripcion'] as String? ?? 'Sin determinar',
+      subCategoria: data['subCategoria'] as String? ?? 'Sinespecificar',
+      ubicacion:
+          Ubicacion.fromFirebaseMap(data['ubicacion'] as Map<String, Object?>),
+      photos: (data['photos'] as List<dynamic>) ?? [],
+      subTitulos: (data['subTitulos'] as List<dynamic>)
+          .map((subTituloData) => SubTitulo.fromFirebaseMap(subTituloData as Map<String, Object?>))
+          .toList(),
     );
   }
-
 }
 
 class SubTitulo {
@@ -94,15 +96,15 @@ class SubTitulo {
 
   factory SubTitulo.fromFirebaseMap(Map<String, Object?> data) {
     return SubTitulo(
-      titulo: data['titulo'] as String,
-      descripcion: data['descripcion'] as String,
-      listPhotosPath: data['listPhotos'] as List<dynamic>);
+        titulo: data['titulo'] as String? ?? 'Sin definir',
+        descripcion: data['descripcion'] as String? ?? 'Sin determinar',
+        listPhotosPath: data['listPhotos'] as List<dynamic> ?? []);
   }
 }
 
 class Ubicacion {
-  final String lat;
-  final String long;
+  late String lat;
+  late String long;
 
   Ubicacion({
     required this.lat,

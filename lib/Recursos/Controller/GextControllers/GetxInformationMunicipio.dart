@@ -58,10 +58,12 @@ class GetxInformationMunicipio extends GetxController {
 
     subTituloControl.text = infoMunicipio.subTitulos[indexSubtitulo].titulo;
     subDescriptionControl.text = infoMunicipio.subTitulos[indexSubtitulo].descripcion;
-    listPhotosSubUrls = infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!
-        .where((element) => element is String)
-        .map((element) => element.toString())
-        .toList();
+    listPhotosSubUrls = infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!.isEmpty
+        ? []
+        : infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!
+            .where((element) => element is String)
+            .map((element) => element.toString())
+            .toList();
 
     buttonTextSave.value = "Actualizar";
     subInfoAdd.value = "Actualizar informacion";
@@ -119,7 +121,9 @@ class GetxInformationMunicipio extends GetxController {
     isLoading.value = false;
 
     if (listPhotosInfo.isNotEmpty) {
+      print("Dimenciones1 : " + infoMunicipioUpdate.photos!.length.toString());
       infoMunicipioUpdate.photos = listPhotosInfo;
+      print("Dimenciones2 : " + infoMunicipioUpdate.photos!.length.toString());
     }
 
     if (listPhotosSubInfo.isNotEmpty) {

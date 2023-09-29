@@ -65,7 +65,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                       }
                     }
                   },
-                  child: Obx(() => controller.isLoading.value == false
+                  child: Obx(() => controller.isLoading.value == true
                       ? Text(
                           controller.buttonTextSave.value,
                           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -81,7 +81,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                             SizedBox(
                               width: 10,
                             ),
-                            Text("Guardando",
+                            Text(controller.buttonTextSave.value,
                                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
                           ],
                         ))))),
@@ -262,7 +262,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget mainPhotos() {
-    print("Mainphotos");
     List<Widget> listWidget = listPhotosWidget();
 
     return GestureDetector(
@@ -278,7 +277,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   Widget mainSubPhotos() {
-    print("MainSubphotos");
     List<Widget> listSubWidget = listPhotosSubWidget();
 
     return GestureDetector(

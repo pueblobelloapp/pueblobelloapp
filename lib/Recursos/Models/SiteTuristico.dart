@@ -27,20 +27,6 @@ class SitioTuristico {
       required this.actividades,
       this.foto});
 
-  /* @override
-  List<Object?> get props => [
-        id,
-        nombre,
-        tipoTurismo,
-        descripcion,
-        ubicacion,
-        userId,
-        contacto,
-        puntuacion,
-        actividades,
-        foto
-      ];*/
-
   Map<String, Object?> toFirebaseMap() {
     return <String, Object?>{
       'id': id,

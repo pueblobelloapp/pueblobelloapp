@@ -113,7 +113,7 @@ class GetxSitioTuristico extends GetxController {
       DropdownMenuItem(child: Text("Sitio turistico"), value: "sitio_turistico"),
       DropdownMenuItem(child: Text("Bienestar"), value: "bienestar"),
       DropdownMenuItem(child: Text("Ecoturismo"), value: "ecoturismo"),
-      DropdownMenuItem(child: Text("Rural"), value: "rural"),
+      DropdownMenuItem(child: Text("Rural"), value: "rural")
     ];
     return menuItems;
   }
