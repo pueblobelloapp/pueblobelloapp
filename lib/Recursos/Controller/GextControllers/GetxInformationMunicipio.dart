@@ -48,7 +48,8 @@ class GetxInformationMunicipio extends GetxController {
     indexUpdateMunicipio = indexSubtitulo;
 
     subTituloControl.text = infoMunicipio.subTitulos[indexSubtitulo].titulo;
-    subDescriptionControl.text = infoMunicipio.subTitulos[indexSubtitulo].descripcion;
+    subDescriptionControl.text =
+        infoMunicipio.subTitulos[indexSubtitulo].descripcion;
     listPhotosSubUrls = infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!
         .where((element) => element is String)
         .map((element) => element.toString())
@@ -102,7 +103,7 @@ class GetxInformationMunicipio extends GetxController {
     cleanForm();
     isLoading.value = true;
   }
-  
+
   Future<void> updateGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = false;
     await _myCulturaRepository.editMyGestion(infoMunicipio);
@@ -125,11 +126,12 @@ class GetxInformationMunicipio extends GetxController {
           final data = document.data() as Map<String, dynamic>;
           tituloControl.text = data['nombre'];
           descriptionControl.text = data['descripcion'];
-          List<String> newData = (data['photos'] as List?)?.whereType<String>().toList() ?? [];
+          List<String> newData =
+              (data['photos'] as List?)?.whereType<String>().toList() ?? [];
           updateList(newData);
         }
       } else {
-        cleanForm();
+        //cleanForm();
       }
     }, onError: (error) {
       print('Error en el stream: $error');

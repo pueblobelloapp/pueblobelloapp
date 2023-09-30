@@ -9,7 +9,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class ListInformationMunicipio extends StatelessWidget {
   ListInformationMunicipio({Key? key}) : super(key: key);
 
-  final GetxInformationMunicipio controllerTurismo = Get.put(GetxInformationMunicipio());
+  final GetxInformationMunicipio controllerTurismo =
+      Get.put(GetxInformationMunicipio());
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +21,21 @@ class ListInformationMunicipio extends StatelessWidget {
         child: SafeArea(
             child: StreamBuilder<QuerySnapshot>(
                 stream: controllerTurismo.listInfo(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
-                    return const Center(child: Text('Lo sentimos se ha producido un error.'));
+                    return const Center(
+                        child: Text('Lo sentimos se ha producido un error.'));
+                  }
+                  if (snapshot.data == null) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.data!.docs.isEmpty) {
+                    return Center(
+                        child: Text("No tienes sub titulos registrados",
+                            style: TextStyle(fontWeight: FontWeight.bold)));
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -37,11 +50,6 @@ class ListInformationMunicipio extends StatelessWidget {
                             thirdRingColor: Colors.white)
                       ],
                     ));
-                  }
-                  if (snapshot.data!.docs.isEmpty) {
-                    return Center(
-                        child: Text("No tienes sub titulos registrados",
-                            style: TextStyle(fontWeight: FontWeight.bold)));
                   }
 
                   snapshot.data!.docs.forEach((document) {
@@ -63,9 +71,11 @@ class ListInformationMunicipio extends StatelessWidget {
                                 title: Text(subTitulo.titulo),
                                 trailing: IconButton(
                                   icon: FaIcon(FontAwesomeIcons.pen,
-                                      color: Colors.green), // Reemplaza 'your_icon' con el icono que desees
+                                      color: Colors
+                                          .green), // Reemplaza 'your_icon' con el icono que desees
                                   onPressed: () {
-                                    controllerTurismo.updateInforMunicipio(infoMunicipio, index);
+                                    controllerTurismo.updateInforMunicipio(
+                                        infoMunicipio, index);
                                     controllerTurismo.updateTapItem(1);
                                   },
                                 ),

@@ -44,28 +44,37 @@ class _PropietariosPageState extends State<PropietariosPage> {
               estado = snapshot.data!.docs[index]['estado'];
             } catch (e) {}
 
-            return ListTile(
-              title: Text(snapshot.data!.docs[index]['nombre']),
-              subtitle: Text(snapshot.data!.docs[index]['correo']),
-              trailing: Switch(
-                  value: estado,
-                  onChanged: (value) async {
+            return Column(
+              children: [
+                ListTile(
+                  title: Text(snapshot.data!.docs[index]['nombre']),
+                  subtitle: Text(snapshot.data!.docs[index]['correo']),
+                  trailing: Switch(
+                      value: estado,
+                      onChanged: (value) async {
+                        print(snapshot.data!.docs[index].id);
+                        await FirebaseFirestore.instance
+                            .collection('propietario')
+                            .doc(snapshot.data!.docs[index].id)
+                            .update({'estado': value}).then((value) {
+                          print("Actualizado");
+                          Get.snackbar("Usuario", "Actualizado",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white);
+                        }).onError((error, stackTrace) {
+                          Get.snackbar("Actualizado", "Error al actualizar");
+                        });
+                      }),
+                  onTap: () {
                     print(snapshot.data!.docs[index].id);
-                    await FirebaseFirestore.instance
-                      .collection('propietario')
-                      .doc(snapshot.data!.docs[index].id)
-                      .update({'estado' : value}).then((value) {
-                        print("Actualizado");
-                        Get.snackbar("Actualizado", "Actualizado", 
-                        snackPosition: SnackPosition.BOTTOM, 
-                        backgroundColor: Colors.green);
-                      }).onError((error, stackTrace) {
-                        Get.snackbar("Actualizado", "Error al actualizar");
-                      });
-                  }),
-              onTap: () {
-                print(snapshot.data!.docs[index].id);
-              },
+                  },
+                ),
+                Divider(
+                  indent: 10.0,
+                  endIndent: 10.0,
+                )
+              ],
             );
           }));
         },
