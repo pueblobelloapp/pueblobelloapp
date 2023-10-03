@@ -3,7 +3,6 @@ class InfoMunicipio {
   final String nombre;
   late final String descripcion;
   final String subCategoria;
-  late Ubicacion? ubicacion;
   late List<dynamic>? photos;
   late final List<SubTitulo> subTitulos;
 
@@ -12,7 +11,6 @@ class InfoMunicipio {
     required this.nombre,
     required this.descripcion,
     required this.subCategoria,
-    this.ubicacion,
     this.photos,
     required this.subTitulos,
   });
@@ -31,7 +29,6 @@ class InfoMunicipio {
         nombre: nombre ?? this.nombre,
         descripcion: descripcion ?? this.descripcion,
         subCategoria: subCategoria ?? this.subCategoria,
-        ubicacion: ubicacion ?? this.ubicacion,
         photos: photos ?? this.photos,
         subTitulos: subTitulos ?? this.subTitulos,
       );
@@ -42,7 +39,6 @@ class InfoMunicipio {
       'nombre': nombre,
       'descripcion': descripcion,
       'subCategoria': subCategoria,
-      'ubicacion': ubicacion?.toFirebaseMap(),
       'photos': photos,
       'subTitulos': subTitulos.map((subTitulo) => subTitulo.toFirebaseMap()).toList(),
     };
@@ -54,8 +50,6 @@ class InfoMunicipio {
       nombre: data['nombre'] as String? ?? 'Sin identificar',
       descripcion: data['descripcion'] as String? ?? 'Sin determinar',
       subCategoria: data['subCategoria'] as String? ?? 'Sinespecificar',
-      ubicacion:
-          Ubicacion.fromFirebaseMap(data['ubicacion'] as Map<String, Object?>),
       photos: (data['photos'] as List<dynamic>) ?? [],
       subTitulos: (data['subTitulos'] as List<dynamic>)
           .map((subTituloData) => SubTitulo.fromFirebaseMap(subTituloData as Map<String, Object?>))

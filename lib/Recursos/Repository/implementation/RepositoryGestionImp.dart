@@ -33,4 +33,9 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   Future<void> saveMyGestion(InfoMunicipio myGestion) {
     return _gestionDataBase.saveGestion(myGestion);
   }
+
+  @override
+  Future<void> updateInfoMain(InfoMunicipio infoMunicipio) {
+    return _gestionDataBase.updateInfoMain(infoMunicipio);
+  }
 }

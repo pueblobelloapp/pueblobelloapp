@@ -29,17 +29,21 @@ class GestionDataBase {
   String newId() {
     return firestore.collection('dataTurismo').doc().id;
   }
-
-  //Funcion para añadir una nueva informacion.
+  
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
     List<SubTitulo> listSubInformation;
     infoMunicipio = await uploadPhotosMain(infoMunicipio);
     listSubInformation = await uploadPhotosSubMain(infoMunicipio);
-
-    getxSitioTuristico.mapUbications = new Ubicacion(lat: "10.422522", long: "-73.578462");
-
     infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
+    await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
+  }
+
+  Future<void> updateInfoMain(InfoMunicipio infoMunicipio) async {
+    print("Valor Actualizar: " + infoMunicipio.nombre);
+    final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
+    //Logica para validar si existe fotos con URL
+    infoMunicipio = await uploadPhotosMain(infoMunicipio);
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 

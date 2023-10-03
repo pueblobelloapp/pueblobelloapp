@@ -30,7 +30,7 @@ class GetxSitioTuristico extends GetxController {
   List<dynamic>? get fotoUrl => _fotoUrl;
 
   String _menuItemsActivity = "";
-  late LatLng selectedLatLng = LatLng(10.422522, -73.578462);
+  late LatLng selectedLatLng = LatLng(0,0);
 
   final nombreSitio = TextEditingController();
   final tipoTurismo = TextEditingController();
@@ -38,12 +38,12 @@ class GetxSitioTuristico extends GetxController {
 
   final facebookTextController = TextEditingController();
   final twitterTextController = TextEditingController();
-  final messengerTextController = TextEditingController();
+  final pageWebTextController = TextEditingController();
   final instagramTextController = TextEditingController();
   final whatsappTextController = TextEditingController();
 
   Map<String, String> _listContactos = {};
-  late Ubicacion mapUbications;
+  late Ubicacion mapUbications = Ubicacion(lat: "0", long:  "0");
 
   String uidUserLogin = "";
 
@@ -74,12 +74,11 @@ class GetxSitioTuristico extends GetxController {
   }
 
   void updatePosition(LatLng latLng) {
-    print("Actualizando ubicacion");
     selectedLatLng = latLng;
-    ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
-    mapUbications = Ubicacion(
-        lat: latLng.latitude.toString(),
-        long:  latLng.longitude.toString());
+    if (latLng.longitude != 0 && latLng.latitude != 0) {
+      ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
+    }
+    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
 
     update();
   }
@@ -95,7 +94,7 @@ class GetxSitioTuristico extends GetxController {
     _listContactos = {
       "facebook": facebookTextController.text,
       "twitter": twitterTextController.text,
-      "messenger": messengerTextController.text,
+      "pagina": pageWebTextController.text,
       "instagram": instagramTextController.text,
       "whatsapp": whatsappTextController.text
     };
@@ -126,7 +125,7 @@ class GetxSitioTuristico extends GetxController {
   Future<void> validateForms() async {
     if (validateText()) {
       print("Realizando proceso de guardado.");
-
+      updateContactos();
       SitioTuristico sitioTuristico = SitioTuristico(
           id: _mySitesRepository.newId(),
           nombre: nombreSitio.text,
@@ -157,7 +156,7 @@ class GetxSitioTuristico extends GetxController {
     descripcionST.text = "";
     twitterTextController.text = "";
     facebookTextController.text = "";
-    messengerTextController.text = "";
+    pageWebTextController.text = "";
     instagramTextController.text = "";
     whatsappTextController.text = "";
     ubicacion.value = "Sin ubicacion";
@@ -165,8 +164,6 @@ class GetxSitioTuristico extends GetxController {
   }
 
   bool validateText() {
-    updateContactos();
-
     return (nombreSitio.text.isNotEmpty &&
         descripcionST.text.isNotEmpty &&
         tipoTurismo.text.isNotEmpty &&

@@ -63,10 +63,8 @@ class MyApp extends StatelessWidget {
         'LoginF': (BuildContext context) => LoginF(),
         'Menu': (BuildContext context) => MenuModuls(),
         'ModuleSitios': (BuildContext context) => ModuleSitiosTuristicos(),
-        'Lista': (BuildContext context) => ListInformationMunicipio(),
-        'MenuGestion': (BuildContext context) => NavegacionGestion(),
-        'MenuSitioTuristico': (BuildContext context) =>
-            NavegacionSitioTuristico(),
+        'MenuGestion': (BuildContext context) => ListInformationMunicipio(),
+        'MenuSitioTuristico': (BuildContext context) => NavegacionSitioTuristico(),
         'Propietario': (BuildContext context) => PerfilPropietario(),
         'RecoveryPass': (BuildContext context) => RecuperarPassword(),
         'GestionSites': (BuildContext context) => InformationMunicipio(),

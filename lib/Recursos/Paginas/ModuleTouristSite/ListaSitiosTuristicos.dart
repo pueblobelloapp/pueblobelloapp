@@ -50,7 +50,6 @@ class ListaSitiosTuristicos extends StatelessWidget {
     SitioTuristico? siteInformation;
 
     return ListTile(
-      //leading: Image.network(data['foto']),
       title: Text(data['nombre']),
       subtitle: Text(data['tipoTurismo']),
       trailing: Icon(Icons.arrow_forward_ios_outlined),

@@ -55,10 +55,6 @@ class _MenuModulsState extends State<MenuModuls> {
         children: ListTile.divideTiles(context: context, tiles: [
           _title("Culturas", FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green), "MenuGestion"),
           _title("Etnoturismo", FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green), "MenuGestion"),
-          //_title("Gastronomias", FaIcon(FontAwesomeIcons.plateWheat, color: Colors.green), "MenuGestion"),
-          //_title("Festividades", FaIcon(FontAwesomeIcons.calendar, color: Colors.green), "MenuGestion"),
-          //_title("Religiones", FaIcon(FontAwesomeIcons.church, color: Colors.green), "MenuGestion"),
-         // _title("Cuenteros", FaIcon(FontAwesomeIcons.peopleLine, color: Colors.green), "MenuGestion"),
           _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
           _title("Propietarios", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
           _title("test", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),

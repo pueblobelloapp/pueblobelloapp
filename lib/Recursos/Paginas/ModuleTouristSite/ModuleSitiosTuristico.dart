@@ -100,13 +100,13 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     controller: controller.twitterTextController),
                 SizedBox(height: 15),
                 CustomTextFormField(
-                    icon: const Icon(BootstrapIcons.messenger),
+                    icon: const Icon(BootstrapIcons.globe),
                     obscureText: false,
-                    textGuide: "Messenger del sitio",
+                    textGuide: "Pagina web del sitio",
                     msgError: "",
                     textInputType: TextInputType.text,
                     fillColor: AppBasicColors.colorTextFormField,
-                    controller: controller.messengerTextController),
+                    controller: controller.pageWebTextController),
                 SizedBox(height: 15),
                 CustomTextFormField(
                     icon: const Icon(BootstrapIcons.instagram),
@@ -176,10 +176,8 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     TextButton(
                       onPressed: () {
                         if (controller.listCroppedFile.isNotEmpty) {
-                          print(controller.mapUbications.toFirebaseMap());
                           controller.validateForms();
                         } else {
-                          print("Agregar fotos ");
                           messageController.messageWarning(
                               "Fotos", "Selecciona fotografias para continuar");
                         }

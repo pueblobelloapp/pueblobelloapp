@@ -11,6 +11,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:webviewx/webviewx.dart';
@@ -20,10 +21,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(10),
-      reverse: true,
-      child: FormData(),
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(10),
+        reverse: true,
+        child: FormData(),
+      ),
     );
   }
 
@@ -46,23 +49,22 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               height: 50.0,
               child: ElevatedButton(
                   onPressed: () {
-                    if (controller.formKey.currentState!.validate()) {
-                      InfoMunicipio infoMunicipio = InfoMunicipio(
-                          nombre: controller.tituloControl.text,
-                          descripcion: controller.descriptionControl.text,
-                          subTitulos: controller.listSubInformation,
-                          ubicacion: sitioController.mapUbications,
-                          photos: controller.listPhotosInfo,
-                          subCategoria: controller.tipoGestion.toString(),
-                          id: controller.uidGenerate());
+                    if (controller.isSaveOrUpdate.value) {
+                      if (controller.formKey.currentState!.validate()) {
+                        InfoMunicipio infoMunicipio = InfoMunicipio(
+                            nombre: controller.tituloControl.text,
+                            descripcion: controller.descriptionControl.text,
+                            subTitulos: controller.listSubInformation,
+                            photos: controller.listPhotosInfo,
+                            subCategoria: controller.tipoGestion.toString(),
+                            id: controller.uidGenerate());
 
-                      if (controller.isSaveOrUpdate.value) {
-                        print("Save information");
+                        //Agregar informacion
                         controller.saveGestion(infoMunicipio);
-                      } else {
-                        print("Update information");
-                        controller.updateGestion();
                       }
+                    } else {
+                      //Actualiza informacion
+                      controller.updateGestion();
                     }
                   },
                   child: Obx(() => controller.isLoading.value == true
@@ -145,32 +147,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 controller: controller.descriptionControl,
                 valueFocus: false,
                 maxLinesText: 6),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Ubicación',
-                  style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
-                ),
-                ElevatedButton.icon(
-                    onPressed: () {
-                      Get.to(() => MapGeolocation());
-                    },
-                    icon: Icon(BootstrapIcons.pin_map_fill, color: Colors.white),
-                    label: Text("Obtener la ubicación actual")),
-              ],
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              height: 250,
-              color: AppBasicColors.colorTextFormField,
-              child: Center(
-                child: Text('Aquí se ilustra la ubicación'),
-              ),
-            ),
-            SizedBox(height: 15)
+            SizedBox(height: 20)
           ],
         ));
   }
@@ -208,6 +185,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                         onPressed: () {
                           if (controller.formKeySub.currentState!.validate()) {
                             controller.addSubinformation();
+                            //Mensaje de que se agrego
                           }
                         },
                         icon: Icon(

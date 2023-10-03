@@ -38,6 +38,7 @@ class GetxInformationMunicipio extends GetxController {
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
+  String uuidInfoSitio = "";
 
   void updateButtonAddSubInfo(String value, bool state) {
     subInfoAdd.value = value;
@@ -110,6 +111,7 @@ class GetxInformationMunicipio extends GetxController {
 
   Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = false;
+
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
     cleanForm();
     isLoading.value = true;
@@ -117,13 +119,15 @@ class GetxInformationMunicipio extends GetxController {
     subInfoAdd.value = "Agregar informacion";
   }
 
+  Future<void> updateInfoMain(InfoMunicipio infoMunicipio) async {
+    await _myCulturaRepository.updateInfoMain(infoMunicipio);
+  }
+
   Future<void> updateGestion() async {
     isLoading.value = false;
 
     if (listPhotosInfo.isNotEmpty) {
-      print("Dimenciones1 : " + infoMunicipioUpdate.photos!.length.toString());
       infoMunicipioUpdate.photos = listPhotosInfo;
-      print("Dimenciones2 : " + infoMunicipioUpdate.photos!.length.toString());
     }
 
     if (listPhotosSubInfo.isNotEmpty) {
@@ -132,6 +136,7 @@ class GetxInformationMunicipio extends GetxController {
 
     infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].titulo = subTituloControl.text;
     infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].descripcion = subDescriptionControl.text;
+
     await _myCulturaRepository.editMyGestion(
         infoMunicipioUpdate, indexUpdateMunicipio, listPhotosSubUrls, listPhotosUrls);
     cleanForm();
@@ -152,6 +157,7 @@ class GetxInformationMunicipio extends GetxController {
           final data = document.data() as Map<String, dynamic>;
           tituloControl.text = data['nombre'];
           descriptionControl.text = data['descripcion'];
+          uuidInfoSitio = data['id'];
           List<String> newData = (data['photos'] as List?)?.whereType<String>().toList() ?? [];
           updateList(newData);
         }
