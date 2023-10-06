@@ -22,10 +22,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Formulario")),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         reverse: true,
-        child: FormData(),
+        child: Obx(() => FormData()),
       ),
     );
   }
@@ -34,8 +35,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        formInformationGeneral(),
-        formSubInformation(),
+        Visibility(child: formInformationGeneral(), visible: controller.infoMainVisible.value),
+        Visibility(child: formSubInformation(), visible: controller.infoSubVisible.value),
         SizedBox(height: 10),
         buttonSaveInformation()
       ],
@@ -95,8 +96,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
             height: 50.0,
             child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Colors.red), // Cambia "Colors.blue" al color que desees
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () {
                   controller.updateButtonAddSubInfo("Agregar informacion", true);

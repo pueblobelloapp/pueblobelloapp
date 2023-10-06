@@ -1,4 +1,5 @@
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
+import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -45,8 +46,25 @@ class ListInformationMunicipio extends StatelessWidget {
                     }
                     if (snapshot.data!.docs.isEmpty) {
                       return Center(
-                          child: Text("No tienes sub titulos registrados",
-                              style: TextStyle(fontWeight: FontWeight.bold)));
+                        child: Container(
+                          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            const Image(
+                              image: AssetImage('assets/img/cloud.png'),
+                              width: 150,
+                              height: 150,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                print("Registrar informacion");
+                                controllerTurismo.updateVisibilityForms(true, true);
+                                Get.toNamed("GestionSites");
+                              },
+                              child: Text("Registrar Informacion",
+                                  style: TextStyle(color: Colors.green, fontSize: 15)),
+                            )
+                          ]),
+                        ),
+                      );
                     }
 
                     snapshot.data!.docs.forEach((document) {
@@ -54,7 +72,13 @@ class ListInformationMunicipio extends StatelessWidget {
                       infoMunicipio = InfoMunicipio.fromFirebaseMap(data);
                     });
 
-                    return ListView(children: listSubinformation(infoMunicipio, context));
+                    return ListView(
+                        scrollDirection: Axis.vertical,
+                        children: ListTile.divideTiles(
+                          color: Colors.grey,
+                          context: context,
+                          tiles: listSubinformation(infoMunicipio, context),
+                        ).toList());
                   }))),
     );
   }
@@ -70,13 +94,10 @@ class ListInformationMunicipio extends StatelessWidget {
     information.add(dismissibleWidGet(context, infoMunicipio, mainTitle, 0));
 
     for (var subtitulos in infoMunicipio.subTitulos) {
-      ListTile subTitle =
-          ListTile(title: Text("Titulo principal"), subtitle: Text(subtitulos.titulo));
-
+      ListTile subTitle = ListTile(title: Text("Subtitulos"), subtitle: Text(subtitulos.titulo));
       information.add(dismissibleWidGet(context, infoMunicipio, subTitle, index));
       index++;
     }
-
     return information;
   }
 
@@ -116,63 +137,48 @@ class ListInformationMunicipio extends StatelessWidget {
           ),
         ),
         confirmDismiss: (DismissDirection direction) async {
+          bool? confirmation = false;
           if (direction == DismissDirection.startToEnd) {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Actualizar subtitulo"),
-                  content: const Text("Quieres actualizar la informacion?"),
-                  actions: <Widget>[
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () {
-                          //Aca actualizara y redirecciona a la nueva vista.
-                          //Agregar mas campo para validar que mostrar que formularios.
-                          controllerTurismo.updateInforMunicipio(infoMunicipio, index);
-                          Get.toNamed("GestionSites");
-                        },
-                        child: const Text("Si")),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                      ),
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("No"),
-                    ),
-                  ],
-                );
-              },
-            );
+            confirmation = await menssageAlert("Actualizar", infoMunicipio, index, context);
           } else {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Eliminar subtitulo"),
-                  content: const Text("Estas seguro de eliminar la informacion?"),
-                  actions: <Widget>[
-                    ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                        ),
-                        onPressed: () => Navigator.of(context).pop(true), //Aca eliminara
-                        child: const Text("Si")),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                      ),
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("No"),
-                    ),
-                  ],
-                );
-              },
-            );
+            confirmation = await menssageAlert("Eliminar", infoMunicipio, index, context);
+          }
+
+          if (confirmation!) {
+            print("Actualizar");
           }
         },
         child: listTile);
+  }
+
+  Future<bool?> menssageAlert(
+      String titulo, InfoMunicipio infoMunicipio, int index, BuildContext context) async {
+    final bool? confirmation = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(titulo),
+            content: Text("Seguro de ${titulo.toLowerCase()} la informacion?"),
+            actions: <Widget>[
+              ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text("Si")),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                ),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text("No"),
+              ),
+            ],
+          );
+        });
+
+    return confirmation;
   }
 }

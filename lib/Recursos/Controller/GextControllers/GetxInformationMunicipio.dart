@@ -32,6 +32,9 @@ class GetxInformationMunicipio extends GetxController {
   var buttonTextSave = "Guardar".obs;
   var subInfoAdd = "Agregar informacion".obs;
 
+  Rx<bool> infoMainVisible = Rx(true);
+  Rx<bool> infoSubVisible = Rx(true);
+
   late InfoMunicipio infoMunicipioUpdate;
   int indexUpdateMunicipio = 0;
 
@@ -39,6 +42,13 @@ class GetxInformationMunicipio extends GetxController {
   int get countTapItem => _countTapItem;
   String tipoGestion = "";
   String uuidInfoSitio = "";
+
+  void updateVisibilityForms(bool mainForm, bool subForm) {
+    infoSubVisible.value = subForm;
+    infoMainVisible.value = mainForm;
+
+    update();
+  }
 
   void updateButtonAddSubInfo(String value, bool state) {
     subInfoAdd.value = value;
