@@ -10,11 +10,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class ListInformationMunicipio extends StatelessWidget {
-  ListInformationMunicipio({Key? key}) : super(key: key);
+import 'InformationMunicipio.dart';
 
-  final GetxInformationMunicipio controllerTurismo = Get.put(GetxInformationMunicipio());
-
+class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
   @override
   Widget build(BuildContext context) {
     late InfoMunicipio infoMunicipio;
@@ -94,8 +92,7 @@ class ListInformationMunicipio extends StatelessWidget {
                           context: context,
                           tiles: listSubinformation(infoMunicipio, context),
                         ).toList());
-                  }))),
-    );
+                  })));
   }
 
   List<Widget> listSubinformation(InfoMunicipio infoMunicipio, BuildContext context) {
@@ -164,25 +161,6 @@ class ListInformationMunicipio extends StatelessWidget {
           }
         },
         child: listTile);
-  }
-
-  List<Widget> listSubinformation(InfoMunicipio infoMunicipio, BuildContext context) {
-    List<Widget> information = [];
-    int index = 0;
-
-    ListTile mainTitle = ListTile(
-      title: Text("Titulo principal"),
-      subtitle: Text(infoMunicipio.nombre),
-    );
-    information.add(dismissibleWidGet(context, infoMunicipio, mainTitle, -1));
-
-    for (var subtitulos in infoMunicipio.subTitulos) {
-      ListTile subTitle = ListTile(title: Text("Subtitulos"), subtitle: Text(subtitulos.titulo));
-      information.add(dismissibleWidGet(context, infoMunicipio, subTitle, index));
-      index++;
-    }
-
-    return information;
   }
 
   Future<bool?> menssageAlert(
