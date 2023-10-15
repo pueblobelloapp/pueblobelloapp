@@ -8,6 +8,7 @@ import 'package:app_turismo/Recursos/Paginas/Navigation/NavegacionGestion.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/PerfilPropietario.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Turismo App Administrador',

@@ -50,7 +50,10 @@ Future<void> injectDependencies() async {
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp());
-  getIt.registerLazySingleton<MyGestionRepository>(() => MyRepositoryGestionImp());
-  getIt.registerLazySingleton<MySitesRepository>(() => MyRepositorySiteTuristicoImp());
-  getIt.registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
+  getIt.registerLazySingleton<MyGestionRepository>(
+      () => MyRepositoryGestionImp());
+  getIt.registerLazySingleton<MySitesRepository>(
+      () => MyRepositorySiteTuristicoImp());
+  getIt
+      .registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
 }

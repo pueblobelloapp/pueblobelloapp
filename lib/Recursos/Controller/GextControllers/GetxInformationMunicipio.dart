@@ -132,8 +132,8 @@ class GetxInformationMunicipio extends GetxController {
   Future<void> updateInfoMain(InfoMunicipio infoMunicipio) async {
     await _myCulturaRepository.updateInfoMain(infoMunicipio);
   }
-
-  Future<void> updateGestion() async {
+  
+  Future<void> updateGestion(InfoMunicipio infoMunicipio) async {
     isLoading.value = false;
 
     if (listPhotosInfo.isNotEmpty) {
@@ -154,6 +154,7 @@ class GetxInformationMunicipio extends GetxController {
   }
 
   Stream<QuerySnapshot> listInfo() {
+    print("Consulta a la BD");
     final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
         .collection('dataTurismo')
         .where('subCategoria', isEqualTo: tipoGestion)
