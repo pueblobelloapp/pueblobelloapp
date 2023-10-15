@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/main.dart';
@@ -9,6 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   late Stream<QuerySnapshot> informationStream;
 
@@ -22,6 +24,7 @@ class GetxInformationMunicipio extends GetxController {
 
   Rx<bool> isLoading = Rx(false);
   Rx<bool> isSaveOrUpdate = Rx(true);
+  Rx<bool> infoExists = Rx(true);
 
   List<CroppedFile> listPhotosInfo = <CroppedFile>[].obs;
   List<CroppedFile> listPhotosSubInfo = <CroppedFile>[].obs;
@@ -36,7 +39,7 @@ class GetxInformationMunicipio extends GetxController {
   Rx<bool> infoSubVisible = Rx(true);
 
   late InfoMunicipio infoMunicipioUpdate;
-  int indexUpdateMunicipio = 0;
+  int indexUpdate = 0;
 
   int _countTapItem = 0;
   int get countTapItem => _countTapItem;
@@ -46,41 +49,74 @@ class GetxInformationMunicipio extends GetxController {
   void updateVisibilityForms(bool mainForm, bool subForm) {
     infoSubVisible.value = subForm;
     infoMainVisible.value = mainForm;
-
+    isSaveOrUpdate.value = false;
     update();
   }
 
+  /**
+   * Actualiza la informacion del boton
+   */
   void updateButtonAddSubInfo(String value, bool state) {
     subInfoAdd.value = value;
-    isSaveOrUpdate.value = state;
     buttonTextSave.value = "Agregar";
+    isSaveOrUpdate.value = false;
+    isLoading.value = true;
     update();
   }
 
+  /**
+   * Actualiza lista contenedoras de fotografias del titulo principal
+   */
   void updateList(List<String> newData) {
     listPhotosUrls.assignAll(newData);
+    listPhotosSubUrls.clear();
+    update();
   }
 
-  updateInforMunicipio(InfoMunicipio infoMunicipio, int indexSubtitulo) {
-    print("Index Actualizar: ${indexSubtitulo}");
-    isSaveOrUpdate.value = false;
-    infoMunicipioUpdate = infoMunicipio;
-    indexUpdateMunicipio = indexSubtitulo;
+  /**
+   * Funcion que recibe desde la lista informacion que se va actualizar,
+   * titulo pricipal o subinformacion con su respectivo index.
+   */
+  updateInforMunicipio(InfoMunicipio infoMunicipio, int index) {
+    print("Index Actualizar: ${index}");
 
-    subTituloControl.text = infoMunicipio.subTitulos[indexSubtitulo].titulo;
-    subDescriptionControl.text = infoMunicipio.subTitulos[indexSubtitulo].descripcion;
-    listPhotosSubUrls = infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!.isEmpty
-        ? []
-        : infoMunicipio.subTitulos[indexSubtitulo].listPhotosPath!
-            .where((element) => element is String)
-            .map((element) => element.toString())
-            .toList();
+    if (index == -1) {
+      infoMainVisible.value = true;
+      infoSubVisible.value = false;
+    } else {
+      infoMainVisible.value = false;
+      infoSubVisible.value = true;
+    }
+
+    infoMunicipioUpdate = infoMunicipio;
+    indexUpdate = index;
+
+    if (index != -1) {
+      subTituloControl.text = infoMunicipio.subTitulos[index].titulo;
+      subDescriptionControl.text = infoMunicipio.subTitulos[index].descripcion;
+      listPhotosSubUrls = infoMunicipio.subTitulos[index].listPhotosPath!.isEmpty
+          ? []
+          : infoMunicipio.subTitulos[index].listPhotosPath!
+          .where((element) => element is String)
+          .map((element) => element.toString())
+          .toList();
+    } else {
+      tituloControl.text = infoMunicipio.nombre;
+      descriptionControl.text = infoMunicipio.descripcion;
+      listPhotosUrls = infoMunicipio.photos!.isEmpty ? [] : infoMunicipio.photos!
+          .where((element) => element is String)
+          .map((element) => element.toString())
+          .toList();
+    }
 
     buttonTextSave.value = "Actualizar";
     subInfoAdd.value = "Actualizar informacion";
     update();
   }
 
+  /**
+   * Metodo encargado de agregar subInformacion a la lista para agregar al titulo principal
+   */
   addSubinformation() {
     SubTitulo subInfoMunicipio = SubTitulo(
         titulo: subTituloControl.text,
@@ -92,12 +128,18 @@ class GetxInformationMunicipio extends GetxController {
     update();
   }
 
+  /**
+   * Limpiar cajas de los subitutlos
+   */
   cleanSubInfo() {
     subTituloControl.text = "";
     subDescriptionControl.text = "";
     listPhotosSubInfo.clear();
   }
 
+  /**
+   * Limpiar cajas del titulo principal.
+   */
   cleanForm() {
     cleanSubInfo();
     descriptionControl.text = "";
@@ -107,19 +149,27 @@ class GetxInformationMunicipio extends GetxController {
     update();
   }
 
+  /**
+   * Funciones para agregar fotos que se seleccionaron. para titulo principal
+   */
   addPhotosGeneral(List<CroppedFile> listPothos) {
+    print("aGREGA FOTOS MAIN");
     listPhotosInfo.addAll(listPothos);
     update();
   }
 
+  /**
+   * * Funciones para agregar fotos que se seleccionaron. para subtitulos
+   */
   addPhotosSub(List<CroppedFile> listPothos) {
+    print("aGREGA FOTOS");
     listPhotosSubInfo.addAll(listPothos);
     update();
   }
 
   String uidGenerate() => _myCulturaRepository.newId();
 
-  Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
+  Future<void> saveInformation(InfoMunicipio infoMunicipio) async {
     isLoading.value = false;
 
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
@@ -129,11 +179,12 @@ class GetxInformationMunicipio extends GetxController {
     subInfoAdd.value = "Agregar informacion";
   }
 
-  Future<void> updateInfoMain(InfoMunicipio infoMunicipio) async {
-    await _myCulturaRepository.updateInfoMain(infoMunicipio);
+  //Metodo que conecta con la base de datos para guardar toda la informacion
+  Future<void> updateInformation(index) async {
+    await _myCulturaRepository.updateInfoMain(infoMunicipioUpdate, index);
   }
-  
-  Future<void> updateGestion(InfoMunicipio infoMunicipio) async {
+
+  Future<void> updateSubInfomation() async {
     isLoading.value = false;
 
     if (listPhotosInfo.isNotEmpty) {
@@ -141,20 +192,19 @@ class GetxInformationMunicipio extends GetxController {
     }
 
     if (listPhotosSubInfo.isNotEmpty) {
-      infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].listPhotosPath = listPhotosSubInfo;
+      infoMunicipioUpdate.subTitulos[indexUpdate].listPhotosPath = listPhotosSubInfo;
     }
 
-    infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].titulo = subTituloControl.text;
-    infoMunicipioUpdate.subTitulos[indexUpdateMunicipio].descripcion = subDescriptionControl.text;
+    infoMunicipioUpdate.subTitulos[indexUpdate].titulo = subTituloControl.text;
+    infoMunicipioUpdate.subTitulos[indexUpdate].descripcion = subDescriptionControl.text;
 
     await _myCulturaRepository.editMyGestion(
-        infoMunicipioUpdate, indexUpdateMunicipio, listPhotosSubUrls, listPhotosUrls);
+        infoMunicipioUpdate, indexUpdate, listPhotosSubUrls, listPhotosUrls);
     cleanForm();
     isLoading.value = true;
   }
 
   Stream<QuerySnapshot> listInfo() {
-    print("Consulta a la BD");
     final Stream<QuerySnapshot> _informationStream = FirebaseFirestore.instance
         .collection('dataTurismo')
         .where('subCategoria', isEqualTo: tipoGestion)
@@ -205,5 +255,51 @@ class GetxInformationMunicipio extends GetxController {
   void updateTapItem(int posicion) {
     _countTapItem = posicion;
     update();
+  }
+
+  void updateMunicipioInformation(int index) {
+      if (validationActualization(index)) {
+        updateInformation(index);
+      } else {
+        print("Error no hay datos para actualizar.");
+        messageController.messageWarning("Actualizacion", "No hay datos para actulizar");
+      }
+  }
+
+  bool validationActualization(int index) {
+    bool changes = false;
+
+    if (index == -1) {
+      if (tituloControl.text != infoMunicipioUpdate.nombre ||
+          descriptionControl.text != infoMunicipioUpdate.descripcion ||
+          listPhotosInfo.length > 0) {
+        print("Longitud inicial: " + infoMunicipioUpdate.photos!.length.toString());
+        infoMunicipioUpdate.nombre = tituloControl.text;
+        infoMunicipioUpdate.descripcion = descriptionControl.text;
+        listPhotosInfo.forEach((dynamic element) {
+          if (element is CroppedFile) {
+            infoMunicipioUpdate.photos?.add(element);
+          }
+        });
+        print("Longitud final: " + infoMunicipioUpdate.photos!.length.toString());
+        changes = true;
+      }
+    } else {
+      if (infoMunicipioUpdate.subTitulos[index].descripcion != subDescriptionControl.text ||
+          infoMunicipioUpdate.subTitulos[index].titulo != subTituloControl.text ||
+          listPhotosSubInfo.length > 0) {
+
+        infoMunicipioUpdate.subTitulos[index].descripcion = subDescriptionControl.text;
+        infoMunicipioUpdate.subTitulos[index].titulo = subTituloControl.text;
+        listPhotosSubInfo.forEach((dynamic element) {
+          if (element is CroppedFile) {
+            infoMunicipioUpdate.subTitulos[index].listPhotosPath?.add(element);
+          }
+        });
+        changes = true;
+      }
+    }
+
+    return changes;
   }
 }

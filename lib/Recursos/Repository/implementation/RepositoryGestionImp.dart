@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_turismo/Recursos/DataSource/FirebaseGestion.dart';
@@ -16,7 +17,8 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   @override
   Future<void> editMyGestion(
       InfoMunicipio myGestion, int index, List<String> photosSub, List<String> photosMain) {
-    return _gestionDataBase.editGestion(myGestion, index, photosSub, photosMain);
+    //return _gestionDataBase.updateInformationGeneral(myGestion, index, photosSub, photosMain);
+    throw UnimplementedError();
   }
 
   @override
@@ -35,7 +37,7 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   }
 
   @override
-  Future<void> updateInfoMain(InfoMunicipio infoMunicipio) {
-    return _gestionDataBase.updateInfoMain(infoMunicipio);
+  Future<void> updateInfoMain(InfoMunicipio infoMunicipio, int index) {
+    return _gestionDataBase.updateInfoMain(infoMunicipio, index);
   }
 }

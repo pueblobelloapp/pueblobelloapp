@@ -16,8 +16,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:webviewx/webviewx.dart';
 
+import '../../Controller/GextControllers/GextUtils.dart';
+
 class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
+  final GetxUtils messageController = Get.put(GetxUtils());
 
   @override
   Widget build(BuildContext context) {
@@ -37,35 +40,36 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
       children: [
         Visibility(child: formInformationGeneral(), visible: controller.infoMainVisible.value),
         Visibility(child: formSubInformation(), visible: controller.infoSubVisible.value),
-        SizedBox(height: 10),
-        buttonSaveInformation()
+        SizedBox(height: 15),
+        buttonUpdate()
       ],
     );
   }
 
-  Widget buttonSaveInformation() {
+  Widget buttonUpdate() {
     return Row(children: [
       Expanded(
           child: SizedBox(
               height: 50.0,
               child: ElevatedButton(
                   onPressed: () {
-                    if (controller.isSaveOrUpdate.value) {
-                      if (controller.formKey.currentState!.validate()) {
-                        InfoMunicipio infoMunicipio = InfoMunicipio(
-                            nombre: controller.tituloControl.text,
-                            descripcion: controller.descriptionControl.text,
-                            subTitulos: controller.listSubInformation,
-                            photos: controller.listPhotosInfo,
-                            subCategoria: controller.tipoGestion.toString(),
-                            id: controller.uidGenerate());
+                    InfoMunicipio infoMunicipio = InfoMunicipio(
+                        nombre: controller.tituloControl.text,
+                        descripcion: controller.descriptionControl.text,
+                        subTitulos: controller.listSubInformation,
+                        photos: controller.listPhotosInfo,
+                        subCategoria: controller.tipoGestion.toString());
 
-                        //Agregar informacion
-                        controller.saveGestion(infoMunicipio);
-                      }
+                    if (controller.isSaveOrUpdate.isTrue) {
+                      //Entonces actualiza
+                      print("UUID: " + controller.infoMunicipioUpdate.id!);
+                      infoMunicipio.id = controller.infoMunicipioUpdate.id;
+                      print("Data Update:" + infoMunicipio.toFirebaseMap().toString());
+                      controller.updateMunicipioInformation(controller.indexUpdate);
                     } else {
-                      //Actualiza informacion
-                      controller.updateGestion();
+                      //Agrega
+                      infoMunicipio.id = controller.uidGenerate();
+                      controller.saveInformation(infoMunicipio);
                     }
                   },
                   child: Obx(() => controller.isLoading.value == true
@@ -180,12 +184,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
                         )),
                     Visibility(
-                      visible: controller.isSaveOrUpdate.value,
+                      visible: !controller.isSaveOrUpdate.value,
                       child: IconButton(
                         onPressed: () {
                           if (controller.formKeySub.currentState!.validate()) {
                             controller.addSubinformation();
-                            //Mensaje de que se agrego
+                            messageController.messageInfo("Informaticion", "Agregado al sistema");
                           }
                         },
                         icon: Icon(
@@ -199,7 +203,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 ),
                 SizedBox(height: 10),
                 Obx(() => mainSubPhotos()),
-                //_containerPhoto(imageLocation: "subtitulo"),
                 SizedBox(height: 10),
                 Text(
                   'Subtítulo',
@@ -208,7 +211,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
-                    //icon: const Icon(BootstrapIcons.info_circle),
                     obscureText: false,
                     textGuide: "Título",
                     msgError: "Campo obligatorio.",
@@ -224,7 +226,6 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                 ),
                 SizedBox(height: 3),
                 CustomTextFormField(
-                    //icon: const Icon(BootstrapIcons.info_circle),
                     obscureText: false,
                     textGuide: "Ingrese la descripción",
                     msgError: "Campo obligatorio.",
@@ -246,8 +247,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
+            print("Entra al if");
             controller.listPhotosInfo.clear();
             controller.addPhotosGeneral(sitioController.listCroppedFile);
+          } else {
+            print("Entra al else");
           }
           controller.update();
         },
@@ -261,9 +265,13 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
+            print("entra al if");
             controller.listPhotosSubInfo.clear();
             controller.addPhotosSub(sitioController.listCroppedFile);
+          } else {
+            print("entrra al else");
           }
+          print("entra al nada");
           controller.update();
         },
         child: containerPhoto(listSubWidget));
@@ -271,8 +279,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   List<Widget> listPhotosWidget() {
     final List<Widget> photoWidgets = [];
-
+    print("Entra al listPhotosWidget");
     for (final url in controller.listPhotosUrls) {
+      print("for11111  listPhotosWidget");
       photoWidgets.add(
         Dismissible(
           key: UniqueKey(),
@@ -285,6 +294,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     }
 
     for (final croppedFile in controller.listPhotosInfo) {
+      print("for listPhotosWidget");
       photoWidgets.add(
         Dismissible(
           key: UniqueKey(),
@@ -301,6 +311,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   List<Widget> listPhotosSubWidget() {
+    print("Lista de fotografias");
     final List<Widget> photoSubWidgets = [];
 
     if (controller.listPhotosSubUrls.isNotEmpty) {
@@ -331,11 +342,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
       }
     }
     sitioController.listCroppedFile.clear();
-
     return photoSubWidgets;
   }
 
   Widget containerPhoto(List<Widget> listPhotos) {
+    print("LLega");
     return Container(
         width: double.infinity,
         height: 350,
@@ -354,12 +365,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   Widget? carruselPhotos(List<Widget> listPhotos) {
     return CarouselSlider(
       options: CarouselOptions(
-        height: 400, // Altura del carrusel
-        enableInfiniteScroll: true, // Habilitar desplazamiento infinito
-        autoPlay: true, // Reproducción automática
-        autoPlayAnimationDuration: Duration(milliseconds: 1200), // Duración de la animación
-        viewportFraction: 1.3, // Porcentaje del ancho de la pantalla para mostrar
-        enlargeCenterPage: false, // Enfocar la imagen en el centro
+        height: 400,
+        enableInfiniteScroll: true,
+        autoPlay: true,
+        autoPlayAnimationDuration: Duration(milliseconds: 1200),
+        viewportFraction: 1.3,
+        enlargeCenterPage: false,
       ),
       items: listPhotos.map((image) {
         //final path = image.path;

@@ -53,11 +53,16 @@ class _MenuModulsState extends State<MenuModuls> {
     return ListView(
         padding: const EdgeInsets.all(5),
         children: ListTile.divideTiles(context: context, tiles: [
-          _title("Culturas", FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green), "MenuGestion"),
-          _title("Etnoturismo", FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green), "MenuGestion"),
-          _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
-          _title("Propietarios", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
-          _title("test", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green), "MenuGestion"),
+          _title("Culturas", FaIcon(FontAwesomeIcons.peopleArrows, color: Colors.green),
+              "ListInformation"),
+          _title("Etnoturismo", FaIcon(FontAwesomeIcons.mountainSun, color: Colors.green),
+              "ListInformation"),
+          _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
+              "ListInformation"),
+          _title("Propietarios", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
+              "ListInformation"),
+          _title("test", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
+              "ListInformation"),
           Align(
             heightFactor: 8.0,
             child: _btonCerrarSesion(context),

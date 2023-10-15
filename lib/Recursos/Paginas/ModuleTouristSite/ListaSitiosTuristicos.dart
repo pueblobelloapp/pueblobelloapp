@@ -71,7 +71,6 @@ class ListaSitiosTuristicos extends StatelessWidget {
 
         print(siteInformation.toString());
         //_controllerGetxTurismo.updateSitioTuristico(siteInformation!);
-        controllerTurismo.updateTapItem(1);
       },
     );
   }

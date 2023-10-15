@@ -1,13 +1,13 @@
 class InfoMunicipio {
-  late final String id;
-  final String nombre;
-  late final String descripcion;
-  final String subCategoria;
+  late String? id;
+  late String nombre;
+  late String descripcion;
+  late String subCategoria;
   late List<dynamic>? photos;
   late final List<SubTitulo> subTitulos;
 
   InfoMunicipio({
-    required this.id,
+    this.id,
     required this.nombre,
     required this.descripcion,
     required this.subCategoria,

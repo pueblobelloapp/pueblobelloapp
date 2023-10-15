@@ -68,9 +68,7 @@ class _LoginFState extends State<LoginF> {
                     children: <Widget>[
                       Text("Bienvenido",
                           style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold)),
+                              fontSize: 25, color: Colors.green, fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
                       TextFieldWidget(
                           _userL,
@@ -106,8 +104,7 @@ class _LoginFState extends State<LoginF> {
                                 },
                                 child: AutoSizeText(
                                   "¿Olvidaste tu contraseña?",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.green),
+                                  style: TextStyle(fontSize: 14, color: Colors.green),
                                   maxLines: 2,
                                 ))
                           ],
@@ -126,8 +123,7 @@ class _LoginFState extends State<LoginF> {
                                     SizedBox(
                                       height: 20.0,
                                       width: 20.0,
-                                      child: CircularProgressIndicator(
-                                          color: Colors.white),
+                                      child: CircularProgressIndicator(color: Colors.white),
                                     ),
                                     SizedBox(width: 10.5),
                                     Text("Iniciando sesion")
@@ -150,20 +146,15 @@ class _LoginFState extends State<LoginF> {
       controllerLogin
           .getLogin(_userL.text, _passwordL.text)
           .then((value) => {
-                if (controllerLogin.email != "Sin Registro" &&
-                    controllerLogin.userRole != "")
-                  {
-                    print(controllerLogin.dataUsuario.toString()),
-                    Get.to(() => MenuModuls())
-                  }
-                else
-                  {
-                    print(controllerLogin.dataUsuario.toString()),
-                    messageController.messageWarning(
-                        "Usuario", "No te encuentras registrado"),
-                  }
-              })
-          .catchError((onerror) {
+                if (controllerLogin.email != "Sin Registro" && controllerLogin.userRole != "") {
+                  print(controllerLogin.dataUsuario.toString()),
+                  Get.to(() => MenuModuls())
+                }
+                else {
+                  print(controllerLogin.dataUsuario.toString()),
+                  messageController.messageWarning("Usuario", "No te encuentras registrado"),
+                }
+              }).catchError((onerror) {
         if (onerror == "wrong-password") {
           mensajeNotification = "Contraseña incorrecta";
         } else if (onerror == "user-not-found") {
@@ -187,13 +178,8 @@ class _LoginFState extends State<LoginF> {
     }
   }
 
-  Widget TextFieldWidget(
-      TextEditingController controlador,
-      FaIcon icono,
-      String textGuide,
-      bool estate,
-      String msgError,
-      TextInputType textInputType) {
+  Widget TextFieldWidget(TextEditingController controlador, FaIcon icono, String textGuide,
+      bool estate, String msgError, TextInputType textInputType) {
     return TextFormField(
         controller: controlador,
         keyboardType: textInputType,

@@ -4,7 +4,6 @@ import 'package:app_turismo/Recursos/Paginas/SplashScreen.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleMunicipio/ListInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ModuleSitiosTuristico.dart';
-import 'package:app_turismo/Recursos/Paginas/Navigation/NavegacionGestion.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/PerfilPropietario.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
@@ -66,7 +65,7 @@ class MyApp extends StatelessWidget {
         'LoginF': (BuildContext context) => LoginF(),
         'Menu': (BuildContext context) => MenuModuls(),
         'ModuleSitios': (BuildContext context) => ModuleSitiosTuristicos(),
-        'MenuGestion': (BuildContext context) => ListInformationMunicipio(),
+        'ListInformation': (BuildContext context) => ListInformationMunicipio(),
         'MenuSitioTuristico': (BuildContext context) => NavegacionSitioTuristico(),
         'Propietario': (BuildContext context) => PerfilPropietario(),
         'RecoveryPass': (BuildContext context) => RecuperarPassword(),
