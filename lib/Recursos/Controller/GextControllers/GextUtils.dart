@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'GetxConnectivity.dart';
+
 class GetxUtils extends GetxController {
   bool _isReadyAction = true;
   bool get isReadyAction => _isReadyAction;
+  final ConnectivityController connectivityController = Get.put(ConnectivityController());
 
   void updateAction(bool state) {
     print("Actualiza estado");
@@ -20,19 +23,19 @@ class GetxUtils extends GetxController {
         reverseAnimationCurve: Curves.decelerate,
         forwardAnimationCurve: Curves.decelerate,
         margin: const EdgeInsets.all(10.0),
-        icon: Icon(Icons.info_outline)));
+        icon: Icon(Icons.info_outline, color: Colors.white)));
   }
 
   void messageError(String titulo, String mensaje) {
     Get.showSnackbar(GetSnackBar(
         title: titulo,
         message: mensaje,
-        duration: Duration(seconds: 6),
+        duration: Duration(seconds: 5),
         backgroundColor: Colors.red.shade600,
         reverseAnimationCurve: Curves.easeOutSine,
         forwardAnimationCurve: Curves.easeOutSine,
         margin: const EdgeInsets.all(10.0),
-        icon: Icon(Icons.error_outline)));
+        icon: Icon(Icons.error_outline, color: Colors.white,)));
   }
 
   void messageWarning(String titulo, String mensaje) {
@@ -44,6 +47,23 @@ class GetxUtils extends GetxController {
         reverseAnimationCurve: Curves.easeOutSine,
         forwardAnimationCurve: Curves.easeOutSine,
         margin: const EdgeInsets.all(10.0),
-        icon: Icon(Icons.warning_amber)));
+        icon: Icon(Icons.warning_amber, color: Colors.white)));
+  }
+
+  Widget errorConexion() {
+    return Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/img/no-internet.png",
+                          height: 100,
+                          width: 100,
+                        ),
+                        SizedBox(height: 10),
+                        Text("Sin conexion.",
+                            style: TextStyle(color: Colors.green, fontSize: 25))
+                      ],
+                    ));
   }
 }

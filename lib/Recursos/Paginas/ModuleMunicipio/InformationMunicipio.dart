@@ -4,17 +4,13 @@ import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationM
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:webviewx/webviewx.dart';
 
 import '../../Controller/GextControllers/GextUtils.dart';
 
@@ -60,16 +56,17 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                         photos: controller.listPhotosInfo,
                         subCategoria: controller.tipoGestion.toString());
 
-                    if (controller.isSaveOrUpdate.isTrue) {
-                      //Entonces actualiza
-                      print("UUID: " + controller.infoMunicipioUpdate.id!);
-                      infoMunicipio.id = controller.infoMunicipioUpdate.id;
-                      print("Data Update:" + infoMunicipio.toFirebaseMap().toString());
-                      controller.updateMunicipioInformation(controller.indexUpdate);
+                    if (controller.isLoading.value == true) {
+                      if (controller.isSaveOrUpdate.isTrue) {
+                        infoMunicipio.id = controller.infoMunicipioUpdate.id;
+                        controller.updateMunicipioInformation(controller.indexUpdate);
+                      } else {
+                        infoMunicipio.id = controller.uidGenerate();
+                        controller.saveInformation(infoMunicipio);
+                      }
                     } else {
-                      //Agrega
-                      infoMunicipio.id = controller.uidGenerate();
-                      controller.saveInformation(infoMunicipio);
+                      messageController.messageError(
+                          "Informativo", "Verifica tu red movil.");
                     }
                   },
                   child: Obx(() => controller.isLoading.value == true
@@ -82,7 +79,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           children: [
                             LoadingAnimationWidget.discreteCircle(
                                 color: Colors.white,
-                                size: 20,
+                                size: 15,
                                 secondRingColor: Colors.green,
                                 thirdRingColor: Colors.white),
                             SizedBox(
@@ -93,23 +90,21 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           ],
                         ))))),
       SizedBox(width: 15),
-      Visibility(
-          visible: !controller.isSaveOrUpdate.value,
-          child: Expanded(
-              child: SizedBox(
-            height: 50.0,
-            child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                ),
-                onPressed: () {
-                  controller.updateButtonAddSubInfo("Agregar informacion", true);
-                  controller.cleanSubInfo();
-                  controller.update();
-                },
-                child: Text("Cancelar",
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
-          )))
+      Expanded(
+        child: SizedBox(
+          height: 50.0,
+           child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+              onPressed: () {
+                //Aca debe volver a la pagina anterior.
+                controller.updateButtonAddSubInfo("Agregar informacion", true);
+                controller.cleanSubInfo();
+                controller.update();
+                Get.back();
+              },
+            child: Text("Cancelar", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
+      ))
     ]);
   }
 
@@ -247,11 +242,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
-            print("Entra al if");
             controller.listPhotosInfo.clear();
             controller.addPhotosGeneral(sitioController.listCroppedFile);
-          } else {
-            print("Entra al else");
           }
           controller.update();
         },
@@ -265,11 +257,8 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
-            print("entra al if");
             controller.listPhotosSubInfo.clear();
             controller.addPhotosSub(sitioController.listCroppedFile);
-          } else {
-            print("entrra al else");
           }
           print("entra al nada");
           controller.update();

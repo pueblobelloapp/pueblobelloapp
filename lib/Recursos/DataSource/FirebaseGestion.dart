@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
@@ -39,37 +40,23 @@ class GestionDataBase {
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  Future<void> updateInfoMain(InfoMunicipio infoMunicipio, int index) async {
+  Future<void> updatePhotosApp(InfoMunicipio infoMunicipio, int index) async {
     print("Valor Actualizar: " + infoMunicipio.nombre);
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
 
-    if (index == -1) {
-      infoMunicipio = await uploadPhotosMain(infoMunicipio);
-    } else {
-      //ARREGLAR LAS SUBFOTOS FALTA LOGICA
-      List<SubTitulo> listSubInformation = await uploadPhotosSubMain(infoMunicipio);
-      infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
+    try {
+      if (index == -1) {
+        infoMunicipio = await uploadPhotosMain(infoMunicipio);
+      } else {
+        List<SubTitulo> listSubInformation = await uploadPhotosSubMain(infoMunicipio);
+        infoMunicipio = infoMunicipio.copyWith(subTitulos: listSubInformation);
+      }
+      await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: false));
+    } on TimeoutException {
+      Get.snackbar("Error", "Lo sentimos no pudimos completar la tarea.");
     }
 
-    await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
-
-/*  Future<void> updateInformationGeneral(InfoMunicipio infoMunicipio, int index, List<String> photosSub,
-      List<String> photosMain) async {
-    SubTitulo subTitulo = infoMunicipio.subTitulos[0];
-
-    final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
-
-    if (index == -1) {
-      infoMunicipio = await uploadPhotosMain(infoMunicipio);
-    } else {
-      subTitulo = await updatePhotosSubInformationForIndex(infoMunicipio.subTitulos[index], photosSub);
-      infoMunicipio.subTitulos[index] = subTitulo;
-    }
-
-    getxSitioTuristico.mapUbications = new Ubicacion(lat: "10.422522", long: "-73.578462");
-    await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
-  }*/
 
   Future<InfoMunicipio> uploadPhotosMain(InfoMunicipio infoMunicipio) async {
     List<dynamic> newPhotosUrls = [];
@@ -82,6 +69,7 @@ class GestionDataBase {
             return element;
           } else if (element is String) {
             print("oldPhotosUrls");
+            print("Imagen old: " + element);
             oldPhotosUrls.add(element);
           }
         })
@@ -90,13 +78,18 @@ class GestionDataBase {
 
     if (cropFiles!.length >= 1) {
       print("Hace cargue de fotos principal");
+      infoMunicipio.photos?.clear();
       newPhotosUrls = await uploadFiles(cropFiles);
-      oldPhotosUrls.forEach((dynamic element) {
+      newPhotosUrls.forEach((dynamic element) {
         if (element is String) {
-          newPhotosUrls.add(element);
+          infoMunicipio.photos?.add(element);
         }
       });
-      infoMunicipio = infoMunicipio.copyWith(photos: newPhotosUrls);
+      oldPhotosUrls.forEach((dynamic element) {
+        if (element is String) {
+          infoMunicipio.photos?.add(element);
+        }
+      });
     }
 
     return infoMunicipio;
@@ -120,14 +113,19 @@ class GestionDataBase {
             .whereType<CroppedFile>()
             .toList();
 
-        newUrlPhotos = cropFiles!.isEmpty ? [] : await uploadFiles(cropFiles);
+        item.listPhotosPath!.clear();
+        newUrlPhotos = await uploadFiles(cropFiles!);
         oldUrlPhotos.forEach((dynamic element) {
           if (element is String) {
-            newUrlPhotos.add(element);
+            item.listPhotosPath!.add(element);
           }
         });
-        item.listPhotosPath!.clear();
-        item = item.copyWith(listPhotosPath: newUrlPhotos);
+        newUrlPhotos.forEach((dynamic element) {
+          if (element is String) {
+            item.listPhotosPath!.add(element);
+          }
+        });
+
         listSubInformation.add(item);
       } else {
         listSubInformation.add(item);
@@ -136,34 +134,15 @@ class GestionDataBase {
     return listSubInformation;
   }
 
-  //Cargue de fotografias por index
-  /*Future<SubTitulo> updatePhotosSubInformationForIndex(SubTitulo subTitulo, List<String> photos) async {
-    List<dynamic> urlFotografias = [];
-    List<CroppedFile>? cropFiles = subTitulo.listPhotosPath
-        ?.map((dynamic element) {
-          if (element is CroppedFile) return element;
-        })
-        .whereType<CroppedFile>()
-        .toList();
-
-    if (cropFiles!.length >= 1) {
-      print("Gaurdando fotos de sub");
-      subTitulo.listPhotosPath?.clear();
-      urlFotografias = await uploadFiles(cropFiles!);
-      urlFotografias.addAll(photos);
-      subTitulo = subTitulo.copyWith(listPhotosPath: urlFotografias);
-    }
-
-    return subTitulo;
-  }*/
-
   Future<List<String>> uploadFiles(List<CroppedFile> _images) async {
     var imageUrls = await Future.wait(_images.map((_image) => uploadFile(_image)));
     return imageUrls;
   }
 
   Future<String> uploadFile(CroppedFile _image) async {
-    final storageReference = storage.ref().child('test/imagesTest');
+    final now = DateTime.now();
+    var uuid = now.microsecondsSinceEpoch.toString();
+    final storageReference = storage.ref().child('test/imagesTest/${uuid}');
     await storageReference.putFile(File(_image.path));
     return await storageReference.getDownloadURL();
   }

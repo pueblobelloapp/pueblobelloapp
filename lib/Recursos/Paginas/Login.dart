@@ -12,6 +12,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:core';
 import 'package:email_validator/email_validator.dart';
 
+import '../Controller/GextControllers/GetxConnectivity.dart';
+
 class LoginF extends StatefulWidget {
   LoginF({Key? key}) : super(key: key);
 
@@ -28,6 +30,7 @@ class _LoginFState extends State<LoginF> {
 
   ControllerLogin controllerLogin = Get.find();
   final GetxUtils messageController = Get.put(GetxUtils());
+  final ConnectivityController connectivityController = Get.put(ConnectivityController());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -99,7 +102,6 @@ class _LoginFState extends State<LoginF> {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  //Move to page Recovery password
                                   Get.to(() => RecuperarPassword());
                                 },
                                 child: AutoSizeText(
@@ -113,7 +115,11 @@ class _LoginFState extends State<LoginF> {
                       ElevatedButton(
                           style: Constants.buttonPrimary,
                           onPressed: () {
-                            validateLogin();
+                            if (connectivityController.isOnline.value) {
+                              validateLogin();
+                            } else {
+                              messageController.messageWarning("Conexion", "No tienes conexion a internet.");
+                            }
                           },
                           child: isLoading
                               ? Center(
@@ -160,7 +166,7 @@ class _LoginFState extends State<LoginF> {
         } else if (onerror == "user-not-found") {
           mensajeNotification = "Email no existe.";
         } else if (onerror == "network-request-failed") {
-          mensajeNotification = "No pudimos consultar tu usuario.";
+          mensajeNotification = "Error al consultar tu usuario.";
         } else if (onerror == "not-privilegio") {
           mensajeNotification = "No tienes los privilegios suficientes.";
         } else {
@@ -170,10 +176,12 @@ class _LoginFState extends State<LoginF> {
         setState(() {
           isLoading = false;
         });
-        print("Errpr: " + onerror.toString());
+
+        print("Error: " + onerror.toString());
         messageController.messageError("Validacion", mensajeNotification);
       });
     } else {
+      print("Error");
       messageController.messageWarning("Validacion", "Compruebe los datos");
     }
   }

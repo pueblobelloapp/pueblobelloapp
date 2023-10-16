@@ -38,6 +38,6 @@ class MyRepositoryGestionImp extends MyGestionRepository {
 
   @override
   Future<void> updateInfoMain(InfoMunicipio infoMunicipio, int index) {
-    return _gestionDataBase.updateInfoMain(infoMunicipio, index);
+    return _gestionDataBase.updatePhotosApp(infoMunicipio, index);
   }
 }

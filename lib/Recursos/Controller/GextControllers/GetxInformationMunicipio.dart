@@ -12,6 +12,7 @@ class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _myCulturaRepository = getIt();
   final GetxUtils messageController = Get.put(GetxUtils());
 
+
   late Stream<QuerySnapshot> informationStream;
 
   final formKey = GlobalKey<FormState>();
@@ -60,7 +61,6 @@ class GetxInformationMunicipio extends GetxController {
     subInfoAdd.value = value;
     buttonTextSave.value = "Agregar";
     isSaveOrUpdate.value = false;
-    isLoading.value = true;
     update();
   }
 
@@ -78,8 +78,6 @@ class GetxInformationMunicipio extends GetxController {
    * titulo pricipal o subinformacion con su respectivo index.
    */
   updateInforMunicipio(InfoMunicipio infoMunicipio, int index) {
-    print("Index Actualizar: ${index}");
-
     if (index == -1) {
       infoMainVisible.value = true;
       infoSubVisible.value = false;
@@ -111,6 +109,7 @@ class GetxInformationMunicipio extends GetxController {
 
     buttonTextSave.value = "Actualizar";
     subInfoAdd.value = "Actualizar informacion";
+    isLoading.value = true;
     update();
   }
 
@@ -124,7 +123,7 @@ class GetxInformationMunicipio extends GetxController {
         listPhotosPath: List.from(listPhotosSubInfo));
 
     listSubInformation.add(subInfoMunicipio);
-    cleanSubInfo();
+    cleanForm();
     update();
   }
 
@@ -145,7 +144,6 @@ class GetxInformationMunicipio extends GetxController {
     descriptionControl.text = "";
     tituloControl.text = "";
     listPhotosInfo.clear();
-    listPhotosSubInfo.clear();
     update();
   }
 
@@ -174,19 +172,28 @@ class GetxInformationMunicipio extends GetxController {
 
     await _myCulturaRepository.saveMyGestion(infoMunicipio);
     cleanForm();
-    isLoading.value = true;
+    //isLoading.value = true;
     buttonTextSave.value = "Agregar";
     subInfoAdd.value = "Agregar informacion";
   }
 
-  //Metodo que conecta con la base de datos para guardar toda la informacion
   Future<void> updateInformation(index) async {
-    await _myCulturaRepository.updateInfoMain(infoMunicipioUpdate, index);
+    isLoading.value = false;
+    buttonTextSave.value = "Actualizando";
+
+    await _myCulturaRepository.updateInfoMain(infoMunicipioUpdate, index).then((value) => {
+      messageController.messageInfo("Actualizacion", "Se actualizaron los datos correctamente.")
+    }).onError((error, stackTrace) => {
+      messageController.messageWarning("Actualizacion", "Error inesperado")
+    });
+
+    cleanForm();
+    isLoading.value = true;
+    buttonTextSave.value = "Actualizar";
+    update();
   }
 
   Future<void> updateSubInfomation() async {
-    isLoading.value = false;
-
     if (listPhotosInfo.isNotEmpty) {
       infoMunicipioUpdate.photos = listPhotosInfo;
     }
@@ -199,9 +206,12 @@ class GetxInformationMunicipio extends GetxController {
     infoMunicipioUpdate.subTitulos[indexUpdate].descripcion = subDescriptionControl.text;
 
     await _myCulturaRepository.editMyGestion(
-        infoMunicipioUpdate, indexUpdate, listPhotosSubUrls, listPhotosUrls);
+        infoMunicipioUpdate,
+        indexUpdate,
+        listPhotosSubUrls,
+        listPhotosUrls);
+
     cleanForm();
-    isLoading.value = true;
   }
 
   Stream<QuerySnapshot> listInfo() {
@@ -251,7 +261,6 @@ class GetxInformationMunicipio extends GetxController {
     return menuItems;
   }
 
-  //Funcion para determinar la posicion del tapIndex
   void updateTapItem(int posicion) {
     _countTapItem = posicion;
     update();
@@ -273,7 +282,6 @@ class GetxInformationMunicipio extends GetxController {
       if (tituloControl.text != infoMunicipioUpdate.nombre ||
           descriptionControl.text != infoMunicipioUpdate.descripcion ||
           listPhotosInfo.length > 0) {
-        print("Longitud inicial: " + infoMunicipioUpdate.photos!.length.toString());
         infoMunicipioUpdate.nombre = tituloControl.text;
         infoMunicipioUpdate.descripcion = descriptionControl.text;
         listPhotosInfo.forEach((dynamic element) {
@@ -281,7 +289,7 @@ class GetxInformationMunicipio extends GetxController {
             infoMunicipioUpdate.photos?.add(element);
           }
         });
-        print("Longitud final: " + infoMunicipioUpdate.photos!.length.toString());
+        listPhotosUrls = [];
         changes = true;
       }
     } else {
