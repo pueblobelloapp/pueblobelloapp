@@ -16,7 +16,7 @@ import 'GextUtils.dart';
 class GetxSitioTuristico extends GetxController {
   final MySitesRepository _mySitesRepository = getIt();
   final GetxUtils messageController = Get.put(GetxUtils());
-  final formKey = GlobalKey<FormState>();
+  final keySiteTuris = GlobalKey<FormState>();
 
   List<XFile> listPickedFile = [];
   List<CroppedFile> listCroppedFile = [];
@@ -30,7 +30,7 @@ class GetxSitioTuristico extends GetxController {
   List<dynamic>? get fotoUrl => _fotoUrl;
 
   String _menuItemsActivity = "";
-  late LatLng selectedLatLng = LatLng(0,0);
+  late LatLng selectedLatLng = LatLng(0, 0);
 
   final nombreSitio = TextEditingController();
   final tipoTurismo = TextEditingController();
@@ -43,7 +43,7 @@ class GetxSitioTuristico extends GetxController {
   final whatsappTextController = TextEditingController();
 
   Map<String, String> _listContactos = {};
-  late Ubicacion mapUbications = Ubicacion(lat: "0", long:  "0");
+  late Ubicacion mapUbications = Ubicacion(lat: "0", long: "0");
 
   String uidUserLogin = "";
 
@@ -78,7 +78,7 @@ class GetxSitioTuristico extends GetxController {
     if (latLng.longitude != 0 && latLng.latitude != 0) {
       ubicacion.value = "Ubicacion seleccionada \n ${latLng.latitude.toString()}";
     }
-    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long:  latLng.longitude.toString());
+    mapUbications = Ubicacion(lat: latLng.latitude.toString(), long: latLng.longitude.toString());
 
     update();
   }

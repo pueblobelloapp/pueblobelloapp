@@ -11,30 +11,36 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'InformationMunicipio.dart';
 
 class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
-  final ConnectivityController connectivityController =
-      Get.put(ConnectivityController());
-  
+  final ConnectivityController connectivityController = Get.put(ConnectivityController());
+
   final GetxUtils controllerUtils = Get.put(GetxUtils());
+  late InfoMunicipio infoMunicipio;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Titulos informativos")),
-      body: informationList(),
-      floatingActionButton: !controller.infoExists.value && !connectivityController.isOnline.value
-          ? null
-          : FloatingActionButton.small(
-              backgroundColor: Colors.green,
+      appBar: AppBar(
+        title: const Text("Información"),
+        actions: [
+          TextButton(
+            child: Text("AGREGAR", style: TextStyle(color: Colors.white),),
               onPressed: () {
-                print("Agregando mas");
+                if (!controller.infoExists.value && !connectivityController.isOnline.value) {
+                  controllerUtils.messageWarning("Infromacion", "Ups! Sin conexion a internet.");
+                } else {
+                  actionForms();
+                  Get.to(() => InformationMunicipio());
+                }
+                controller.update();
               },
-              child: const Icon(Icons.add),
-            ),
+              )
+        ],
+      ),
+      body: informationList(),
     );
   }
 
   Widget informationList() {
-    late InfoMunicipio infoMunicipio;
     bool conexionEnable = false;
 
     return Container(
@@ -42,12 +48,10 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: SafeArea(
             child: StreamBuilder<QuerySnapshot>(
                 stream: controller.listInfo(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (connectivityController.isOnline.value) {
                     if (snapshot.hasError) {
-                      return const Center(
-                          child: Text('Lo sentimos se ha producido un error.'));
+                      return const Center(child: Text('Lo sentimos se ha producido un error.'));
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -70,26 +74,22 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                       controller.infoExists.value = false;
                       return Center(
                         child: Container(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Image(
-                                  image: AssetImage('assets/img/cloud.png'),
-                                  width: 150,
-                                  height: 150,
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    print("Registrar informacion");
-                                    controller.updateVisibilityForms(
-                                        true, true);
-                                    Get.toNamed("GestionSites");
-                                  },
-                                  child: Text("Registrar Informacion",
-                                      style: TextStyle(
-                                          color: Colors.green, fontSize: 15)),
-                                )
-                              ]),
+                          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            const Image(
+                              image: AssetImage('assets/img/cloud.png'),
+                              width: 150,
+                              height: 150,
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                print("Registrar informacion");
+                                controller.updateVisibilityForms(true, true);
+                                Get.toNamed("GestionSites");
+                              },
+                              child: Text("Registrar Informacion",
+                                  style: TextStyle(color: Colors.green, fontSize: 15)),
+                            )
+                          ]),
                         ),
                       );
                     } else if (conexionEnable == true) {
@@ -115,8 +115,7 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                 })));
   }
 
-  List<Widget> listSubinformation(
-      InfoMunicipio infoMunicipio, BuildContext context) {
+  List<Widget> listSubinformation(InfoMunicipio infoMunicipio, BuildContext context) {
     List<Widget> information = [];
     int index = 0;
 
@@ -127,17 +126,15 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
     information.add(dismissibleWidGet(context, infoMunicipio, mainTitle, -1));
 
     for (var subtitulos in infoMunicipio.subTitulos) {
-      ListTile subTitle = ListTile(
-          title: Text("Subtitulos"), subtitle: Text(subtitulos.titulo));
-      information
-          .add(dismissibleWidGet(context, infoMunicipio, subTitle, index));
+      ListTile subTitle = ListTile(title: Text("Subtitulos"), subtitle: Text(subtitulos.titulo));
+      information.add(dismissibleWidGet(context, infoMunicipio, subTitle, index));
       index++;
     }
     return information;
   }
 
-  Widget dismissibleWidGet(BuildContext context, InfoMunicipio infoMunicipio,
-      ListTile listTile, int index) {
+  Widget dismissibleWidGet(
+      BuildContext context, InfoMunicipio infoMunicipio, ListTile listTile, int index) {
     return Dismissible(
         key: UniqueKey(),
         background: Container(
@@ -181,8 +178,8 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
         child: listTile);
   }
 
-  Future<bool?> menssageAlert(String titulo, InfoMunicipio infoMunicipio,
-      int index, BuildContext context) async {
+  Future<bool?> menssageAlert(
+      String titulo, InfoMunicipio infoMunicipio, int index, BuildContext context) async {
     String mensage;
 
     if (index == -1) {
@@ -204,8 +201,7 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
             actions: <Widget>[
               ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop(true);
@@ -214,15 +210,14 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                       Get.to(() => InformationMunicipio());
                     } else if (titulo == "Eliminar" && connectivityController.isOnline.value) {
                       print("Borrando informacion");
-                    } else if (connectivityController.isOnline.value == false){
+                    } else if (connectivityController.isOnline.value == false) {
                       controllerUtils.messageError("Conexion", "No se tiene conexion a internet.");
                     }
                   },
                   child: const Text("Si")),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.green),
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                 ),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: const Text("No"),
@@ -232,5 +227,14 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
         });
 
     return confirmation;
+  }
+
+  void actionForms() {
+    controller.cleanForm();
+    controller.infoMunicipioUpdate = infoMunicipio;
+    controller.isSaveInformation.value = true;
+    controller.buttonTextSave.value = "Agregar";
+    controller.subInfoAdd.value = "Agregar información";
+    controller.updateVisibilityForms(false, true);
   }
 }

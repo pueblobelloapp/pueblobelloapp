@@ -7,9 +7,11 @@ import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:app_turismo/Recursos/Widgets/custom_TextFormField.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../Controller/GextControllers/GextUtils.dart';
@@ -48,28 +50,14 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
           child: SizedBox(
               height: 50.0,
               child: ElevatedButton(
-                  onPressed: () {
-                    InfoMunicipio infoMunicipio = InfoMunicipio(
-                        nombre: controller.tituloControl.text,
-                        descripcion: controller.descriptionControl.text,
-                        subTitulos: controller.listSubInformation,
-                        photos: controller.listPhotosInfo,
-                        subCategoria: controller.tipoGestion.toString());
-
-                    if (controller.isLoading.value == true) {
-                      if (controller.isSaveOrUpdate.isTrue) {
-                        infoMunicipio.id = controller.infoMunicipioUpdate.id;
-                        controller.updateMunicipioInformation(controller.indexUpdate);
-                      } else {
-                        infoMunicipio.id = controller.uidGenerate();
-                        controller.saveInformation(infoMunicipio);
-                      }
-                    } else {
-                      messageController.messageError(
-                          "Informativo", "Verifica tu red movil.");
-                    }
+                  onPressed: () async {
+                    await controller.updateActionButton().then((value) {
+                      Get.back();
+                    }).onError((error, stackTrace) {
+                      messageController.messageError("Error", "Error inesperado: ${error}");
+                    });
                   },
-                  child: Obx(() => controller.isLoading.value == true
+                  child: Obx(() => controller.isSaveInformation.isTrue
                       ? Text(
                           controller.buttonTextSave.value,
                           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -82,27 +70,24 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                                 size: 15,
                                 secondRingColor: Colors.green,
                                 thirdRingColor: Colors.white),
-                            SizedBox(
-                              width: 10,
-                            ),
+                            SizedBox(width: 10),
                             Text(controller.buttonTextSave.value,
                                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
                           ],
                         ))))),
       SizedBox(width: 15),
       Expanded(
-        child: SizedBox(
-          height: 50.0,
-           child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
-              onPressed: () {
-                //Aca debe volver a la pagina anterior.
-                controller.updateButtonAddSubInfo("Agregar informacion", true);
-                controller.cleanSubInfo();
-                controller.update();
-                Get.back();
-              },
+          child: SizedBox(
+        height: 50.0,
+        child: ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+            onPressed: () {
+              //Aca debe volver a la pagina anterior.
+              controller.updateButtonAddSubInfo("Agregar informacion", true);
+              controller.cleanForm();
+              controller.update();
+              Get.back();
+            },
             child: Text("Cancelar", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
       ))
     ]);
@@ -110,11 +95,11 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   Widget formInformationGeneral() {
     return Form(
-        key: controller.formKey,
+        key: controller.keyTitleMain,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Obx(() => mainPhotos()),
+            Obx(() => photosView(controller.listPhotosInfo, "title")),
             SizedBox(height: 15),
             Text(
               'Título informativo',
@@ -167,7 +152,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
       child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
-            key: controller.formKeySub,
+            key: controller.keyTitleSub,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -179,10 +164,10 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
                         )),
                     Visibility(
-                      visible: !controller.isSaveOrUpdate.value,
+                      visible: controller.isSaveInformation.isFalse,
                       child: IconButton(
                         onPressed: () {
-                          if (controller.formKeySub.currentState!.validate()) {
+                          if (controller.keyTitleSub.currentState!.validate()) {
                             controller.addSubinformation();
                             messageController.messageInfo("Informaticion", "Agregado al sistema");
                           }
@@ -197,7 +182,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                   ],
                 ),
                 SizedBox(height: 10),
-                Obx(() => mainSubPhotos()),
+                Obx(() => photosView(controller.listPhotosInfo, "subtitle")),
                 SizedBox(height: 10),
                 Text(
                   'Subtítulo',
@@ -235,64 +220,53 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
     );
   }
 
-  Widget mainPhotos() {
-    List<Widget> listWidget = listPhotosWidget();
+  Widget photosView(List<CroppedFile> listPhotos, String section) {
+    List<Widget> listWidget = [];
+
+    if (section == "title") {
+      listWidget = listPhotosWidget();
+    } else {
+      listWidget = listPhotosSubWidget();
+    }
 
     return GestureDetector(
         onTap: () async {
           await Get.to(() => ImageUpload());
           if (sitioController.listCroppedFile.length > 0) {
-            controller.listPhotosInfo.clear();
-            controller.addPhotosGeneral(sitioController.listCroppedFile);
+            listPhotos.clear();
+            if (section == "title") {
+              controller.addPhotosGeneral(sitioController.listCroppedFile);
+            } else {
+              controller.addPhotosSub(sitioController.listCroppedFile);
+            }
           }
           controller.update();
         },
-        child: containerPhoto(listWidget));
-  }
-
-  Widget mainSubPhotos() {
-    List<Widget> listSubWidget = listPhotosSubWidget();
-
-    return GestureDetector(
-        onTap: () async {
-          await Get.to(() => ImageUpload());
-          if (sitioController.listCroppedFile.length > 0) {
-            controller.listPhotosSubInfo.clear();
-            controller.addPhotosSub(sitioController.listCroppedFile);
-          }
-          print("entra al nada");
-          controller.update();
-        },
-        child: containerPhoto(listSubWidget));
+        child: carruselPhotos(listWidget));
   }
 
   List<Widget> listPhotosWidget() {
     final List<Widget> photoWidgets = [];
-    print("Entra al listPhotosWidget");
-    for (final url in controller.listPhotosUrls) {
-      print("for11111  listPhotosWidget");
-      photoWidgets.add(
-        Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            controller.listPhotosUrls.remove(url);
-          },
-          child: Image.network(url),
-        ),
-      );
+
+    if (controller.listPhotosUrls.isNotEmpty) {
+      for (final path in controller.listPhotosUrls) {
+        photoWidgets.add(CachedNetworkImage(
+          imageUrl: path,
+          progressIndicatorBuilder: (context, url, progress) => Center(
+            child: CircularProgressIndicator(
+              color: Colors.green,
+              value: progress.progress,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ));
+      }
     }
 
-    for (final croppedFile in controller.listPhotosInfo) {
-      print("for listPhotosWidget");
-      photoWidgets.add(
-        Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            controller.listPhotosInfo.remove(croppedFile);
-          },
-          child: Image.file(File(croppedFile.path)),
-        ),
-      );
+    if (controller.listPhotosInfo.isNotEmpty) {
+      for (final croppedFile in controller.listPhotosInfo) {
+        photoWidgets.add(Image.file(File(croppedFile.path)));
+      }
     }
     sitioController.listCroppedFile.clear();
 
@@ -300,69 +274,44 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
   }
 
   List<Widget> listPhotosSubWidget() {
-    print("Lista de fotografias");
     final List<Widget> photoSubWidgets = [];
 
     if (controller.listPhotosSubUrls.isNotEmpty) {
-      for (final url in controller.listPhotosSubUrls) {
-        photoSubWidgets.add(
-          Dismissible(
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              controller.listPhotosSubUrls.remove(url);
-            },
-            child: Image.network(url),
+      for (final path in controller.listPhotosSubUrls) {
+        photoSubWidgets.add((CachedNetworkImage(
+          imageUrl: path,
+          progressIndicatorBuilder: (context, url, progress) => Center(
+            child: CircularProgressIndicator(
+              color: Colors.green,
+              value: progress.progress,
+            ),
           ),
-        );
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        )));
       }
     }
 
-    if (controller.listPhotosSubInfo.isNotEmpty) {
-      for (final croppedFile in controller.listPhotosSubInfo) {
-        photoSubWidgets.add(
-          Dismissible(
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              controller.listPhotosSubInfo.remove(croppedFile);
-            },
-            child: Image.file(File(croppedFile.path)),
-          ),
-        );
+    if (controller.listPhotosInfo.isNotEmpty) {
+      for (final croppedFile in controller.listPhotosInfo) {
+        photoSubWidgets.add(Image.file(File(croppedFile.path)));
       }
     }
+
     sitioController.listCroppedFile.clear();
     return photoSubWidgets;
-  }
-
-  Widget containerPhoto(List<Widget> listPhotos) {
-    print("LLega");
-    return Container(
-        width: double.infinity,
-        height: 350,
-        decoration: BoxDecoration(
-            color: AppBasicColors.transparent, borderRadius: BorderRadius.circular(10.0)),
-        child: Center(
-            child: listPhotos.length > 0
-                ? carruselPhotos(listPhotos)
-                : const Icon(
-                    BootstrapIcons.image_alt,
-                    size: 100,
-                    color: Colors.green,
-                  )));
   }
 
   Widget? carruselPhotos(List<Widget> listPhotos) {
     return CarouselSlider(
       options: CarouselOptions(
-        height: 400,
+        height: 350,
         enableInfiniteScroll: true,
         autoPlay: true,
-        autoPlayAnimationDuration: Duration(milliseconds: 1200),
-        viewportFraction: 1.3,
+        autoPlayAnimationDuration: Duration(milliseconds: 2000),
+        viewportFraction: 1.9,
         enlargeCenterPage: false,
       ),
-      items: listPhotos.map((image) {
-        //final path = image.path;
+      items: listPhotos.map((path) {
         return Builder(
           builder: (BuildContext context) {
             return ConstrainedBox(
@@ -370,7 +319,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                   maxWidth: MediaQuery.of(context).size.width,
                   maxHeight: MediaQuery.of(context).size.height,
                 ),
-                child: image);
+                child: path);
           },
         );
       }).toList(),

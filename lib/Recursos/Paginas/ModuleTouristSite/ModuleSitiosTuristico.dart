@@ -28,7 +28,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
     return Container(
         padding: EdgeInsets.all(20.0),
         child: Form(
-            key: controller.formKey,
+            key: controller.keySiteTuris,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

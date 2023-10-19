@@ -96,11 +96,11 @@ class GestionDataBase {
   }
 
   Future<List<SubTitulo>> uploadPhotosSubMain(InfoMunicipio infoMunicipio) async {
-    List<dynamic> newUrlPhotos = [];
-    List<dynamic> oldUrlPhotos = [];
 
     List<SubTitulo> listSubInformation = [];
     for (var item in infoMunicipio.subTitulos) {
+      List<dynamic> newUrlPhotos = [];
+      List<dynamic> oldUrlPhotos = [];
       if (item.listPhotosPath!.isNotEmpty) {
         List<CroppedFile>? cropFiles = item.listPhotosPath
             ?.map((dynamic element) {
