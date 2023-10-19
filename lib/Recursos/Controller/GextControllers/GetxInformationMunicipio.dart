@@ -25,6 +25,7 @@ class GetxInformationMunicipio extends GetxController {
   final subDescriptionControl = TextEditingController();
 
   Rx<bool> isSaveInformation = Rx(true);
+  Rx<bool> isUpdateInformation = Rx(true);
   Rx<bool> infoExists = Rx(true);
 
   List<CroppedFile> listPhotosInfo = <CroppedFile>[].obs;
@@ -56,7 +57,7 @@ class GetxInformationMunicipio extends GetxController {
   /**
    * Actualiza la informacion del boton
    */
-  void updateButtonAddSubInfo(String value, bool state) {
+  void updateButtonAddSubInfo(String value) {
     subInfoAdd.value = value;
     buttonTextSave.value = "Agregar";
     update();
@@ -109,6 +110,8 @@ class GetxInformationMunicipio extends GetxController {
               .toList();
     }
 
+    isSaveInformation.value = false;
+    isUpdateInformation.value = true;
     buttonTextSave.value = "Actualizar";
     subInfoAdd.value = "Actualizar informacion";
     update();
@@ -243,11 +246,9 @@ class GetxInformationMunicipio extends GetxController {
     if (connectivityController.isOnline.value) {
       if (validationActualization(index)) {
         await updateInformation(index).then((value) {
-          Get.back();
           cleanForm();
         });
       } else {
-        print("Error no hay datos para actualizar.");
         messageController.messageWarning("Actualizacion", "No hay datos para actulizar");
       }
     } else {
@@ -258,32 +259,32 @@ class GetxInformationMunicipio extends GetxController {
   bool validationActualization(int index) {
     bool changes = false;
     if (index == -1) {
-      if (tituloControl.text != infoMunicipioUpdate.nombre ||
-          descriptionControl.text != infoMunicipioUpdate.descripcion ||
-          listPhotosInfo.length > 0) {
-        infoMunicipioUpdate.nombre = tituloControl.text;
-        infoMunicipioUpdate.descripcion = descriptionControl.text;
-        listPhotosInfo.forEach((dynamic element) {
-          if (element is CroppedFile) {
-            infoMunicipioUpdate.photos?.add(element);
-          }
-        });
-        listPhotosUrls = [];
-        changes = true;
-      }
+        if (tituloControl.text != infoMunicipioUpdate.nombre ||
+            descriptionControl.text != infoMunicipioUpdate.descripcion ||
+            listPhotosInfo.length > 0) {
+          infoMunicipioUpdate.nombre = tituloControl.text;
+          infoMunicipioUpdate.descripcion = descriptionControl.text;
+          listPhotosInfo.forEach((dynamic element) {
+            if (element is CroppedFile) {
+              infoMunicipioUpdate.photos?.add(element);
+            }
+          });
+          listPhotosUrls = [];
+          changes = true;
+        }
     } else {
-      if (infoMunicipioUpdate.subTitulos[index].descripcion != subDescriptionControl.text ||
-          infoMunicipioUpdate.subTitulos[index].titulo != subTituloControl.text ||
-          listPhotosSubInfo.length > 0) {
-        infoMunicipioUpdate.subTitulos[index].descripcion = subDescriptionControl.text;
-        infoMunicipioUpdate.subTitulos[index].titulo = subTituloControl.text;
-        listPhotosSubInfo.forEach((dynamic element) {
-          if (element is CroppedFile) {
-            infoMunicipioUpdate.subTitulos[index].listPhotosPath?.add(element);
-          }
-        });
-        changes = true;
-      }
+        if (infoMunicipioUpdate.subTitulos[index].descripcion != subDescriptionControl.text ||
+            infoMunicipioUpdate.subTitulos[index].titulo != subTituloControl.text ||
+            listPhotosSubInfo.length > 0) {
+          infoMunicipioUpdate.subTitulos[index].descripcion = subDescriptionControl.text;
+          infoMunicipioUpdate.subTitulos[index].titulo = subTituloControl.text;
+          listPhotosSubInfo.forEach((dynamic element) {
+            if (element is CroppedFile) {
+              infoMunicipioUpdate.subTitulos[index].listPhotosPath?.add(element);
+            }
+          });
+          changes = true;
+        }
     }
     return changes;
   }
@@ -291,24 +292,24 @@ class GetxInformationMunicipio extends GetxController {
   Future<bool> updateActionButton() async {
     InfoMunicipio information = getValuesMunicipio();
     SubTitulo subTitulo = getValuesSubTitle();
+    buttonTextSave.value = "Actualizando...";
 
-    //MEJORAR LOGICA CON LA VARIAVLE ISSAVEINFORMATION
-    if (infoSubVisible.value == true && infoMainVisible == false && isSaveInformation.isTrue) {
+    if (isSaveInformation.isTrue) {
       print("Agregando infformacion");
-      print("Valor: " + infoMunicipioUpdate.toFirebaseMap().toString());
-     /* addInformation(infoMunicipioUpdate, subTitulo).then((value) {
+      addInformation(infoMunicipioUpdate, subTitulo).then((value) {
         cleanForm();
-      });*/
+      });
+    } else if (isUpdateInformation.isTrue && infoSubVisible.value == true && infoMainVisible == true) {
+      print("aGREGANDO INFORMACION");
+      information.id = uidGenerate();
+      saveInformation(information);
     } else {
-      //Si es verdadero, existe una peticion al servidor todavia ejecutandoce.
-        if (isSaveInformation.isTrue) {
-          updateMunicipioInformation(indexUpdate);
-        } else {
-          information.id = uidGenerate();
-          saveInformation(information);
-        }
-      cleanForm();
+      updateMunicipioInformation(indexUpdate);
+      print("Actualizando registro");
     }
+
+    cleanForm();
+    buttonTextSave.value = "Actualizar";
     return true;
   }
 

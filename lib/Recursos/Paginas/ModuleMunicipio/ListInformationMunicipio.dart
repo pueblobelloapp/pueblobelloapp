@@ -233,6 +233,7 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
     controller.cleanForm();
     controller.infoMunicipioUpdate = infoMunicipio;
     controller.isSaveInformation.value = true;
+    controller.isUpdateInformation.value = false;
     controller.buttonTextSave.value = "Agregar";
     controller.subInfoAdd.value = "Agregar información";
     controller.updateVisibilityForms(false, true);

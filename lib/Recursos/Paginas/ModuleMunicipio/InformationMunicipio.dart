@@ -51,44 +51,44 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
               height: 50.0,
               child: ElevatedButton(
                   onPressed: () async {
-                    await controller.updateActionButton().then((value) {
-                      Get.back();
-                    }).onError((error, stackTrace) {
-                      messageController.messageError("Error", "Error inesperado: ${error}");
-                    });
+                    bool validation = false;
+
+                    if (controller.infoSubVisible == true) {
+                      if (controller.keyTitleSub.currentState!.validate()) {
+                        validation = true;
+                      }
+                    } else if ( controller.infoMainVisible == true) {
+                      if (controller.keyTitleMain.currentState!.validate()) {
+                        validation = true;
+                      }
+                    }
+
+                    if (validation) {
+                      await controller.updateActionButton().then((value) {
+                        //Get.back();
+                      }).onError((error, stackTrace) {
+                        messageController.messageError("Error", "Error inesperado: ${error}");
+                      });
+                    }
                   },
-                  child: Obx(() => controller.isSaveInformation.isTrue
-                      ? Text(
+                  child: Obx(() => Text(
                           controller.buttonTextSave.value,
                           style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            LoadingAnimationWidget.discreteCircle(
-                                color: Colors.white,
-                                size: 15,
-                                secondRingColor: Colors.green,
-                                thirdRingColor: Colors.white),
-                            SizedBox(width: 10),
-                            Text(controller.buttonTextSave.value,
-                                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))
-                          ],
                         ))))),
       SizedBox(width: 15),
       Expanded(
           child: SizedBox(
-        height: 50.0,
-        child: ElevatedButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
-            onPressed: () {
-              //Aca debe volver a la pagina anterior.
-              controller.updateButtonAddSubInfo("Agregar informacion", true);
-              controller.cleanForm();
-              controller.update();
-              Get.back();
-            },
-            child: Text("Cancelar", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
+            height: 50.0,
+            child: ElevatedButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                onPressed: () {
+                  //Aca debe volver a la pagina anterior.
+                  controller.updateButtonAddSubInfo("Agregar informacion");
+                  controller.cleanForm();
+                  controller.update();
+                  Get.back();
+                },
+                child: Text("Cancelar", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold))),
       ))
     ]);
   }
