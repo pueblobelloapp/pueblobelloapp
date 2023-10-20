@@ -65,7 +65,7 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
 
                     if (validation) {
                       await controller.updateActionButton().then((value) {
-                        //Get.back();
+                        Get.back();
                       }).onError((error, stackTrace) {
                         messageController.messageError("Error", "Error inesperado: ${error}");
                       });
@@ -164,12 +164,12 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
                           style: TextStyle(color: AppBasicColors.green, fontSize: 16.0),
                         )),
                     Visibility(
-                      visible: controller.isSaveInformation.isFalse,
+                      visible: controller.isSaveInformation.isTrue,
                       child: IconButton(
                         onPressed: () {
                           if (controller.keyTitleSub.currentState!.validate()) {
                             controller.addSubinformation();
-                            messageController.messageInfo("Informaticion", "Agregado al sistema");
+                            messageController.messageInfo("Informaticion", "Agregado a la lista.");
                           }
                         },
                         icon: Icon(
@@ -291,8 +291,9 @@ class InformationMunicipio extends GetView<GetxInformationMunicipio> {
       }
     }
 
-    if (controller.listPhotosInfo.isNotEmpty) {
-      for (final croppedFile in controller.listPhotosInfo) {
+    if (controller.listPhotosSubInfo.isNotEmpty) {
+      print("Recorre imagenes");
+      for (final croppedFile in controller.listPhotosSubInfo) {
         photoSubWidgets.add(Image.file(File(croppedFile.path)));
       }
     }

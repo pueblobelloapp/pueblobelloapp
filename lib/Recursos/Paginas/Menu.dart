@@ -59,7 +59,7 @@ class _MenuModulsState extends State<MenuModuls> {
               "ListInformation"),
           _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
               "ListInformation"),
-          _title("Propietarios", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
+          _title("Propietarios", FaIcon(FontAwesomeIcons.userTie, color: Colors.green),
               "ListInformation"),
           _title("test", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
               "ListInformation"),

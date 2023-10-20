@@ -137,6 +137,9 @@ class GetxInformationMunicipio extends GetxController {
     subTituloControl.text = "";
     subDescriptionControl.text = "";
     listPhotosSubInfo.clear();
+    listPhotosUrls.clear();
+    listPhotosSubUrls.clear();
+    listSubInformation.clear();
     update();
   }
 
@@ -341,5 +344,9 @@ class GetxInformationMunicipio extends GetxController {
         titulo: subTituloControl.text,
         listPhotosPath: List.from(listPhotosSubInfo));
     return subTitulo;
+  }
+
+  Future<void> deleteInformation(InfoMunicipio infoMunicipio, int index) async {
+
   }
 }

@@ -210,6 +210,7 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                       Get.to(() => InformationMunicipio());
                     } else if (titulo == "Eliminar" && connectivityController.isOnline.value) {
                       print("Borrando informacion");
+                      controller.deleteInformation(infoMunicipio, index);
                     } else if (connectivityController.isOnline.value == false) {
                       controllerUtils.messageError("Conexion", "No se tiene conexion a internet.");
                     }
