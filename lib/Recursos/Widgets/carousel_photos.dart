@@ -5,7 +5,6 @@ import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
@@ -18,12 +17,12 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => validPhotos());
+    return Obx(() => validPhotos(context));
   }
 
-  Widget validPhotos() {
-    controller.listWidget = loadPhotosUrlsFirebase(controller.listUrlPhotosFirebase);
-    controller.listWidget.addAll(listPhotosWidget());
+  Widget validPhotos(BuildContext context) {
+    controller.listWidget = loadPhotosUrlsFirebase(controller.listUrlPhotosFirebase, context);
+    controller.listWidget.addAll(listPhotosWidget(context));
 
     print("Con datos");
     return GestureDetector(
@@ -35,10 +34,11 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
             : controllerUtils.imageInformation(Constants.addImage, Constants.addImageDescription));
   }
 
-  List<Widget> loadPhotosUrlsFirebase(List<dynamic> valueList) {
+  List<Widget> loadPhotosUrlsFirebase(List<dynamic> valueList, BuildContext context) {
     List<Widget> resultList = [];
 
-    valueList.forEach((dynamic element) {
+    for (int index = 0; index < valueList.length; index++) {
+      final dynamic element = valueList[index];
       resultList.add(Stack(
         children: [
           CachedNetworkImage(
@@ -70,10 +70,12 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
                   onCancel: () {},
                   onConfirm: () {
                     print("element: $element");
-                    /*controller.deleteInformation(
-                        controller.infoMunicipioUpdate.id,
-                        controller.indexUpdate,
-                        element);*/
+                    print("index: $index");
+                    controller.listUrlPhotosFirebase.removeAt(index);
+                    controller.update();
+                    controller.deleteInformation(controller.infoMunicipioUpdate.id, index, element);
+                    Get.back();
+                    Navigator.of(context).pop(false);
                   },
                   buttonColor: Colors.white,
                 );
@@ -83,56 +85,60 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
           ),
         ],
       ));
-    });
+    }
+
     return resultList;
   }
 
-  List<Widget> listPhotosWidget() {
+  List<Widget> listPhotosWidget(BuildContext context) {
     final List<Widget> photoWidgets = [];
     controller.listCroppedFile
         .asMap()
         .entries
         .map((entry) {
-      final index = entry.key;
-      final element = entry.value;
-      if (element is CroppedFile) {
-        photoWidgets.add(Stack(
-          children: [
-            Image.file(File(element.path)),
-            Positioned(
-              top: 5,
-              right: 10,
-              child: FloatingActionButton.small(
-                backgroundColor: Colors.red,
-                onPressed: () {/*controller.listCroppedFile.removeAt(index);*/
-                  Get.defaultDialog(
-                    title: "Fotografia",
-                    titleStyle: TextStyle(fontSize: 20),
-                    middleText: "Seguro de eliminar la fotografia ?",
-                    middleTextStyle: TextStyle(fontSize: 15),
-                    backgroundColor: Colors.white,
-                    textCancel: "Cancelar",
-                    cancelTextColor: Colors.green,
-                    textConfirm: "Si",
-                    confirmTextColor: Colors.red,
-                    onCancel: () {},
-                    onConfirm: () {
-                      controller.listCroppedFile.removeAt(index);
-                      controller.update();
-                      Get.back();
+          final index = entry.key;
+          final element = entry.value;
+          if (element is CroppedFile) {
+            photoWidgets.add(Stack(
+              children: [
+                Image.file(File(element.path)),
+                Positioned(
+                  top: 5,
+                  right: 10,
+                  child: FloatingActionButton.small(
+                    backgroundColor: Colors.red,
+                    onPressed: () {
+                      /*controller.listCroppedFile.removeAt(index);*/
+                      Get.defaultDialog(
+                        title: "Fotografia",
+                        titleStyle: TextStyle(fontSize: 20),
+                        middleText: "Seguro de eliminar la fotografia ?",
+                        middleTextStyle: TextStyle(fontSize: 15),
+                        backgroundColor: Colors.white,
+                        textCancel: "Cancelar",
+                        cancelTextColor: Colors.green,
+                        textConfirm: "Si",
+                        confirmTextColor: Colors.red,
+                        onCancel: () {},
+                        onConfirm: () {
+                          controller.listCroppedFile.removeAt(index);
+                          controller.update();
+                          Navigator.of(context).pop(false);
+                        },
+                        buttonColor: Colors.white,
+                      );
                     },
-                    buttonColor: Colors.white,
-                  );
-                  },
-                child: Icon(Icons.delete),
-              ),
-            ),
-          ],
-        ));
-      } else {
-        controllerUtils.messageWarning("Informacion", "Error al cargar fotografías.");
-      }
-    }).whereType<CroppedFile>().toList();
+                    child: Icon(Icons.delete),
+                  ),
+                ),
+              ],
+            ));
+          } else {
+            controllerUtils.messageWarning("Informacion", "Error al cargar fotografías.");
+          }
+        })
+        .whereType<CroppedFile>()
+        .toList();
 
     return photoWidgets;
   }
