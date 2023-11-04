@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:app_turismo/Recursos/Models/PropietarioModel.dart';
 import 'package:app_turismo/Recursos/Repository/RepositoryPropietarios.dart';
+import 'package:app_turismo/Recursos/Repository/implementation/RepositoryPropietariosImp.dart';
 import 'package:app_turismo/main.dart';
 import 'package:get/get.dart';
 
 class PropietarioController extends GetxController {
-  final MyPropietarioRepository _myPropietarioRepository = getIt();
+  final MyPropietarioRepository _myPropietarioRepository = MyPropietarioImp();
 
   Propietario? _toEdit;
   Rx<bool> isLoading = Rx(false);

@@ -2,7 +2,8 @@ import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/Propietarios.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/TouristSiteOwner.dart';
+import 'package:app_turismo/Recursos/SystemNavegation/Routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -38,7 +39,7 @@ class _MenuModulsState extends State<MenuModuls> {
     return ListView(
         padding: const EdgeInsets.all(8),
         children: ListTile.divideTiles(context: context, tiles: [
-          _title("Mis sitios turisticos",
+          _title("Mis sitios turisticos", 
               FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green), "MenuSitioTuristico"),
           _title(
               "Mi perfil", FaIcon(FontAwesomeIcons.userGear, color: Colors.green), "Propietario"),
@@ -80,7 +81,7 @@ class _MenuModulsState extends State<MenuModuls> {
         ),
         onTap: () {
           if (title == "Propietarios") {
-            Get.to(PropietariosPage());
+            Get.to(() => TouristSiteOwner());
             return;
           }
           _controllerTurismo.tipoGestion = title;
@@ -118,7 +119,7 @@ class _MenuModulsState extends State<MenuModuls> {
                     setState(() => shouldPop = true);
                     controladorLogin.signOut();
                     Navigator.of(context).pop();
-                    Get.to(() => LoginF());
+                    Get.to(() => Login());
                   },
                   child: const Text('Si'),
                   style: TextButton.styleFrom(

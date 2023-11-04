@@ -1,6 +1,8 @@
+import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxConnectivity.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
+import 'package:app_turismo/Recursos/SystemNavegation/Routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,9 +10,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import 'InformationMunicipio.dart';
+import 'RegisterMunicipality.dart';
 
-class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
+class ListMunicipality extends GetView<GetxInformationMunicipio> {
   final ConnectivityController connectivityController = Get.put(ConnectivityController());
 
   final GetxUtils controllerUtils = Get.put(GetxUtils());
@@ -23,13 +25,13 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
         title: const Text("Información"),
         actions: [
           TextButton(
-            child: Text("AGREGAR", style: TextStyle(color: Colors.white),),
+            child: Text("Añadir subtitulos", style: TextStyle(color: Colors.white),),
               onPressed: () {
                 if (!controller.infoExists.value && !connectivityController.isOnline.value) {
                   controllerUtils.messageWarning("Infromacion", "Ups! Sin conexion a internet.");
                 } else {
                   actionForms();
-                  Get.to(() => InformationMunicipio());
+                  Get.to(() => RegisterMunicipality(), transition: Transition.leftToRight);
                 }
                 controller.update();
               },
@@ -42,7 +44,6 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
 
   Widget informationList() {
     bool conexionEnable = false;
-
     return Container(
         color: Colors.grey.shade200,
         child: SafeArea(
@@ -77,14 +78,13 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                             const Image(
                               image: AssetImage('assets/img/cloud.png'),
-                              width: 150,
-                              height: 150,
+                              width: 100,
+                              height: 100,
                             ),
                             TextButton(
                               onPressed: () {
-                                print("Registrar informacion");
-                                controller.updateVisibilityForms(true, true);
-                                Get.toNamed("GestionSites");
+                                controller.titleAppbar.value = "Agregar Titulo";
+                                Get.to(() => RegisterMunicipality(), transition: Transition.leftToRight);
                               },
                               child: Text("Registrar Informacion",
                                   style: TextStyle(color: Colors.green, fontSize: 15)),
@@ -110,7 +110,7 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                         ).toList());
                   } else {
                     controller.infoExists.value = false;
-                    return controllerUtils.errorConexion();
+                    return controllerUtils.imageInformation("assets/img/no-internet.png", "Sin conexion a internet");
                   }
                 })));
   }
@@ -207,10 +207,10 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
                     Navigator.of(context).pop(true);
                     if (titulo == "Actualizar" && connectivityController.isOnline.value) {
                       controller.updateInforMunicipio(infoMunicipio, index);
-                      Get.to(() => InformationMunicipio());
+                      Get.to(() => RegisterMunicipality(), transition: Transition.leftToRight);
                     } else if (titulo == "Eliminar" && connectivityController.isOnline.value) {
                       print("Borrando informacion");
-                      controller.deleteInformation(infoMunicipio, index);
+                      //controller.deleteInformation(infoMunicipio, index);
                     } else if (connectivityController.isOnline.value == false) {
                       controllerUtils.messageError("Conexion", "No se tiene conexion a internet.");
                     }
@@ -233,10 +233,9 @@ class ListInformationMunicipio extends GetView<GetxInformationMunicipio> {
   void actionForms() {
     controller.cleanForm();
     controller.infoMunicipioUpdate = infoMunicipio;
+    controller.titleAppbar.value = "Agregar Subtitulo";
+    controller.buttonTextSave.value = "Agregar";
     controller.isSaveInformation.value = true;
     controller.isUpdateInformation.value = false;
-    controller.buttonTextSave.value = "Agregar";
-    controller.subInfoAdd.value = "Agregar información";
-    controller.updateVisibilityForms(false, true);
   }
 }

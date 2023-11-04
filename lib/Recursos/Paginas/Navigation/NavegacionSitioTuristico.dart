@@ -1,6 +1,6 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ListaSitiosTuristicos.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ModuleSitiosTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ListTouristSite.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/RegisterTouristSite.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -24,7 +24,7 @@ class NavegacionSitioTuristico extends StatelessWidget {
         body: SafeArea(
           child: IndexedStack(
             index: controller.countTapItem,
-            children: [ListaSitiosTuristicos(), ModuleSitiosTuristicos()],
+            children: [ListSitesTourist(), RegisterTouristSite()],
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(

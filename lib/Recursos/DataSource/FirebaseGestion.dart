@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxManagementMunicipality.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxManagementTouristSite.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 class GestionDataBase {
-  final GetxUtils messageController = Get.put(GetxUtils());
+  final ManagementMunicipalityController controllerGestionInformacion =
+      Get.put(ManagementMunicipalityController());
 
-  final GetxGestionInformacionController controllerGestionInformacion =
-      Get.put(GetxGestionInformacionController());
-
-  final GetxSitioTuristico getxSitioTuristico = Get.put(GetxSitioTuristico());
+  final GetxManagementTouristSite getxSitioTuristico = Get.put(GetxManagementTouristSite());
 
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
@@ -31,7 +31,7 @@ class GestionDataBase {
     return firestore.collection('dataTurismo').doc().id;
   }
 
-  Future<void> saveGestion(InfoMunicipio infoMunicipio) async {
+  Future<void> saveInformation(InfoMunicipio infoMunicipio) async {
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
     List<SubTitulo> listSubInformation;
     infoMunicipio = await uploadPhotosMain(infoMunicipio);
@@ -40,7 +40,7 @@ class GestionDataBase {
     await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: true));
   }
 
-  Future<void> updatePhotosApp(InfoMunicipio infoMunicipio, int index) async {
+  Future<void> updateInformation(InfoMunicipio infoMunicipio, int index) async {
     print("Valor Actualizar: " + infoMunicipio.nombre);
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
 
@@ -53,50 +53,43 @@ class GestionDataBase {
       }
       await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: false));
     } on TimeoutException {
-      Get.snackbar("Error", "Lo sentimos no pudimos completar la tarea.");
+      Get.snackbar("Error", "Lo sentimos no pudimos completar la actualización.");
     }
-
   }
 
   Future<InfoMunicipio> uploadPhotosMain(InfoMunicipio infoMunicipio) async {
-    List<dynamic> newPhotosUrls = [];
-    List<dynamic> oldPhotosUrls = [];
+    List<String> newPhotosUrls = [];
+    List<String> oldPhotosUrls = [];
 
     List<CroppedFile>? cropFiles = infoMunicipio.photos
-        ?.map((dynamic element) {
-          if (element is CroppedFile) {
+        .map((dynamic elementNewPhotos) {
+          if (elementNewPhotos is CroppedFile) {
             print("Captura elemento");
-            return element;
-          } else if (element is String) {
+            return elementNewPhotos;
+          } else if (elementNewPhotos is String) {
             print("oldPhotosUrls");
-            print("Imagen old: " + element);
-            oldPhotosUrls.add(element);
+            print("Imagen old: " + elementNewPhotos);
+            oldPhotosUrls.add(elementNewPhotos);
           }
         })
         .whereType<CroppedFile>()
         .toList();
 
-    if (cropFiles!.length >= 1) {
+    if (cropFiles.length >= 1) {
       print("Hace cargue de fotos principal");
-      infoMunicipio.photos?.clear();
+      infoMunicipio.photos.clear();
       newPhotosUrls = await uploadFiles(cropFiles);
-      newPhotosUrls.forEach((dynamic element) {
-        if (element is String) {
-          infoMunicipio.photos?.add(element);
-        }
-      });
-      oldPhotosUrls.forEach((dynamic element) {
-        if (element is String) {
-          infoMunicipio.photos?.add(element);
-        }
-      });
+      cropFiles.clear();
+      infoMunicipio.photos.addAll(oldPhotosUrls);
+      infoMunicipio.photos.addAll(newPhotosUrls);
+    } else {
+      print("Sin fotos nuevas");
     }
 
     return infoMunicipio;
   }
 
   Future<List<SubTitulo>> uploadPhotosSubMain(InfoMunicipio infoMunicipio) async {
-
     List<SubTitulo> listSubInformation = [];
     for (var item in infoMunicipio.subTitulos) {
       List<dynamic> newUrlPhotos = [];
@@ -145,5 +138,76 @@ class GestionDataBase {
     final storageReference = storage.ref().child('test/imagesTest/${uuid}');
     await storageReference.putFile(File(_image.path));
     return await storageReference.getDownloadURL();
+  }
+
+  Future<void> deletePhotoFromList(
+      String idDocumento,
+      int mapIndex,
+      String? urlString) async {
+
+    final documentosPhotos =
+        await firestore.collection('dataTurismo').where('photos', arrayContains: urlString).get();
+    for (final doc in documentosPhotos.docs) {
+      doc.reference.update({
+        'photos': FieldValue.arrayRemove([urlString]),
+      }).then((value) {
+        Get.snackbar(
+          "Fotografia",
+          "Fotografia eliminada correctamente.",
+          icon: Icon(Icons.delete_forever, color: Colors.white),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          borderRadius: 10,
+          margin: EdgeInsets.all(15),
+          colorText: Colors.white,
+          duration: Duration(seconds: 4),
+          isDismissible: true,
+          dismissDirection: DismissDirection.horizontal,
+          forwardAnimationCurve: Curves.easeOutBack,
+
+        );
+      });
+    }
+
+    final documentReference = FirebaseFirestore.instance.collection('dataTurismo').doc(idDocumento);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(documentReference);
+      final data = snapshot.data() as Map<String, dynamic>;
+      final subTitulosList = data['subTitulos'] as List;
+
+      if (mapIndex >= 0 && mapIndex < subTitulosList.length) {
+        final subTitulo = subTitulosList[mapIndex] as Map<String, dynamic>;
+        final listPhotos = subTitulo['listPhotos'] as List;
+
+        if (listPhotos.contains(urlString)) {
+          listPhotos.remove(urlString);
+          subTitulo['listPhotos'] = listPhotos;
+          transaction.update(documentReference, {
+            'subTitulos': subTitulosList,
+          });
+        }
+      }
+    });
+  }
+
+  Future<void> deleteMapFromList(String documentId, int mapIndex) async {
+    try {
+      final documentReference =
+          FirebaseFirestore.instance.collection('dataTurismo').doc(documentId);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        final snapshot = await transaction.get(documentReference);
+        final data = snapshot.data() as Map<String, dynamic>;
+        final mapList = data['subTitulos'] as List;
+
+        if (mapIndex >= 0 && mapIndex < mapList.length) {
+          mapList.removeAt(mapIndex);
+          transaction.update(documentReference, {'subTitulos': mapList});
+        }
+      });
+    } catch (e) {
+      print('Error al eliminar el mapa: $e');
+    }
   }
 }

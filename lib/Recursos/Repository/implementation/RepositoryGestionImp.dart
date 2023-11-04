@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,11 +9,6 @@ import 'package:app_turismo/main.dart';
 
 class MyRepositoryGestionImp extends MyGestionRepository {
   final GestionDataBase _gestionDataBase = getIt();
-
-  @override
-  Future<void> deleteMyGestion(String uid, String module) async {
-    //_gestionDataBase.deleteInformation(uid, module);
-  }
 
   @override
   Future<void> editMyGestion(
@@ -32,12 +28,24 @@ class MyRepositoryGestionImp extends MyGestionRepository {
   }
 
   @override
-  Future<void> saveMyGestion(InfoMunicipio myGestion) {
-    return _gestionDataBase.saveGestion(myGestion);
+  Future<void> saveInformationMunicipality(InfoMunicipio myGestion) {
+    return _gestionDataBase.saveInformation(myGestion);
   }
 
   @override
-  Future<void> updateInfoMain(InfoMunicipio infoMunicipio, int index) {
-    return _gestionDataBase.updatePhotosApp(infoMunicipio, index);
+  Future<void> updateInformationMunicipality(InfoMunicipio infoMunicipio, int index) {
+    return _gestionDataBase.updateInformation(infoMunicipio, index);
   }
+
+  @override
+  Future<void> deleteMapFromList(String documentId, int mapIndex) {
+    // TODO: implement deleteMapFromList
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteMyGestion(String? documentId, int mapIndex, String urlString) {
+    return _gestionDataBase.deletePhotoFromList(documentId!, mapIndex, urlString);
+  }
+
 }

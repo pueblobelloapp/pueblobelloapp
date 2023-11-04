@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,26 @@ class ImageUpload extends StatefulWidget {
 }
 
 class _ImageUpload extends State<ImageUpload> {
-  final GetxSitioTuristico sitioController = Get.put(GetxSitioTuristico());
+  final GetxInformationMunicipio municipalityController = Get.put(GetxInformationMunicipio());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("Fotografias sitio turistico")),
-        body: bodyImage());
+        body: bodyImage(),
+        floatingActionButton: municipalityController.listCroppedFile.length == 0 ?
+          Container() : FloatingActionButton.small(
+            child: Icon(Icons.add_a_photo_sharp),
+            backgroundColor: Colors.green,
+            onPressed: () {
+              _uploadImage();
+              setState(() {});
+            }),
+    );
   }
 
   Widget bodyImage() {
-    if (sitioController.listCroppedFile.length > 0) {
+    if (municipalityController.listCroppedFile.length > 0) {
       return _imageList();
     } else {
       return _uploaderCard();
@@ -35,9 +45,9 @@ class _ImageUpload extends State<ImageUpload> {
 
   Widget _imageList() {
     return ListView.builder(
-        itemCount: sitioController.listCroppedFile.length,
+        itemCount: municipalityController.listCroppedFile.length,
         itemBuilder: (context, int index) {
-          return cardImage(sitioController.listCroppedFile[index], index);
+          return cardImage(municipalityController.listCroppedFile[index], index);
         });
   }
 
@@ -90,7 +100,7 @@ class _ImageUpload extends State<ImageUpload> {
       children: [
         ElevatedButton.icon(
           onPressed: () {
-            sitioController.listCroppedFile.removeAt(indexCropped);
+            municipalityController.listCroppedFile.removeAt(indexCropped);
             setState(() {});
           },
           label: const Text("Eliminar"),
@@ -138,7 +148,7 @@ class _ImageUpload extends State<ImageUpload> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.image,
+                            Icons.add_a_photo_rounded,
                             size: 80.0,
                           ),
                           const SizedBox(height: 24.0),
@@ -167,9 +177,9 @@ class _ImageUpload extends State<ImageUpload> {
   }
 
   Future<void> cropImage(int croppedIndex) async {
-    if (sitioController.listCroppedFile[croppedIndex].path != "") {
+    if (municipalityController.listCroppedFile[croppedIndex].path != "") {
       final croppedFile = await ImageCropper().cropImage(
-        sourcePath: sitioController.listCroppedFile[croppedIndex].path,
+        sourcePath: municipalityController.listCroppedFile[croppedIndex].path,
         compressFormat: ImageCompressFormat.jpg,
         compressQuality: 100,
         aspectRatioPresets: [
@@ -192,7 +202,7 @@ class _ImageUpload extends State<ImageUpload> {
       );
       if (croppedFile != null) {
         setState(() {
-          sitioController.listCroppedFile[croppedIndex] = croppedFile;
+          municipalityController.listCroppedFile[croppedIndex] = croppedFile;
         });
       }
     }
@@ -203,7 +213,7 @@ class _ImageUpload extends State<ImageUpload> {
     if (pickedFileList.isNotEmpty) {
       for (int i = 0; i < pickedFileList.length; i++) {
         CroppedFile? croppedFile = CroppedFile(pickedFileList[i].path);
-        sitioController.listCroppedFile.add(croppedFile);
+        municipalityController.listCroppedFile.add(croppedFile);
       }
       setState(() {});
     }

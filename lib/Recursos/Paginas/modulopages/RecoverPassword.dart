@@ -8,14 +8,14 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RecuperarPassword extends StatefulWidget {
-  const RecuperarPassword({Key? key}) : super(key: key);
+class RecoverPassword extends StatefulWidget {
+  const RecoverPassword({Key? key}) : super(key: key);
 
   @override
-  State<RecuperarPassword> createState() => _RecuperarPasswordState();
+  State<RecoverPassword> createState() => _RecoverPasswordState();
 }
 
-class _RecuperarPasswordState extends State<RecuperarPassword> {
+class _RecoverPasswordState extends State<RecoverPassword> {
   TextEditingController _email = TextEditingController();
 
   final _formkey = GlobalKey<FormState>();
@@ -27,11 +27,7 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child: Column(children: [
-      HeaderImage(),
-      SizedBox(height: 100),
-      FormRegister()
-    ])));
+            child: Column(children: [HeaderImage(), SizedBox(height: 100), FormRegister()])));
   }
 
   Widget HeaderImage() {
@@ -76,13 +72,8 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 10),
-                      TextFieldWidget(
-                          _email,
-                          Icon(Icons.email, color: Colors.green),
-                          "Correo",
-                          false,
-                          "Error, campo requerido",
-                          TextInputType.emailAddress),
+                      TextFieldWidget(_email, Icon(Icons.email, color: Colors.green), "Correo",
+                          false, "Error, campo requerido", TextInputType.emailAddress),
                       SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -124,13 +115,11 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
           messageController.messageWarning(
               "Correo invalido", "Este Correo no se encuentra registrado.");
         } else if (onError == "invalid-email") {
-          messageController.messageWarning(
-              "Correo invalido", "Digita un correo valido.");
+          messageController.messageWarning("Correo invalido", "Digita un correo valido.");
         }
       });
     } else {
-      messageController.messageWarning(
-          "Informacion", "Verifique el correo electronico.");
+      messageController.messageWarning("Informacion", "Verifique el correo electronico.");
     }
     _formkey.currentState?.reset();
     setState(() {
@@ -138,13 +127,8 @@ class _RecuperarPasswordState extends State<RecuperarPassword> {
     });
   }
 
-  Widget TextFieldWidget(
-      TextEditingController controlador,
-      icon,
-      String textGuide,
-      bool estate,
-      String msgError,
-      TextInputType textInputType) {
+  Widget TextFieldWidget(TextEditingController controlador, icon, String textGuide, bool estate,
+      String msgError, TextInputType textInputType) {
     return TextFormField(
         controller: controlador,
         keyboardType: textInputType,

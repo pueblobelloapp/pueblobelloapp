@@ -35,7 +35,10 @@ class GetxUtils extends GetxController {
         reverseAnimationCurve: Curves.easeOutSine,
         forwardAnimationCurve: Curves.easeOutSine,
         margin: const EdgeInsets.all(10.0),
-        icon: Icon(Icons.error_outline, color: Colors.white,)));
+        icon: Icon(
+          Icons.error_outline,
+          color: Colors.white,
+        )));
   }
 
   void messageWarning(String titulo, String mensaje) {
@@ -50,20 +53,19 @@ class GetxUtils extends GetxController {
         icon: Icon(Icons.warning_amber, color: Colors.white)));
   }
 
-  Widget errorConexion() {
+  Widget imageInformation(String routeImage, String description) {
     return Center(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/img/no-internet.png",
-                          height: 100,
-                          width: 100,
-                        ),
-                        SizedBox(height: 10),
-                        Text("Sin conexion.",
-                            style: TextStyle(color: Colors.green, fontSize: 25))
-                      ],
-                    ));
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          routeImage, //"assets/img/no-internet.png",
+          height: 100,
+          width: 100,
+        ),
+        SizedBox(height: 10),
+        Text(description, style: TextStyle(color: Colors.green, fontSize: 25))
+      ],
+    ));
   }
 }

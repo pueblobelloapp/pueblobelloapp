@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxManagementTouristSite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,7 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 
 import '../Controller/GextControllers/GextUtils.dart';
 
-class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
+class SiteTuristicoDataSource extends GetView<GetxManagementTouristSite> {
   final GetxUtils messageController = Get.put(GetxUtils());
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
@@ -35,8 +35,8 @@ class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
 
     if (controller.listCroppedFile.isNotEmpty) {
       urlFotografias = await uploadFiles(controller.listCroppedFile);
-      sitioTuristico = sitioTuristico.copyWith(
-          foto: urlFotografias, userId: controller.uidUserLogin);
+/*      sitioTuristico = sitioTuristico.copyWith(
+          foto: urlFotografias, userId: controller.uidUserLogin);*/
       controller.listCroppedFile.clear();
       controller.listPickedFile.clear();
 
@@ -67,10 +67,10 @@ class SiteTuristicoDataSource extends GetView<GetxSitioTuristico> {
   }
 
   Stream<QuerySnapshot> getSitesUid() {
-    print("Uid: " + controller.uidUserLogin);
+    //print("Uid: " + controller.uidUserLogin);
     return firestore
         .collection('sites')
-        .where("userId", isEqualTo: controller.uidUserLogin)
+        .where("userId", isEqualTo: "controller.uidUserLogin")
         .snapshots();
   }
 

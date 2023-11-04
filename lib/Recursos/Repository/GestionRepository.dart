@@ -4,9 +4,10 @@ import 'dart:io';
 abstract class MyGestionRepository {
   String newId();
   Stream<Iterable<InfoMunicipio>> getMyGestion();
-  Future<void> saveMyGestion(InfoMunicipio modelGestion);
-  Future<void> updateInfoMain(InfoMunicipio modelGestion, int index);
+  Future<void> saveInformationMunicipality(InfoMunicipio modelGestion);
+  Future<void> updateInformationMunicipality(InfoMunicipio modelGestion, int index);
   Future<void> editMyGestion(
       InfoMunicipio modelGestion, int index, List<String> photosSub, List<String> photosMain);
-  Future<void> deleteMyGestion(String uid, String module);
+  Future<void> deleteMyGestion(String? documentId, int mapIndex, String urlImage);
+  Future<void> deleteMapFromList(String documentId, int mapIndex);
 }

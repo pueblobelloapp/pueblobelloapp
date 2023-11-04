@@ -7,9 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
 
-import '../../Controller/GextControllers/GetxSitioTuristico.dart';
+import '../../Controller/GextControllers/GetxManagementTouristSite.dart';
 
-class MapGeolocation extends GetView<GetxSitioTuristico> {
+class MapGeolocation extends GetView<GetxManagementTouristSite> {
   final Completer<GoogleMapController> _controller = Completer();
 
   @override
@@ -20,7 +20,7 @@ class MapGeolocation extends GetView<GetxSitioTuristico> {
       appBar: AppBar(
         title: Text('Ubicación sitio'),
       ),
-      body: GetBuilder<GetxSitioTuristico>(builder: (controller) {
+      body: GetBuilder<GetxManagementTouristSite>(builder: (controller) {
             return GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target: LatLng(10.422522, -73.578462),

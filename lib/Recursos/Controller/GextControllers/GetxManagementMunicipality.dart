@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class GetxGestionInformacionController extends GetxController {
+class ManagementMunicipalityController extends GetxController {
   String _id = "";
   String _nombre = "";
   String _descripcion = "";

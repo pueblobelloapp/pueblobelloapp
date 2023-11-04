@@ -2,7 +2,7 @@ import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Controller/LoginController.dart';
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/Register.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/RecoverPassword.dart';
 import 'package:app_turismo/Recursos/Constants/Constans.dart';
 
 import 'package:flutter/material.dart';
@@ -14,14 +14,37 @@ import 'package:email_validator/email_validator.dart';
 
 import '../Controller/GextControllers/GetxConnectivity.dart';
 
-class LoginF extends StatefulWidget {
-  LoginF({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  Login({Key? key}) : super(key: key);
 
   @override
-  State<LoginF> createState() => _LoginFState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginFState extends State<LoginF> {
+class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
+    _animation = Tween(begin: 0.0, end: 1.0).animate(_animationController);
+
+    // Iniciar la animación al construir la pantalla
+    _animationController.forward();
+  }
+
+    @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   TextEditingController _userL = TextEditingController();
   TextEditingController _passwordL = TextEditingController();
 
@@ -38,10 +61,13 @@ class _LoginFState extends State<LoginF> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child: Column(
+            child: ScaleTransition(
+              scale: _animation,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [ImagenLogo(), FormLogin(), OptionSesion()])));
+                children: [ImagenLogo(), FormLogin(), OptionSesion()]))),
+            );
   }
 
   Widget ImagenLogo() {
@@ -102,7 +128,7 @@ class _LoginFState extends State<LoginF> {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  Get.to(() => RecuperarPassword());
+                                  Get.to(() => RecoverPassword());
                                 },
                                 child: AutoSizeText(
                                   "¿Olvidaste tu contraseña?",

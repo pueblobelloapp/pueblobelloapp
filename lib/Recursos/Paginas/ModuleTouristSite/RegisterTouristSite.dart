@@ -1,4 +1,4 @@
-import 'package:app_turismo/Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'package:app_turismo/Recursos/Controller/GextControllers/GetxManagementTouristSite.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/ImageUpload.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
+class RegisterTouristSite extends GetView<GetxManagementTouristSite> {
   final GetxUtils messageController = Get.put(GetxUtils());
   void onInit() {
     controller.dropdownActivity;
@@ -140,7 +140,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                     Obx(() => Text(controller.ubicacion.value)),
                     TextButton.icon(
                         onPressed: () {
-                          Get.to(() => MapGeolocation());
+                          Get.to(MapGeolocation());
                         },
                         icon: Icon(
                           Icons.location_on,
@@ -164,7 +164,7 @@ class ModuleSitiosTuristicos extends GetView<GetxSitioTuristico> {
                         )),
                     ElevatedButton.icon(
                       label: Text("Cargar fotos"),
-                      onPressed: () => Get.to(() => ImageUpload()),
+                      onPressed: () => Get.to(ImageUpload()),
                       icon: Icon(Icons.image_outlined, color: Colors.white),
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     )

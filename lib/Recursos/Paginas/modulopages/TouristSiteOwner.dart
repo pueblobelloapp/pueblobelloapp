@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PropietariosPage extends StatefulWidget {
-  const PropietariosPage({super.key});
+class TouristSiteOwner extends StatefulWidget {
+  const TouristSiteOwner({super.key});
 
   @override
-  State<PropietariosPage> createState() => _PropietariosPageState();
+  State<TouristSiteOwner> createState() => _TouristSiteOwnerState();
 }
 
-class _PropietariosPageState extends State<PropietariosPage> {
+class _TouristSiteOwnerState extends State<TouristSiteOwner> {
   final Stream<QuerySnapshot> _propietarioStream =
       FirebaseFirestore.instance.collection('propietario').snapshots();
 

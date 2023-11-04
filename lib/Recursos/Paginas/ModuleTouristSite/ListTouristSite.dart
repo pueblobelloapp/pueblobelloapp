@@ -1,23 +1,23 @@
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
-import 'package:app_turismo/main.dart';
+import 'package:app_turismo/Recursos/Repository/implementation/RepositorySiteTuristicoImp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ListaSitiosTuristicos extends StatelessWidget {
-  const ListaSitiosTuristicos({Key? key}) : super(key: key);
+class ListSitesTourist extends StatelessWidget {
+  const ListSitesTourist({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final MySitesRepository _mySitesRepository = getIt();
+    final MySitesRepository mySitesRepository = MyRepositorySiteTuristicoImp();
 
     return Container(
       color: Colors.grey.shade100,
       child: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
-        stream: _mySitesRepository.getSitesUid(),
+        stream: mySitesRepository.getSitesUid(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -54,8 +54,6 @@ class ListaSitiosTuristicos extends StatelessWidget {
       subtitle: Text(data['tipoTurismo']),
       trailing: Icon(Icons.arrow_forward_ios_outlined),
       onTap: () {
-        final GetxInformationMunicipio controllerTurismo =
-            Get.put(GetxInformationMunicipio());
 
         siteInformation = SitioTuristico(
             id: data['id'],
@@ -70,7 +68,7 @@ class ListaSitiosTuristicos extends StatelessWidget {
             userId: data['userId']);
 
         print(siteInformation.toString());
-        //_controllerGetxTurismo.updateSitioTuristico(siteInformation!);
+        //this.mySitesRepository.updateSitioTuristico(siteInformation!);
       },
     );
   }

@@ -9,11 +9,12 @@ import 'package:app_turismo/Recursos/Repository/implementation/RepositoryGestion
 import 'package:app_turismo/Recursos/Repository/implementation/RepositoryPropietariosImp.dart';
 import 'package:app_turismo/Recursos/Repository/implementation/RepositorySiteTuristicoImp.dart';
 import 'package:app_turismo/Recursos/Repository/implementation/auth_repository.dart';
+import 'package:app_turismo/Recursos/Widgets/carousel_photos.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'Recursos/Controller/GextControllers/GetxGestionInformacion.dart';
-import 'Recursos/Controller/GextControllers/GetxSitioTuristico.dart';
+import 'Recursos/Controller/GextControllers/GetxManagementMunicipality.dart';
+import 'Recursos/Controller/GextControllers/GetxManagementTouristSite.dart';
 import 'Recursos/Controller/GextControllers/GextUtils.dart';
 import 'Recursos/Controller/GextControllers/GextPropietarioController.dart';
 import 'Recursos/DataSource/FirebaseSites.dart';
@@ -29,17 +30,15 @@ void main() async {
   await injectDependencies();
   Get.put(SiteTuristicoDataSource());
   Get.put(ControllerLogin());
-  Get.put(GetxSitioTuristico());
-  Get.put(GetxGestionInformacionController());
-
+  Get.put(CarouselPhotos());
   runApp(const MyApp());
 }
 
 Future<void> injectDependencies() async {
   //Controladores
-  getIt.registerLazySingleton(() => GetxSitioTuristico());
+  getIt.registerLazySingleton(() => GetxManagementTouristSite());
   getIt.registerLazySingleton(() => GextPropietarioController());
-  getIt.registerLazySingleton(() => GetxGestionInformacionController());
+  getIt.registerLazySingleton(() => ManagementMunicipalityController());
 
   // Data sources
   getIt.registerLazySingleton(() => GestionDataBase());
@@ -50,10 +49,7 @@ Future<void> injectDependencies() async {
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp());
-  getIt.registerLazySingleton<MyGestionRepository>(
-      () => MyRepositoryGestionImp());
-  getIt.registerLazySingleton<MySitesRepository>(
-      () => MyRepositorySiteTuristicoImp());
-  getIt
-      .registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
+  getIt.registerLazySingleton<MyGestionRepository>(() => MyRepositoryGestionImp());
+  getIt.registerLazySingleton<MySitesRepository>(() => MyRepositorySiteTuristicoImp());
+  getIt.registerLazySingleton<MyPropietarioRepository>(() => MyPropietarioImp());
 }

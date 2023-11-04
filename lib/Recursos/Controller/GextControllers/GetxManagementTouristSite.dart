@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:app_turismo/Recursos/Models/SiteTuristico.dart';
 import 'package:app_turismo/Recursos/Repository/RepositorySiteTuristico.dart';
-import 'package:app_turismo/main.dart';
+import 'package:app_turismo/Recursos/Repository/implementation/RepositorySiteTuristicoImp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,8 +13,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../Models/InfoMunicipio.dart';
 import 'GextUtils.dart';
 
-class GetxSitioTuristico extends GetxController {
-  final MySitesRepository _mySitesRepository = getIt();
+class GetxManagementTouristSite extends GetxController {
+  final MySitesRepository _mySitesRepository = MyRepositorySiteTuristicoImp();
   final GetxUtils messageController = Get.put(GetxUtils());
   final keySiteTuris = GlobalKey<FormState>();
 
@@ -44,13 +44,6 @@ class GetxSitioTuristico extends GetxController {
 
   Map<String, String> _listContactos = {};
   late Ubicacion mapUbications = Ubicacion(lat: "0", long: "0");
-
-  String uidUserLogin = "";
-
-  void updateUidUserLogin(uidUser) {
-    uidUserLogin = uidUser;
-    update();
-  }
 
   bool determineAspectRatio(CroppedFile photos) {
     double aspectRatio = 0;

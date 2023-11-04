@@ -3,7 +3,7 @@ class InfoMunicipio {
   late String nombre;
   late String descripcion;
   late String subCategoria;
-  late List<dynamic>? photos;
+  late List<dynamic> photos;
   late final List<SubTitulo> subTitulos;
 
   InfoMunicipio({
@@ -11,7 +11,7 @@ class InfoMunicipio {
     required this.nombre,
     required this.descripcion,
     required this.subCategoria,
-    this.photos,
+    required this.photos,
     required this.subTitulos,
   });
 

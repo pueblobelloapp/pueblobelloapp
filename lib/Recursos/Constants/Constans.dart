@@ -33,4 +33,9 @@ class Constants {
 
   static String urlPhotoPerfil =
       "https://firebasestorage.googleapis.com/v0/b/pueblobello-turismo.appspot.com/o/posts%2Fdata%2Fuser%2F0%2Fcom.example.app_turismo%2Fcache%2Fusuario_login.png?alt=media&token=cb64454b-ca38-4829-be9a-eb0d8817bf77";
+
+  static const String notConection = "assets/img/no-internet.png";
+  static const String notConectionDescription = "Sin Conexion";
+  static const String addImage = "assets/img/gallery.png";
+  static const String addImageDescription = "Agregar Imagen";
 }

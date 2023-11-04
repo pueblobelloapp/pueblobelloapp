@@ -2,16 +2,16 @@ import 'package:app_turismo/Recursos/Paginas/Menu.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/SplashScreen.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleMunicipio/ListInformationMunicipio.dart';
-import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ModuleSitiosTuristico.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleMunicipio/ListMunicipality.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/RegisterTouristSite.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/PerfilPropietario.dart';
-import 'package:app_turismo/Recursos/Paginas/modulopages/RecuperarCuenta.dart';
+import 'package:app_turismo/Recursos/Paginas/modulopages/RecoverPassword.dart';
 import 'package:app_turismo/Recursos/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
-import 'ModuleMunicipio/InformationMunicipio.dart';
+import 'ModuleMunicipio/RegisterMunicipality.dart';
 import 'Navigation/NavegacionSitioTuristico.dart';
 
 class MyApp extends StatelessWidget {
@@ -62,14 +62,14 @@ class MyApp extends StatelessWidget {
       initialRoute: 'LoginF',
       routes: {
         'SplashScreen': (BuildContext context) => SplashScreen(),
-        'LoginF': (BuildContext context) => LoginF(),
+        'LoginF': (BuildContext context) => Login(),
         'Menu': (BuildContext context) => MenuModuls(),
-        'ModuleSitios': (BuildContext context) => ModuleSitiosTuristicos(),
-        'ListInformation': (BuildContext context) => ListInformationMunicipio(),
+        'ModuleSitios': (BuildContext context) => RegisterTouristSite(),
+        'ListInformation': (BuildContext context) => ListMunicipality(),
         'MenuSitioTuristico': (BuildContext context) => NavegacionSitioTuristico(),
         'Propietario': (BuildContext context) => PerfilPropietario(),
-        'RecoveryPass': (BuildContext context) => RecuperarPassword(),
-        'GestionSites': (BuildContext context) => InformationMunicipio(),
+        'RecoveryPass': (BuildContext context) => RecoverPassword(),
+        'GestionSites': (BuildContext context) => RegisterMunicipality(),
         'MapGeolocation': (BuildContext context) => MapGeolocation(),
       },
     );
