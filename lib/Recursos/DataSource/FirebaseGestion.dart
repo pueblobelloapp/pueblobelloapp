@@ -17,6 +17,7 @@ class GestionDataBase {
       Get.put(ManagementMunicipalityController());
 
   final GetxManagementTouristSite getxSitioTuristico = Get.put(GetxManagementTouristSite());
+  final GetxUtils controllerUtils = Get.put(GetxUtils());
 
   User get currentUser {
     final myUsers = FirebaseAuth.instance.currentUser;
@@ -41,7 +42,6 @@ class GestionDataBase {
   }
 
   Future<void> updateInformation(InfoMunicipio infoMunicipio, int index) async {
-    print("Valor Actualizar: " + infoMunicipio.nombre);
     final ref = firestore.doc('dataTurismo/${infoMunicipio.id}');
 
     try {
@@ -53,7 +53,7 @@ class GestionDataBase {
       }
       await ref.set(infoMunicipio.toFirebaseMap(), SetOptions(merge: false));
     } on TimeoutException {
-      Get.snackbar("Error", "Lo sentimos no pudimos completar la actualización.");
+      controllerUtils.messageError("Error", "Lo sentimos no pudimos completar la actualización.");
     }
   }
 
@@ -64,11 +64,8 @@ class GestionDataBase {
     List<CroppedFile>? cropFiles = infoMunicipio.photos
         .map((dynamic elementNewPhotos) {
           if (elementNewPhotos is CroppedFile) {
-            print("Captura elemento");
             return elementNewPhotos;
           } else if (elementNewPhotos is String) {
-            print("oldPhotosUrls");
-            print("Imagen old: " + elementNewPhotos);
             oldPhotosUrls.add(elementNewPhotos);
           }
         })
@@ -76,14 +73,11 @@ class GestionDataBase {
         .toList();
 
     if (cropFiles.length >= 1) {
-      print("Hace cargue de fotos principal");
       infoMunicipio.photos.clear();
       newPhotosUrls = await uploadFiles(cropFiles);
       cropFiles.clear();
       infoMunicipio.photos.addAll(oldPhotosUrls);
       infoMunicipio.photos.addAll(newPhotosUrls);
-    } else {
-      print("Sin fotos nuevas");
     }
 
     return infoMunicipio;
@@ -151,21 +145,7 @@ class GestionDataBase {
       doc.reference.update({
         'photos': FieldValue.arrayRemove([urlString]),
       }).then((value) {
-        Get.snackbar(
-          "Fotografia",
-          "Fotografia eliminada correctamente.",
-          icon: Icon(Icons.delete_forever, color: Colors.white),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          borderRadius: 10,
-          margin: EdgeInsets.all(15),
-          colorText: Colors.white,
-          duration: Duration(seconds: 4),
-          isDismissible: true,
-          dismissDirection: DismissDirection.horizontal,
-          forwardAnimationCurve: Curves.easeOutBack,
-
-        );
+        controllerUtils.messageInfo("Fotografia", "Fotografia eliminada correctamente.");
       });
     }
 
@@ -204,10 +184,16 @@ class GestionDataBase {
         if (mapIndex >= 0 && mapIndex < mapList.length) {
           mapList.removeAt(mapIndex);
           transaction.update(documentReference, {'subTitulos': mapList});
+        } else if (mapIndex == -1) {
+          documentReference.delete();
         }
+      }).then((value) {
+        controllerUtils.messageInfo("Información", "Registro eliminado");
+      }).onError((error, stackTrace) {
+        controllerUtils.messageError("Error", "Ups! Error al eliminar: ${error.toString()}");
       });
     } catch (e) {
-      print('Error al eliminar el mapa: $e');
+      controllerUtils.messageError("Información", "Lo sentimos no pudimos completar la accion: ${e}");
     }
   }
 }

@@ -197,7 +197,7 @@ class GetxInformationMunicipio extends GetxController {
 
   Future<void> deleteMapFromList(String documentId, int mapIndex) async {
     await _repositoryMunicipio.deleteMapFromList(documentId, mapIndex).then((value) {
-      messageController.messageInfo("Informacion", "Se borro el subtitulo correctamente.");
+      messageController.messageInfo("Informacion", "Borrado correcto.");
     }).onError((error, stackTrace) {
       messageController.messageInfo("Error", "Ups! Ocurrio un error. Vuelve a intentar");
     });

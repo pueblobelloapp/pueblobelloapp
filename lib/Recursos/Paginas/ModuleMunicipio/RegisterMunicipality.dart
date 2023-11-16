@@ -32,10 +32,7 @@ class RegisterMunicipality extends GetView<GetxInformationMunicipio> {
   Widget FormData() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        formRegister(),
-        buttonUpdate()
-      ],
+      children: [formRegister(), buttonUpdate()],
     );
   }
 
@@ -53,7 +50,7 @@ class RegisterMunicipality extends GetView<GetxInformationMunicipio> {
             ),
             SizedBox(height: 3),
             CustomTextFormField(
-              //icon: const Icon(BootstrapIcons.info_circle),
+                //icon: const Icon(BootstrapIcons.info_circle),
                 obscureText: false,
                 textGuide: "Ingrese el título",
                 msgError: "Campo obligatorio.",
@@ -109,15 +106,13 @@ class RegisterMunicipality extends GetView<GetxInformationMunicipio> {
                         } else {
                           controller.saveInformation(municipaity);
                         }
-
                       } else {
                         //TODO: existe informacion, se actualiza el dato o agrega
                         if (controller.isSaveInformation.isTrue) {
                           SubTitulo subTitle = SubTitulo(
                               titulo: controller.tituloControl.text,
                               descripcion: controller.descriptionControl.text,
-                              listPhotosPath: controller.listCroppedFile
-                          );
+                              listPhotosPath: controller.listCroppedFile);
                           controller.infoMunicipioUpdate.subTitulos.add(subTitle);
                           await controller.updateInformation().then((value) {
                             controller.cleanForm();
@@ -137,9 +132,9 @@ class RegisterMunicipality extends GetView<GetxInformationMunicipio> {
                           //TODO: Entonces elimina la informacion.
                         }
                       }
-
                     } else {
-                      messageController.messageError("Validacion", "Complete los campos faltantes.");
+                      messageController.messageError(
+                          "Validacion", "Complete los campos faltantes.");
                     }
                   },
                   child: Obx(() => Text(

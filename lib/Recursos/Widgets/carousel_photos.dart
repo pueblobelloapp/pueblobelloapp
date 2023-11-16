@@ -24,7 +24,6 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
     controller.listWidget = loadPhotosUrlsFirebase(controller.listUrlPhotosFirebase, context);
     controller.listWidget.addAll(listPhotosWidget(context));
 
-    print("Con datos");
     return GestureDetector(
         onTap: () async {
           await Get.to(ImageUpload());
@@ -69,8 +68,6 @@ class CarouselPhotos extends GetView<GetxInformationMunicipio> {
                   confirmTextColor: Colors.red,
                   onCancel: () {},
                   onConfirm: () {
-                    print("element: $element");
-                    print("index: $index");
                     controller.listUrlPhotosFirebase.removeAt(index);
                     controller.update();
                     controller.deleteInformation(controller.infoMunicipioUpdate.id, index, element);

@@ -29,6 +29,14 @@ class _MenuModulsState extends State<MenuModuls> {
               automaticallyImplyLeading: false,
               title: const Text("Gestion de modulos"),
             ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () {
+                closeSesion();
+              },
+              label: const Text("Salir"),
+              icon: const Icon(Icons.exit_to_app_outlined),
+              backgroundColor: Colors.red,
+            ),
             body: controladorLogin.userRole == "true"
                 ? _listPropietario(context)
                 : _listAdmin(context)),
@@ -43,10 +51,6 @@ class _MenuModulsState extends State<MenuModuls> {
               FaIcon(FontAwesomeIcons.mapLocationDot, color: Colors.green), "MenuSitioTuristico"),
           _title(
               "Mi perfil", FaIcon(FontAwesomeIcons.userGear, color: Colors.green), "Propietario"),
-          Align(
-            heightFactor: 3.5,
-            child: _btonCerrarSesion(context),
-          )
         ]).toList());
   }
 
@@ -61,13 +65,7 @@ class _MenuModulsState extends State<MenuModuls> {
           _title("municipio", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
               "ListInformation"),
           _title("Propietarios", FaIcon(FontAwesomeIcons.userTie, color: Colors.green),
-              "ListInformation"),
-          _title("test", FaIcon(FontAwesomeIcons.landmarkDome, color: Colors.green),
-              "ListInformation"),
-          Align(
-            heightFactor: 8.0,
-            child: _btonCerrarSesion(context),
-          )
+              "ListInformation")
         ]).toList());
   }
 
@@ -86,16 +84,6 @@ class _MenuModulsState extends State<MenuModuls> {
           }
           _controllerTurismo.tipoGestion = title;
           Get.toNamed(route);
-        });
-  }
-
-  Widget _btonCerrarSesion(BuildContext context) {
-    return ElevatedButton.icon(
-        style: Constants.buttonPrimary,
-        icon: FaIcon(FontAwesomeIcons.doorOpen, color: Colors.white),
-        label: Text("Cerrar sesion"),
-        onPressed: () {
-          closeSesion();
         });
   }
 

@@ -39,8 +39,7 @@ class MyRepositoryGestionImp extends MyGestionRepository {
 
   @override
   Future<void> deleteMapFromList(String documentId, int mapIndex) {
-    // TODO: implement deleteMapFromList
-    throw UnimplementedError();
+    return _gestionDataBase.deleteMapFromList(documentId, mapIndex);
   }
 
   @override

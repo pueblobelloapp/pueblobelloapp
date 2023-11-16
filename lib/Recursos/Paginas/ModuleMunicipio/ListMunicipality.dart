@@ -1,8 +1,6 @@
-import 'package:app_turismo/Recursos/Constants/Constans.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxConnectivity.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
-import 'package:app_turismo/Recursos/SystemNavegation/Routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:app_turismo/Recursos/Controller/GextControllers/GetxInformationMunicipio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -181,12 +179,11 @@ class ListMunicipality extends GetView<GetxInformationMunicipio> {
   Future<bool?> menssageAlert(
       String titulo, InfoMunicipio infoMunicipio, int index, BuildContext context) async {
     String mensage;
-
     if (index == -1) {
       if (titulo == "Actualizar") {
-        mensage = "Actualizar titulo principal?";
+        mensage = "Actualizar el titulo principal?";
       } else {
-        mensage = "Se eliminaran todos los datos, estas seguro ?";
+        mensage = "Eliminar todos los datos ?";
       }
     } else {
       mensage = "${titulo} el subtitulo?";
@@ -197,7 +194,7 @@ class ListMunicipality extends GetView<GetxInformationMunicipio> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(titulo),
-            content: Text("Seguro de ${titulo.toLowerCase()} la informacion?"),
+            content: Text("Seguro de ${mensage}"),
             actions: <Widget>[
               ElevatedButton(
                   style: ButtonStyle(
@@ -209,8 +206,8 @@ class ListMunicipality extends GetView<GetxInformationMunicipio> {
                       controller.updateInforMunicipio(infoMunicipio, index);
                       Get.to(() => RegisterMunicipality(), transition: Transition.leftToRight);
                     } else if (titulo == "Eliminar" && connectivityController.isOnline.value) {
-                      print("Borrando informacion");
-                      //controller.deleteInformation(infoMunicipio, index);
+                      print("Index a eliminar: ${index}" + " ID Documento: ${infoMunicipio.id.toString()}");
+                      controller.deleteMapFromList(infoMunicipio.id.toString(), index);
                     } else if (connectivityController.isOnline.value == false) {
                       controllerUtils.messageError("Conexion", "No se tiene conexion a internet.");
                     }

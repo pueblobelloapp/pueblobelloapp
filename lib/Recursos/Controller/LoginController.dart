@@ -70,7 +70,12 @@ class ControllerLogin extends GetxController {
   }
 
   Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+    try {
+      await FirebaseAuth.instance.signOut();
+      messageController.messageInfo("Informacion", "Se ha cerrado la sesión");
+    } on FirebaseAuthException catch (e) {
+      messageController.messageError("Error", "Ha ocurrido un error al cerrar sesión");
+    }
   }
 
   Future recuperarPassword(String correo) async {
