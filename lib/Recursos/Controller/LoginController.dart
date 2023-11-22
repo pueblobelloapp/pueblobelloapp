@@ -56,14 +56,11 @@ class ControllerLogin extends GetxController {
         throw "not-privilegio";
       });
     } on FirebaseException catch (e) {
-      print("Error: ? " + e.toString());
       if (e.code == 'user-not-found') {
         return Future.error('user-not-found');
       } else if (e.code == "network-request-failed") {
-        print("Error con la red." + e.code);
         return Future.error('network-request-failed');
       } else if (e.code == 'wrong-password') {
-        print("Contraseña incorrecta" + e.code);
         return Future.error('wrong-password');
       }
     }
@@ -82,7 +79,6 @@ class ControllerLogin extends GetxController {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: correo);
     } on FirebaseAuthException catch (e) {
-      print(e);
       if (e.code == 'user-not-found') {
         return Future.error('user-not-found');
       } else if (e.code == "invalid-email") {

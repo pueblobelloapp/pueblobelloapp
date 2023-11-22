@@ -20,7 +20,7 @@ class ListMunicipality extends GetView<GetxInformationMunicipio> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Información"),
+        title: const Text("Lista Sitios"),
         actions: [
           TextButton(
             child: Text("Añadir subtitulos", style: TextStyle(color: Colors.white),),

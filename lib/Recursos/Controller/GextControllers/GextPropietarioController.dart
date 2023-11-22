@@ -36,7 +36,6 @@ class GextPropietarioController extends GetxController {
   }
 
   void updatePropietario(Map<String, dynamic> propietario, String button) {
-    print("Llega informacion" + propietario["uid"]);
     _id = propietario["uid"];
     _nombre = propietario["nombre"];
     _edad = propietario["edad"];
@@ -53,7 +52,6 @@ class GextPropietarioController extends GetxController {
 
   void updateImagePerfil(XFile imageFile) async {
     imagePerfil.value = imageFile;
-    print("Actualiza imagen");
     update();
   }
 

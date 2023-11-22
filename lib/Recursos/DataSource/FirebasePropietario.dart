@@ -30,12 +30,10 @@ class PropietarioDataBase {
   Future<void> saveImageProfile() async {
     User myusuario = currentUser;
     String urlPhoto;
-    //Validacion si existe una fotografia seleccionada.
     if (propietarioController.imagePerfil.value.path.isNotEmpty) {
       final ref = firestore.doc('propietario/${myusuario.uid}');
       urlPhoto = await uploadPhoto(
           propietarioController.imagePerfil.value, myusuario.uid);
-      print("Foto subida: " + urlPhoto.toString());
 
       final fileName = propietarioController.imagePerfil.value.name;
       final imagePath = '${currentUser.uid}/mySiteImages/$fileName';

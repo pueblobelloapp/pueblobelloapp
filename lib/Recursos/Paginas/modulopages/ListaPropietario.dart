@@ -45,7 +45,7 @@ class ListaPropietario extends StatelessWidget {
   Widget listaPropietario(Map<String, dynamic> data) {
     return ListTile(
       leading: data['foto'] == ""
-          ? Image.asset('assets/Icons/usuarioPerfil.png')
+          ? Image.asset('assets/img/usuario.png')
           : Image.network(data['foto']),
       title: Text(data['nombre']),
       subtitle: Text(""),

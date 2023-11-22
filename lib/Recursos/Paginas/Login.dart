@@ -179,7 +179,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
           .getLogin(_userL.text, _passwordL.text)
           .then((value) => {
                 if (controllerLogin.email != "Sin Registro" && controllerLogin.userRole != "") {
-                  print(controllerLogin.dataUsuario.toString()),
+                  print("Info: " + controllerLogin.dataUsuario.toString()),
                   Get.to(() => MenuModuls())
                 }
                 else {

@@ -9,7 +9,6 @@ class GetxUtils extends GetxController {
   final ConnectivityController connectivityController = Get.put(ConnectivityController());
 
   void updateAction(bool state) {
-    print("Actualiza estado");
     _isReadyAction = state;
     update();
   }

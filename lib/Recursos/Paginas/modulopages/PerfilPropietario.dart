@@ -106,7 +106,7 @@ class _PerfilPropietarioState extends State<PerfilPropietario> {
                     backgroundColor: Colors.white,
                     backgroundImage:
                         _propietarioController.imagePerfilUrl.isEmpty
-                            ? AssetImage('assets/Icons/usuarioPerfil.png')
+                            ? AssetImage('assets/img/usuario.png')
                             : NetworkImage(_propietarioController.imagePerfilUrl
                                 .toString()) as ImageProvider)),
                 Positioned(

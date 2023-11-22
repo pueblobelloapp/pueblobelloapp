@@ -27,16 +27,7 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   }
 
   @override
-  Stream<Iterable<SitioTuristico>> getMySite() {
-    // TODO: implement getMySite
-    throw UnimplementedError();
-  }
-
-  @override
-  String newId() {
-    // TODO: implement newId
-    return firestore.collection('sites').doc().id;
-  }
+  String newId() { return firestore.collection('sites').doc().id; }
 
   @override
   Future<void> saveMySite(SitioTuristico sitioTuristico) async {
@@ -69,9 +60,10 @@ class MyRepositorySiteTuristicoImp extends MySitesRepository {
   @override
   Stream<QuerySnapshot> getSitesUid() {
     // TODO: implement getSitesUid
+    print("Usuario sitios:" + currentUser.uid);
     return firestore
         .collection('sites')
-        .where("userId", isEqualTo: "controller.uidUserLogin")
+        .where("userId", isEqualTo: currentUser.uid)
         .snapshots();
   }
 

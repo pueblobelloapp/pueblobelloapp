@@ -4,11 +4,9 @@ import 'package:app_turismo/Recursos/Controller/GextControllers/GextUtils.dart';
 import 'package:app_turismo/Recursos/Models/InfoMunicipio.dart';
 import 'package:app_turismo/Recursos/Repository/GestionRepository.dart';
 import 'package:app_turismo/Recursos/Repository/implementation/RepositoryGestionImp.dart';
-import 'package:app_turismo/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_cropper/image_cropper.dart';
 
 class GetxInformationMunicipio extends GetxController {
   final MyGestionRepository _repositoryMunicipio = MyRepositoryGestionImp();
@@ -159,12 +157,12 @@ class GetxInformationMunicipio extends GetxController {
     this.informationStream = _informationStream;
     informationStream.listen((QuerySnapshot snapshot) {
       if (snapshot.docs.isEmpty) {
-        print("Sin datos");
         tituloControl.text = "";
         descriptionControl.text = "";
       }
     }, onError: (error) {
       print('Error en el stream: $error');
+      messageController.messageError("Error", "Error desconocido: ${error.toString()}");
     });
 
     return _informationStream;

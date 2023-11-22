@@ -10,7 +10,7 @@ class SitioTuristico {
   final String descripcion;
   late Ubicacion? ubicacion;
   final String? userId;
-  final Map<String, String>? contacto;
+  final Map<String, dynamic>? contacto;
   final List<Puntuacion>? puntuacion;
   final String? actividades;
   final List<dynamic>? foto;
@@ -50,7 +50,7 @@ class SitioTuristico {
         descripcion: data['descripcion'] as String,
         ubicacion: data['ubicacion'] as Ubicacion,
         userId: data['userId'] as String?,
-        contacto: data['contacto'] as Map<String, String>?,
+        contacto: data['contacto'] as Map<String, dynamic>?,
         puntuacion: data['puntuacion'] as List<Puntuacion>?,
         actividades: data['actividades'] as String?,
         foto: data['foto;'] as List<String>?);
@@ -64,7 +64,7 @@ class SitioTuristico {
       String? descripcion,
       Ubicacion? ubicacion,
       String? userId,
-      Map<String, String>? contacto,
+      Map<String, dynamic>? contacto,
       List<Puntuacion>? puntuacion,
       String? actividades,
       List<String>? foto}) {

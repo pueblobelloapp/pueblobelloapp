@@ -23,6 +23,7 @@ class GetxManagementTouristSite extends GetxController {
 
   String _buttonText = "Registrar";
   List<dynamic>? _fotoUrl = [];
+  List<String> listActivitys = [];
 
   var ubicacion = 'Sin ubicacion'.obs;
 
@@ -41,6 +42,13 @@ class GetxManagementTouristSite extends GetxController {
   final pageWebTextController = TextEditingController();
   final instagramTextController = TextEditingController();
   final whatsappTextController = TextEditingController();
+
+  var titleAppbar = "Registro Sitio Turistico".obs;
+  var buttonTextSave = "Guardar".obs;
+
+  late SitioTuristico siteInformation;
+
+  Rx<bool> infoExists = Rx(true);
 
   Map<String, String> _listContactos = {};
   late Ubicacion mapUbications = Ubicacion(lat: "0", long: "0");
@@ -77,7 +85,6 @@ class GetxManagementTouristSite extends GetxController {
   }
 
   void updateActivity(List<dynamic> activitys) {
-    print(activitys);
     _menuItemsActivity = "";
     activitys.forEach((e) => _menuItemsActivity += '#${(e.toString())} ');
     update();
@@ -117,7 +124,6 @@ class GetxManagementTouristSite extends GetxController {
 
   Future<void> validateForms() async {
     if (validateText()) {
-      print("Realizando proceso de guardado.");
       updateContactos();
       SitioTuristico sitioTuristico = SitioTuristico(
           id: _mySitesRepository.newId(),
@@ -132,7 +138,6 @@ class GetxManagementTouristSite extends GetxController {
       _mySitesRepository.saveMySite(sitioTuristico);
       cleanForm();
     } else {
-      print("Error campos vacios");
       Get.showSnackbar(const GetSnackBar(
         title: 'Validacion de datos',
         message: 'Error datos faltantes',
@@ -162,5 +167,35 @@ class GetxManagementTouristSite extends GetxController {
         tipoTurismo.text.isNotEmpty &&
         _menuItemsActivity.isNotEmpty &&
         ubicacion.value.isNotEmpty);
+  }
+
+  setDataToForm() {
+    print("Llamado");
+    nombreSitio.text = siteInformation.nombre;
+    tipoTurismo.text = siteInformation.tipoTurismo;
+    descripcionST.text = siteInformation.descripcion;
+    tipoTurismo.text = siteInformation.tipoTurismo;
+    ubicacion.value = "Ubicacion seleccionada \n ${siteInformation.ubicacion!.lat}";
+    setActivitySelect(siteInformation.actividades);
+    setDataRedes();
+  }
+  setActivitySelect(String? input) {
+    listActivitys.clear();
+    print("Actividades");
+    RegExp regExp = RegExp(r'#(\w+)');
+    Iterable<RegExpMatch> matches = regExp.allMatches(input!);
+
+    for (RegExpMatch match in matches) {
+      String hashtag = match.group(1)!; //hashtag = hashtag.replaceAll('_', ' ');
+      listActivitys.add(hashtag);
+    }
+  }
+
+  setDataRedes() {
+    twitterTextController.text = siteInformation.contacto!['twitter'];
+    facebookTextController.text = siteInformation.contacto!['facebook'];
+    pageWebTextController.text = siteInformation.contacto!['pagina'];
+    instagramTextController.text = siteInformation.contacto!['instagram'];
+    whatsappTextController.text = siteInformation.contacto!['whatsapp'];
   }
 }

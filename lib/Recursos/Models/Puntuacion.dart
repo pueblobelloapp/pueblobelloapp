@@ -1,15 +1,15 @@
 class Puntuacion {
-  String descripcion;
-  int estrellas;
-  String userId;
+  String comentario;
+  int calificacion;
+  String uid;
 
-  Puntuacion({this.descripcion = '', this.estrellas = 0, this.userId = ''});
+  Puntuacion({this.comentario = '', this.calificacion = 0, this.uid = ''});
 
   Map<String, Object> toFirebaseMap() {
     return <String, Object>{
-      "descripcion": descripcion,
-      "estrellas": estrellas,
-      "userId": userId
+      "comentario": comentario,
+      "calificacion": calificacion,
+      "uid": uid
     };
   }
 }

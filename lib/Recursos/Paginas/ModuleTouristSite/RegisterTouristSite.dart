@@ -18,6 +18,13 @@ class RegisterTouristSite extends GetView<GetxManagementTouristSite> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Obx(() => Text(controller.titleAppbar.value))),
+      body: SingleScroll(),
+    );
+  }
+
+  Widget SingleScroll() {
     return SingleChildScrollView(
       reverse: true,
       child: Formulario(),
@@ -84,7 +91,7 @@ class RegisterTouristSite extends GetView<GetxManagementTouristSite> {
                               controller.updateActivity(values);
                             }
                           },
-                          initialValue: [],
+                          initialValue: controller.listActivitys.isEmpty ? [] : controller.listActivitys,
                         );
                       }),
                 ),
@@ -211,9 +218,9 @@ class RegisterTouristSite extends GetView<GetxManagementTouristSite> {
       icon: const Icon(Icons.arrow_drop_down_circle, color: Colors.white),
       items: listInformation,
       onChanged: (String? value) {
-        print("Valor combo: " + value.toString());
         controller.tipoTurismo.text = value!;
       },
+      value: controller.tipoTurismo.text.isEmpty ? null : controller.tipoTurismo.text,
       hint: Text(hintextValue, style: TextStyle(color: Colors.black26)),
     );
   }

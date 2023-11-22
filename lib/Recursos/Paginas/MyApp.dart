@@ -1,4 +1,5 @@
 import 'package:app_turismo/Recursos/Paginas/Menu.dart';
+import 'package:app_turismo/Recursos/Paginas/ModuleTouristSite/ListTouristSite.dart';
 import 'package:app_turismo/Recursos/Paginas/modulopages/MapGeolocation.dart';
 import 'package:app_turismo/Recursos/Paginas/SplashScreen.dart';
 import 'package:app_turismo/Recursos/Paginas/Login.dart';
@@ -66,7 +67,7 @@ class MyApp extends StatelessWidget {
         'Menu': (BuildContext context) => MenuModuls(),
         'ModuleSitios': (BuildContext context) => RegisterTouristSite(),
         'ListInformation': (BuildContext context) => ListMunicipality(),
-        'MenuSitioTuristico': (BuildContext context) => NavegacionSitioTuristico(),
+        'MenuSitioTuristico': (BuildContext context) => ListSitesTourist(),
         'Propietario': (BuildContext context) => PerfilPropietario(),
         'RecoveryPass': (BuildContext context) => RecoverPassword(),
         'GestionSites': (BuildContext context) => RegisterMunicipality(),
